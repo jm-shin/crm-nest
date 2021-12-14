@@ -1,45 +1,48 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {Movie} from "./entities/movie.entity";
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Movie } from './entities/movie.entity';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { CreateMovieDto } from './dto/create-movie.dto';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class MoviesService {
-    private movies: Movie[] = [];
+  constructor(
+    @InjectRepository(Movie)
+    private movieRepository: Repository<Movie>,
+  ) {}
 
-    getAll(): Movie[] {
-        return this.movies;
-    }
+  private readonly logger = new Logger(MoviesService.name);
 
-    getOne(id: number): Movie {
-        const movie = this.movies.find((movies) => movies.id === id);
-        if (!movie) {
-            throw new NotFoundException(`Movie with ID: ${id} not found!`);
-        }
-        return movie;
-    }
+  getAll(): Promise<Movie[]> {
+    return this.movieRepository.find();
+  }
 
-    deleteOne(id: number) {
-        const movie = this.getOne(id);
-        if (!movie) {
-            throw new NotFoundException(`Movie with ID: ${id} not found!`);
-        }
-        this.movies = this.movies.filter((movie) => movie.id !== id);
+  getOne(id: number): Promise<Movie> {
+    const movie = this.movieRepository.findOne({ id: id });
+    if (!movie) {
+      throw new NotFoundException(`Movie with ID: ${id} not found!`);
     }
+    return movie;
+  }
 
-    create(movieData: CreateMovieDto){
-        this.movies.push({
-            id: this.movies.length + 1,
-            ...movieData
-        });
+  async deleteOne(id: number): Promise<void> {
+    const movie = this.getOne(id);
+    if (!movie) {
+      throw new NotFoundException(`Movie with ID: ${id} not found!`);
     }
+    await this.movieRepository.delete({ id: id });
+  }
 
-    update(id: number, updateData: UpdateMovieDto) {
-        const movie = this.getOne(id);
-        if (!movie) {
-            throw new NotFoundException(`Movie with ID: ${id} not found!`);
-        }
-        this.deleteOne(id);
-        this.movies.push({...movie, ...updateData});
+  async create(movieData: CreateMovieDto) {
+    await this.movieRepository.save(movieData);
+  }
+
+  update(id: number, updateData: UpdateMovieDto) {
+    const movie = this.getOne(id);
+    if (!movie) {
+      throw new NotFoundException(`Movie with ID: ${id} not found!`);
     }
+    return this.movieRepository.update({ id: id }, updateData);
+  }
 }
