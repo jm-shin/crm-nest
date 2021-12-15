@@ -20,6 +20,7 @@ export class MoviesService {
 
   getOne(id: number): Promise<Movie> {
     const movie = this.movieRepository.findOne({ id: id });
+    this.logger.log(id);
     if (!movie) {
       throw new NotFoundException(`Movie with ID: ${id} not found!`);
     }

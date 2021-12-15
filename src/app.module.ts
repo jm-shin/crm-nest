@@ -11,21 +11,32 @@ import {
   WinstonModule,
 } from 'nest-winston';
 
+const transports = {
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    nestWinstonModuleUtilities.format.nestLike('CRM 2.0'),
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new (require('winston-daily-rotate-file'))({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+      dirname:'./logs',
+      filename: '%DATE%.log',
+      datePattern: 'YYYY-MM-DD'
+    }),
+    /*
+    new winston.transports.File({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+      dirname: './logs',
+      filename: 'info.log',
+    }),
+     */
+  ],
+}
+
 @Module({
   imports: [TypeOrmModule.forRoot(),
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.File({
-          filename: 'log',
-          dirname: './logs',
-          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            nestWinstonModuleUtilities.format.nestLike('CRM 2.0'),
-          ),
-        }),
-      ],
-    }),
+    WinstonModule.forRoot(transports),
     MoviesModule],
   controllers: [AppController],
   providers: [AppService],
@@ -34,7 +45,6 @@ import {
 export class AppModule implements NestModule {
   constructor(private connection: Connection) {
   }
-
   configure(consumer: MiddlewareConsumer): any {
     consumer
       .apply(LoggerMiddleware)
