@@ -1,3 +1,4 @@
+import { AuthModule } from './auth/auth.module';
 import { Module, NestModule, MiddlewareConsumer, Logger } from '@nestjs/common';
 import { MoviesModule } from './movies/movies.module';
 import { AppController } from './app.controller';
@@ -10,6 +11,10 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
+import { UsersService } from './users/users.service';
+import { UsersController } from './users/users.controller';
+import { UsersModule } from './users/users.module';
+import { ConfigModule } from '@nestjs/config';
 
 const transports = {
   format: winston.format.combine(
@@ -20,7 +25,7 @@ const transports = {
     new winston.transports.Console(),
     new (require('winston-daily-rotate-file'))({
       level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
-      dirname:'./logs',
+      dirname: './logs',
       filename: '%DATE%.log',
       datePattern: 'YYYY-MM-DD'
     }),
@@ -35,11 +40,16 @@ const transports = {
 }
 
 @Module({
-  imports: [TypeOrmModule.forRoot(),
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot(),
     WinstonModule.forRoot(transports),
-    MoviesModule],
-  controllers: [AppController],
-  providers: [AppService],
+    MoviesModule,
+    UsersModule,
+    AuthModule
+  ],
+  controllers: [AppController, UsersController],
+  providers: [AppService, UsersService],
 })
 
 export class AppModule implements NestModule {
