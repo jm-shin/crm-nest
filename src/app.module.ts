@@ -15,6 +15,9 @@ import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
+import { PromotionController } from './promotion/promotion.controller';
+import { PromotionService } from './promotion/promotion.service';
+import { PromotionModule } from './promotion/promotion.module';
 
 const transports = {
   format: winston.format.combine(
@@ -46,10 +49,11 @@ const transports = {
     WinstonModule.forRoot(transports),
     MoviesModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    PromotionModule
   ],
-  controllers: [AppController, UsersController],
-  providers: [AppService, UsersService],
+  controllers: [AppController, UsersController, PromotionController],
+  providers: [AppService, UsersService, PromotionService],
 })
 
 export class AppModule implements NestModule {
