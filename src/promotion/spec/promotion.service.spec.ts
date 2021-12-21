@@ -15,4 +15,14 @@ describe('PromotionService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+
+  /*
+  describe('save', () => {
+    it('should save promotion info', () => {
+      const beforeCreate = service.
+    });
+  });
+*/
+
 });
