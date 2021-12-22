@@ -16,7 +16,9 @@ export class PromotionService {
 
     async getAll(): Promise<PromotionReceiverInfo[]> {
         try {
-            return await this.promotionReceiverInfoRepository.find();
+            const promotionInfoList = await this.promotionReceiverInfoRepository.find();
+            this.logger.log(`getAll() result: ${JSON.stringify(promotionInfoList)}`);
+            return promotionInfoList;
         } catch (error) {
             this.logger.error(error);
         }
@@ -39,7 +41,7 @@ export class PromotionService {
             group_no: groupNo,
             condition_text: conditionText,
             condition_json: conditionJson,
-            vaild_state: validState,
+            valid_state: validState,
         }
         this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
         try {
@@ -59,7 +61,7 @@ export class PromotionService {
             group_no: groupNo ? groupNo : null,
             condition_text: conditionText ? conditionText : null,
             condition_json: conditionJson ? conditionJson : null,
-            vaild_state: validState ? validState : null,
+            valid_state: validState ? validState : null,
         }
         try {
             this.promotionReceiverInfoRepository.update({ receiver_id: receiverId }, updateReceiverData);

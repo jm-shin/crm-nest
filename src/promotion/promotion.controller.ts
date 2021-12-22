@@ -13,34 +13,35 @@ export class PromotionController {
 
     private logger = new Logger(PromotionController.name);
 
+    //receiver api
     @UseGuards(JwtAuthGuard)
-    @Get('')
+    @Get('/receiver')
     getAll(): Promise<PromotionReceiverInfo[]> {
         return this.promotionService.getAll();
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get(':id')
+    @Get('/receiver/:id')
     getOne(@Param('id') receiverId: number) {
         return this.promotionService.getOne(receiverId);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Post()
+    @Post('/receiver')
     create(@Body() receiverData: CreateReceiverDto) {
         this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
         return this.promotionService.save(receiverData);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch(':id')
+    @Patch('/receiver/:id')
     patch(@Param('id') receiverId: number, @Body() updateData: UpdateReceiverDto) {
         this.logger.log(`updateData: ${JSON.stringify(updateData)}`);
         return this.promotionService.update(receiverId, updateData);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete(':id')
+    @Delete('/receiver/:id')
     remove(@Param('id') receiverId: number) {
         return this.promotionService.deleteOne(receiverId);
     }
