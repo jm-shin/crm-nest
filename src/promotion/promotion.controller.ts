@@ -5,7 +5,7 @@ import { Controller, Post, Body, Logger, Delete, Param, UseGuards, Get, Patch } 
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { PromotionReceiverInfo } from './entities/promotion_receiver_info.entity';
 
-@Controller('promotion')
+@Controller('api/promotion')
 export class PromotionController {
     constructor(
         private readonly promotionService: PromotionService,

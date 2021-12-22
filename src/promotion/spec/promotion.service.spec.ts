@@ -70,6 +70,4 @@ describe('PromotionService', () => {
       expect(result).toBeInstanceOf(Array);
     });
   });
-
-
 });
