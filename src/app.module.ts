@@ -45,7 +45,7 @@ const transports = {
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot({keepConnectionAlive:false}),
     WinstonModule.forRoot(transports),
     MoviesModule,
     UsersModule,
