@@ -1,7 +1,7 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { PromotionService } from './promotion.service';
-import { Controller, Post, Body, Logger, Delete, Param, UseGuards, Get, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Logger, Delete, Param, UseGuards, Get, Patch, Put } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { PromotionReceiverInfo } from './entities/promotion_receiver_info.entity';
 
@@ -12,6 +12,7 @@ export class PromotionController {
     ) { }
 
     private logger = new Logger(PromotionController.name);
+
 
     //receiver api
     @UseGuards(JwtAuthGuard)
@@ -34,7 +35,7 @@ export class PromotionController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('/receiver/:id')
+    @Put('/receiver/:id')
     patch(@Param('id') receiverId: number, @Body() updateData: UpdateReceiverDto) {
         this.logger.log(`updateData: ${JSON.stringify(updateData)}`);
         return this.promotionService.update(receiverId, updateData);

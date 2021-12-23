@@ -11,9 +11,9 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { UsersService } from './users/users.service';
-import { UsersController } from './users/users.controller';
-import { UsersModule } from './users/users.module';
+import { UserService } from './user/user.service';
+import { UserController } from './user/user.controller';
+import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { PromotionController } from './promotion/promotion.controller';
 import { PromotionService } from './promotion/promotion.service';
@@ -45,15 +45,15 @@ const transports = {
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({keepConnectionAlive:false}),
+    TypeOrmModule.forRoot(),
     WinstonModule.forRoot(transports),
     MoviesModule,
-    UsersModule,
+    UserModule,
     AuthModule,
     PromotionModule
   ],
-  controllers: [AppController, UsersController, PromotionController],
-  providers: [AppService, UsersService, PromotionService],
+  controllers: [AppController, UserController, PromotionController],
+  providers: [AppService, UserService, PromotionService],
 })
 
 export class AppModule implements NestModule {
