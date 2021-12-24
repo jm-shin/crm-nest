@@ -4,7 +4,7 @@ export class FactorConverter {
   private readonly logger = new Logger(FactorConverter.name);
 
   //text convert to json
-  makeJsonCondition (conditionText) {
+  makeJsonCondition(conditionText) {
     const conditionJsonList = conditionText.split('AND')
       .reduce((acc, cur, i) => {
         const keyAndValues = cur.replace(/ /g, '').split('=');
@@ -21,8 +21,4 @@ export class FactorConverter {
     return convResult;
   }
 }
-
-//test
-const factor = new FactorConverter();
-console.log(factor.makeJsonCondition('isauth=Y AND Group=1'));
 

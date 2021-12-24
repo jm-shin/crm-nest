@@ -43,6 +43,8 @@ export class PromotionService {
             //   .leftJoinAndSelect('receiverInfo.User', 'User')
             //   .where('receiverInfo.receiverId = :id', {id})
             //   .getOne();
+
+            this.logger.log(`getOne ${JSON.stringify(receiver)}`);
             return receiver;
         } catch (error) {
             this.logger.error(error);

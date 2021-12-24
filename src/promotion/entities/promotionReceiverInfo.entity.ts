@@ -44,6 +44,6 @@ export class PromotionReceiverInfo {
 
     // @ManyToOne(() => User, (user) => user.ReceiverInfo)
     @ManyToOne(() => User)
-    @JoinColumn({name:'user_idx', referencedColumnName: 'userId'}) //필요한 쪽에 하나만
+    @JoinColumn({name:'user_idx', referencedColumnName: 'idx'}) //필요한 쪽에 하나만
     User: User;
 }

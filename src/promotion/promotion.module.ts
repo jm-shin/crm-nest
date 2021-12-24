@@ -6,9 +6,13 @@ import { Module } from '@nestjs/common';
 import { FactorConverter } from '../common/utils/factorConverter';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([PromotionReceiverInfo]), FactorConverter],
-    exports: [TypeOrmModule],
-    controllers: [PromotionController],
-    providers: [PromotionService]
+  imports: [
+    TypeOrmModule.forFeature([PromotionReceiverInfo]),
+    FactorConverter,
+  ],
+  exports: [TypeOrmModule],
+  controllers: [PromotionController],
+  providers: [PromotionService],
 })
-export class PromotionModule { }
+
+export class PromotionModule {}
