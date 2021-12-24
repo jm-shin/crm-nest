@@ -1,11 +1,12 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { Injectable, Logger } from '@nestjs/common';
-import { PromotionReceiverInfo } from './entities/promotion_receiver_info.entity';
+import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { User } from '../user/entities/user.entity';
+import { FactorConverter } from '../common/utils/factorConverter';
 
 
 @Injectable()
@@ -16,6 +17,7 @@ export class PromotionService {
     ) { }
 
     private readonly logger = new Logger(PromotionService.name);
+    private factorConverter = new FactorConverter();
 
     async getAll(): Promise<PromotionReceiverInfo[]> {
         try {
@@ -48,40 +50,45 @@ export class PromotionService {
     }
 
     async save(receiverData: CreateReceiverDto) {
-        // const { title, description, userIdx, groupNo, conditionText, conditionJson, validState } = receiverData;
-        // const createReceiverData = {
-        //     title,
-        //     description,
-        //     user_idx: userIdx,
-        //     group_no: groupNo,
-        //     condition_text: conditionText,
-        //     condition_json: conditionJson,
-        //     valid_state: validState,
-        // }
-        this.logger.log(`createReceiverData: ${JSON.stringify(receiverData)}`);
+        this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
+
+        const { title, description, userIdx, groupNo, conditionText, validState } = receiverData;
+        const conditionJson =  JSON.stringify(await this.factorConverter.makeJsonCondition(conditionText));
+        this.logger.log(`conditionJson: ${conditionJson}`);
+        const createReceiverData = {
+            title,
+            description,
+            userIdx,
+            groupNo,
+            conditionText,
+            conditionJson,
+            validState,
+        }
+        this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
         try {
-            await this.promotionReceiverInfoRepository.save(receiverData);
+            await this.promotionReceiverInfoRepository.save(createReceiverData);
         } catch (error) {
             this.logger.error(error);
         }
     }
 
     async update(receiverId: number, updateData: UpdateReceiverDto) {
-        //TODO
-        const { title, description, userIdx, groupNo, conditionText, conditionJson, validState } = updateData;
+        const { title, description, userIdx, groupNo, conditionText, validState } = updateData;
+        const conditionJson = JSON.stringify(await this.factorConverter.makeJsonCondition(conditionText));
+        this.logger.log(`conditionJson: ${conditionJson}`);
         const updateReceiverData = {
             title,
             description,
-            user_idx: userIdx ? userIdx : null,
-            group_no: groupNo ? groupNo : null,
-            condition_text: conditionText ? conditionText : null,
-            condition_json: conditionJson ? conditionJson : null,
-            valid_state: validState ? validState : null,
-            updated_at: moment().format(),
+            userIdx,
+            groupNo,
+            conditionText,
+            conditionJson,
+            validState,
+            updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         }
         this.logger.log( `updateReceiverData ${JSON.stringify(updateReceiverData)}`);
         try {
-            await this.promotionReceiverInfoRepository.update({ receiverId: receiverId }, updateReceiverData);
+            await this.promotionReceiverInfoRepository.update({receiverId}, updateReceiverData);
         } catch (error) {
             this.logger.error(error);
         }

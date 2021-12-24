@@ -17,6 +17,7 @@ export class CreateReceiverDto {
     @IsString()
     readonly conditionText: string;
 
+    @IsOptional()
     @IsString()
     readonly conditionJson: string;
 

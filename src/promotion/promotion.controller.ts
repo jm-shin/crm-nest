@@ -3,7 +3,7 @@ import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { PromotionService } from './promotion.service';
 import { Controller, Post, Body, Logger, Delete, Param, UseGuards, Get, Patch, Put } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
-import { PromotionReceiverInfo } from './entities/promotion_receiver_info.entity';
+import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 
 @Controller('api/promotion')
 export class PromotionController {

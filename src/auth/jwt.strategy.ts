@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   private readonly logger = new Logger(JwtStrategy.name);
 
   async validate(payload: any) {
-    this.logger.log(payload);
+    //this.logger.log(payload);
     // return { userId: payload.sub, username: payload.username };
     return payload;
   }

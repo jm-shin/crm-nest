@@ -37,3 +37,6 @@ lerna-debug.log*
 # config
 .env
 ormconfig.json
+
+#json file
+factor.json
