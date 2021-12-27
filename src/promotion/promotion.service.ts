@@ -26,7 +26,7 @@ export class PromotionService {
               .createQueryBuilder('r')
               .leftJoinAndSelect('r.User', 'u')
               .select([
-                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS userName',
+                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS registrant',
                   'r.groupNo AS groupNo', 'r.conditionText AS conditionText', 'r.conditionJson AS conditionJson',
                   'r.validState AS validState', 'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
               ])
@@ -50,7 +50,7 @@ export class PromotionService {
               .createQueryBuilder('r')
               .leftJoinAndSelect('r.User', 'u')
               .select([
-                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS userName',
+                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS registrant',
                   'r.groupNo AS groupNo', 'r.conditionText AS conditionText', 'r.conditionJson AS conditionJson',
                   'r.validState AS validState', 'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
               ])
