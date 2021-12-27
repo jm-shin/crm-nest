@@ -7,7 +7,7 @@ import { getRepository, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { User } from '../user/entities/user.entity';
 import { FactorConverter } from '../common/utils/factorConverter';
-import { error } from 'winston';
+import { add, error } from 'winston';
 
 
 @Injectable()
@@ -120,10 +120,9 @@ export class PromotionService {
 
     async conditionPreview(conditionText: string): Promise<any> {
         try {
-            return this.factorConverter.makeJsonCondition(conditionText);
+            return { condition: this.factorConverter.makeJsonCondition(conditionText) };
         } catch (error) {
             this.logger.error(error);
         }
     }
-
 }

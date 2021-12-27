@@ -12,7 +12,7 @@ import {
     Get,
     Patch,
     Put,
-    BadRequestException,
+    BadRequestException, HttpException,
 } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
