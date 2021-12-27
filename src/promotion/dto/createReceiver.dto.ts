@@ -16,6 +16,7 @@ export class CreateReceiverDto {
     readonly userIdx: number;
 
     @IsNumber()
+    @IsOptional()
     @ApiProperty({type: Number, description: '그룹 번호'})
     readonly groupNo: number;
 
