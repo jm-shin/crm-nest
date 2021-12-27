@@ -21,10 +21,17 @@ export class PromotionService {
 
     async getAll(): Promise<PromotionReceiverInfo[]> {
         try {
-            const promotionInfoList = await this.promotionReceiverInfoRepository.find({ relations:['User'] });
-            // const promotionInfoList = await getRepository(PromotionReceiverInfo)
-            //   .createQueryBuilder('receiver')
-            //   .innerJoin('receiver.User', 'user').getMany();
+            // const promotionInfoList = await this.promotionReceiverInfoRepository.find({ relations:['User'] });
+            const promotionInfoList = await getRepository(PromotionReceiverInfo)
+              .createQueryBuilder('r')
+              .leftJoinAndSelect('r.User', 'u')
+              .select([
+                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS userName',
+                  'r.groupNo AS groupNo', 'r.conditionText AS conditionText', 'r.conditionJson AS conditionJson',
+                  'r.validState AS validState', 'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
+              ])
+              .getRawMany();
+
             this.logger.log(`getAll() result: ${JSON.stringify(promotionInfoList)}`);
             return promotionInfoList;
         } catch (error) {
@@ -34,15 +41,21 @@ export class PromotionService {
 
     async getOne(id: number): Promise<PromotionReceiverInfo> {
         try {
-            const receiver = await this.promotionReceiverInfoRepository.findOne({
-                where: {receiverId: id},
-                relations: ['User']
-            });
-            // const receiver = await getRepository(PromotionReceiverInfo)
-            //   .createQueryBuilder('receiverInfo')
-            //   .leftJoinAndSelect('receiverInfo.User', 'User')
-            //   .where('receiverInfo.receiverId = :id', {id})
-            //   .getOne();
+            // const receiver = await this.promotionReceiverInfoRepository.findOne({
+            //     where: {receiverId: id},
+            //     relations: ['User']
+            // });
+
+            const receiver = await getRepository(PromotionReceiverInfo)
+              .createQueryBuilder('r')
+              .leftJoinAndSelect('r.User', 'u')
+              .select([
+                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS userName',
+                  'r.groupNo AS groupNo', 'r.conditionText AS conditionText', 'r.conditionJson AS conditionJson',
+                  'r.validState AS validState', 'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
+              ])
+              .where('r.receiverId = :id', {id})
+              .getRawOne();
 
             this.logger.log(`getOne ${JSON.stringify(receiver)}`);
             return receiver;

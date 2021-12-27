@@ -1,12 +1,9 @@
 import {
     Column,
-    CreateDateColumn,
     Entity,
     JoinColumn,
     ManyToOne,
-    OneToOne,
-    PrimaryColumn, PrimaryGeneratedColumn,
-    UpdateDateColumn,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 
@@ -36,10 +33,10 @@ export class PromotionReceiverInfo {
     @Column({name:'valid_state'})
     validState: number;
 
-    @Column('datetime',{ name: 'created_at', default: () => 'CURRENT_TIMESTAMP'})
+    @Column('timestamp',{ name: 'created_at', default: () => 'CURRENT_TIMESTAMP'})
     createdAt: Date;
 
-    @Column('datetime', { name: 'updated_at', default: () => 'CURRENT_TIMESTAMP'})
+    @Column('timestamp', { name: 'updated_at', default: () => 'CURRENT_TIMESTAMP'})
     updatedAt: Date;
 
     // @ManyToOne(() => User, (user) => user.ReceiverInfo)
