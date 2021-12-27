@@ -1,12 +1,13 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { User } from '../user/entities/user.entity';
 import { FactorConverter } from '../common/utils/factorConverter';
+import { error } from 'winston';
 
 
 @Injectable()
@@ -116,4 +117,13 @@ export class PromotionService {
             this.logger.error(error);
         }
     }
+
+    async conditionPreview(conditionText: string): Promise<any> {
+        try {
+            return this.factorConverter.makeJsonCondition(conditionText);
+        } catch (error) {
+            this.logger.error(error);
+        }
+    }
+
 }

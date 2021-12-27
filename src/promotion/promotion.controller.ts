@@ -1,7 +1,19 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { JwtAuthGuard } from './../auth/guards/jwt-auth.guard';
 import { PromotionService } from './promotion.service';
-import { Controller, Post, Body, Logger, Delete, Param, UseGuards, Get, Patch, Put } from '@nestjs/common';
+import {
+    Controller,
+    Post,
+    Body,
+    Logger,
+    Delete,
+    Param,
+    UseGuards,
+    Get,
+    Patch,
+    Put,
+    BadRequestException,
+} from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { ApiResponse } from '@nestjs/swagger';
@@ -50,5 +62,17 @@ export class PromotionController {
     @ApiResponse({ description: '프로모션 대상자 삭제' })
     remove(@Param('id') receiverId: number) {
         return this.promotionService.deleteOne(receiverId);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('/receiver/preview')
+    @ApiResponse({ description: 'JSON 형식 미리보기' })
+    getJsonConvPreview(@Body() body: { conditionText: string }) {
+        this.logger.log(`conditionText : ${body.conditionText}`);
+        if (body.conditionText) {
+            return this.promotionService.conditionPreview(body.conditionText);
+        } else {
+            return new BadRequestException('check conditionText');
+        }
     }
 }
