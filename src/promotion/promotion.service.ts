@@ -1,13 +1,12 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
-import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import * as moment from 'moment';
-import { User } from '../user/entities/user.entity';
 import { FactorConverter } from '../common/utils/factorConverter';
-import { add, error } from 'winston';
+
 
 
 @Injectable()
@@ -67,9 +66,8 @@ export class PromotionService {
 
     async save(receiverData: CreateReceiverDto) {
         this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
-
-        const { title, description, userIdx, groupNo, conditionText, validState } = receiverData;
-        const conditionJson =  JSON.stringify(await this.factorConverter.makeJsonCondition(conditionText));
+        const { title, description, userIdx, groupNo, conditionText } = receiverData;
+        const conditionJson =  JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
         this.logger.log(`conditionJson: ${conditionJson}`);
         const createReceiverData = {
             title,
@@ -78,7 +76,7 @@ export class PromotionService {
             groupNo,
             conditionText,
             conditionJson,
-            validState,
+            validState: 1,
         }
         this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
         try {
@@ -90,7 +88,7 @@ export class PromotionService {
 
     async update(receiverId: number, updateData: UpdateReceiverDto) {
         const { title, description, userIdx, groupNo, conditionText, validState } = updateData;
-        const conditionJson = JSON.stringify(await this.factorConverter.makeJsonCondition(conditionText));
+        const conditionJson = JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
         this.logger.log(`conditionJson: ${conditionJson}`);
         const updateReceiverData = {
             title,

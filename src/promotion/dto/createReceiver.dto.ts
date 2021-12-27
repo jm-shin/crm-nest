@@ -29,6 +29,7 @@ export class CreateReceiverDto {
     readonly conditionJson: string;
 
     @IsNumber()
+    @IsOptional()
     @ApiProperty({type: Number, description: '유효'})
     readonly validState: number;
 

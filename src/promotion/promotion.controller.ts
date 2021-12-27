@@ -10,7 +10,6 @@ import {
     Param,
     UseGuards,
     Get,
-    Patch,
     Put,
     BadRequestException, HttpException,
 } from '@nestjs/common';
