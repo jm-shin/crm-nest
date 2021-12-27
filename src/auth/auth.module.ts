@@ -17,7 +17,7 @@ import { PassportModule } from '@nestjs/passport';
             signOptions: { expiresIn: '60s' },
         }),
     ],
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+    providers: [AuthService, JwtStrategy],
     exports: [AuthService]
 })
 export class AuthModule { }

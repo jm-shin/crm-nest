@@ -1,4 +1,4 @@
-import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReceiverDto {
@@ -16,7 +16,6 @@ export class CreateReceiverDto {
     readonly userIdx: number;
 
     @IsNumber()
-    @IsOptional()
     @ApiProperty({type: Number, description: '그룹 번호'})
     readonly groupNo: number;
 

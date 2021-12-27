@@ -66,14 +66,13 @@ export class PromotionService {
 
     async save(receiverData: CreateReceiverDto) {
         this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
-        const { title, description, userIdx, groupNo, conditionText } = receiverData;
+        const { title, description, userIdx, conditionText } = receiverData;
         const conditionJson =  JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
         this.logger.log(`conditionJson: ${conditionJson}`);
         const createReceiverData = {
             title,
             description,
             userIdx,
-            groupNo,
             conditionText,
             conditionJson,
             validState: 1,
@@ -87,17 +86,15 @@ export class PromotionService {
     }
 
     async update(receiverId: number, updateData: UpdateReceiverDto) {
-        const { title, description, userIdx, groupNo, conditionText, validState } = updateData;
+        const { title, description, userIdx, conditionText } = updateData;
         const conditionJson = JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
         this.logger.log(`conditionJson: ${conditionJson}`);
         const updateReceiverData = {
             title,
             description,
             userIdx,
-            groupNo,
             conditionText,
             conditionJson,
-            validState,
             updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
         }
         this.logger.log( `updateReceiverData ${JSON.stringify(updateReceiverData)}`);
