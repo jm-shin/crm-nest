@@ -1,6 +1,5 @@
 import { AuthModule } from './auth/auth.module';
 import { Module, NestModule, MiddlewareConsumer, Logger } from '@nestjs/common';
-import { MoviesModule } from './movies/movies.module';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
@@ -47,7 +46,6 @@ const transports = {
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(),
     WinstonModule.forRoot(transports),
-    MoviesModule,
     UserModule,
     AuthModule,
     PromotionModule
