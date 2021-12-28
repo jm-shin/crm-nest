@@ -2,6 +2,10 @@ import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-valida
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReceiverDto {
+    @IsOptional()
+    @IsNumber()
+    readonly idx: number;
+
     @IsString()
     @ApiProperty({type: String, description: '제목'})
     readonly title: string;
@@ -11,6 +15,7 @@ export class CreateReceiverDto {
     @ApiProperty({type: String, description: '설명'})
     readonly description: string;
 
+    @IsOptional()
     @IsNumber()
     @ApiProperty({type: Number, description: '유저 인덱스'})
     readonly userIdx: number;

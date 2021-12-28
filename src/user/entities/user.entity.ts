@@ -15,14 +15,14 @@ export class User {
     @Column()
     password: string;
 
-    @Column()
-    pre_password_3month: string;
+    @Column({name: 'pre_password_3month'})
+    prePassword3month: string;
 
-    @Column()
-    pre_password_6month: string;
+    @Column({name:'pre_password_6month'})
+    prePassword6month: string;
 
-    @Column()
-    op_class: number;
+    @Column({name:'op_class'})
+    opClass: number;
 
     @Column()
     mobile: string;
@@ -33,29 +33,29 @@ export class User {
     @Column()
     department: string;
 
-    @Column()
-    app_id: string;
+    @Column({name: 'app_id'})
+    appId: string;
 
     @Column()
     uno: string;
 
-    @Column()
-    created_at: Date;
+    @Column({name: 'created_at'})
+    createdAt: Date;
 
-    @Column()
-    updated_at: Date;
+    @Column({name: 'updated_at'})
+    updatedAt: Date;
 
-    @Column()
-    password_update_at: Date;
+    @Column({name: 'password_update_at'})
+    passwordUpdateAt: Date;
 
-    @Column()
-    login_fail_count: number;
+    @Column({name: 'login_fail_count'})
+    loginFailCount: number;
 
-    @Column()
-    valid_state: number;
+    @Column({name: 'valid_state'})
+    validState: number;
 
-    @Column()
-    send_alert: number;
+    @Column({name: 'send_alert'})
+    sendAlert: number;
 
     @Column()
     download: number;

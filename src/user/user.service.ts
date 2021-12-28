@@ -22,4 +22,10 @@ export class UserService {
     this.logger.log(`user list: ${JSON.stringify(users)}`);
     return users;
   }
+
+  // async findOne(userId: string): Promise<User> {
+  //   const user = await this.userRepository.findOne({where: {userId}})
+  //   this.logger.log(`user info: ${JSON.stringify(user)}`);
+  //   return user;
+  // }
 }
