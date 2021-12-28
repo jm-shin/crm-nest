@@ -16,6 +16,7 @@ import {
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { ApiResponse } from '@nestjs/swagger';
+import { ReadReceiverDto } from './dto/readReceiver.dto';
 
 @Controller('api/promotion')
 export class PromotionController {
@@ -27,16 +28,16 @@ export class PromotionController {
 
     //receiver api
     @UseGuards(JwtAuthGuard)
-    @Get('/receiver')
+    @Post('/receiver/bring/list')
     @ApiResponse({ description: '프로모션 대상자 리스트 조회' })
-    getAll(): Promise<PromotionReceiverInfo[]> {
-        return this.promotionService.getAll();
+    getAll(@Body() searchInfo: ReadReceiverDto): Promise<PromotionReceiverInfo[]> {
+        return this.promotionService.getAll(searchInfo);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Get('/receiver/:id')
+    @Post('/receiver/bring')
     @ApiResponse({ description: '프로모션 대상자 조회' })
-    getOne(@Param('id') receiverId: number) {
+    getOne(@Body('idx') receiverId: number) {
         return this.promotionService.getOne(receiverId);
     }
 

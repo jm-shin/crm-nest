@@ -3,7 +3,6 @@ import { LocalAuthGuard } from './auth/guards/local-auth.guard';
 import { AuthService } from './auth/auth.service';
 import { Controller, Get, Inject, Logger, LoggerService, Post, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-// import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller('')
 export class AppController {

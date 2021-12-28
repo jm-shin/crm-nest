@@ -7,8 +7,6 @@ import { getRepository, Repository } from 'typeorm';
 import * as moment from 'moment';
 import { FactorConverter } from '../common/utils/factorConverter';
 
-
-
 @Injectable()
 export class PromotionService {
     constructor(
@@ -19,7 +17,8 @@ export class PromotionService {
     private readonly logger = new Logger(PromotionService.name);
     private factorConverter = new FactorConverter();
 
-    async getAll(): Promise<PromotionReceiverInfo[]> {
+    async getAll(info): Promise<PromotionReceiverInfo[]> {
+        const {title, registrant} = info;
         try {
             // const promotionInfoList = await this.promotionReceiverInfoRepository.find({ relations:['User'] });
             const promotionInfoList = await getRepository(PromotionReceiverInfo)
@@ -45,7 +44,6 @@ export class PromotionService {
             //     where: {receiverId: id},
             //     relations: ['User']
             // });
-
             const receiver = await getRepository(PromotionReceiverInfo)
               .createQueryBuilder('r')
               .leftJoinAndSelect('r.User', 'u')
