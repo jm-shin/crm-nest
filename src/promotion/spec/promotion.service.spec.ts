@@ -66,7 +66,7 @@ describe('PromotionService', () => {
     });
 
     it('getAll()시 Array 반환', async () => {
-      const result = await service.getAll();
+      const result = await service.getAll({title:'title', registrant:'registrant'});
       expect(result).toBeInstanceOf(Array);
     });
   });

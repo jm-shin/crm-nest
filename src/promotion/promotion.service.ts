@@ -35,9 +35,8 @@ export class PromotionService {
               .createQueryBuilder('r')
               .leftJoinAndSelect('r.User', 'u')
               .select([
-                  'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description', 'u.userName AS registrant',
-                  'r.groupNo AS groupNo', 'r.conditionText AS conditionText', 'r.conditionJson AS conditionJson',
-                  'r.validState AS validState', 'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
+                  'r.receiverId AS receiverId', 'r.title AS title', 'u.userName AS registrant',
+                  'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
               ])
               .where(`r.title LIKE (:title) AND u.userName LIKE (:registrant)`, {title: values[0], registrant: values[1]})
               .getRawMany();
@@ -60,18 +59,16 @@ export class PromotionService {
               .leftJoinAndSelect('r.User', 'u')
               .select([
                   'r.receiverId AS receiverId', 'r.title AS title', 'r.description AS description',
-                  'r.groupNo AS groupNo', 'r.conditionText AS conditionText', 'r.conditionJson AS conditionJson',
-                  'r.validState AS validState', 'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
-                //user
-                  'u.idx AS userIdx', 'u.userId AS userId', 'u.userName AS registrant', 'u.passwordUpdateAt AS passwordUpdateAt', 'u.opClass AS opClass',
-                  'u.validState AS validState', 'u.mobile AS mobile', 'u.email AS email', 'u.department AS department', 'u.uno AS uno', 'u.download AS download',
-                  'u.sendAlert AS sendAlert',
+                  'r.conditionText AS conditionText',
+                  //'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
+                  //user
+                  'u.userName AS registrant', 'u.department AS department', 'u.email AS email',
               ])
               .where('r.receiverId = :id', {id})
               .getRawOne();
 
             this.logger.log(`getOne ${JSON.stringify(receiver)}`);
-            return receiver;
+            return receiver? receiver : [];
         } catch (error) {
             this.logger.error(error);
         }
@@ -143,7 +140,7 @@ export class PromotionService {
 
     async conditionPreview(conditionText: string): Promise<any> {
         try {
-            return { condition: this.factorConverter.makeJsonCondition(conditionText) };
+            return this.factorConverter.makeJsonCondition(conditionText);
         } catch (error) {
             this.logger.error(error);
         }
