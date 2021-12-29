@@ -31,13 +31,6 @@ const transports = {
       filename: '%DATE%.log',
       datePattern: 'YYYY-MM-DD'
     }),
-    /*
-    new winston.transports.File({
-      level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
-      dirname: './logs',
-      filename: 'info.log',
-    }),
-     */
   ],
 }
 

@@ -14,16 +14,13 @@ import {
     Req,
     Res,
     HttpStatus,
-    NotAcceptableException,
     InternalServerErrorException,
-    HttpException,
 } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { ApiResponse } from '@nestjs/swagger';
 import { ReadReceiverDto } from './dto/readReceiver.dto';
 import { Request } from 'express';
-import { error } from 'winston';
 
 @Controller('api/promotion')
 export class PromotionController {
@@ -33,6 +30,16 @@ export class PromotionController {
 
     private logger = new Logger(PromotionController.name);
     private readonly successMsg = { statusCode: 200, message: 'success'};
+
+    getSuccessMessage(data?) {
+        if (!data) {
+            return this.successMsg;
+        } else if (data && data.length > 1) {
+            return { ...this.successMsg, list: data};
+        } else if (data && (data.length === undefined || data.length === 1)){
+            return { ...this.successMsg, info: data};
+        }
+    }
 
     //receiver api
     @ApiResponse({ description: '프로모션 대상자 등록' })
@@ -45,7 +52,7 @@ export class PromotionController {
             this.logger.error(error);
             throw new InternalServerErrorException(error);
         });
-        return res.status(200).json(this.successMsg);
+        return res.status(200).json(this.getSuccessMessage());
     }
 
     @ApiResponse({ description: '프로모션 대상자 리스트 조회' })
@@ -57,7 +64,8 @@ export class PromotionController {
             this.logger.error(error);
             throw new InternalServerErrorException(error);
         });
-        return res.status(200).json({ ...this.successMsg, list: receiverInfoList});
+        // return res.status(200).json({ ...this.successMsg, list: receiverInfoList});
+        return res.status(200).json(this.getSuccessMessage(receiverInfoList));
     }
 
     @ApiResponse({ description: '프로모션 대상자 상세 조회' })
@@ -70,7 +78,7 @@ export class PromotionController {
             this.logger.error(error);
             throw new InternalServerErrorException(error);
         });
-        return res.status(200).json({...this.successMsg, info: receiverInfo});
+        return res.status(200).json(this.getSuccessMessage(receiverInfo));
     }
 
     @ApiResponse({ description: '프로모션 대상자 수정' })
@@ -83,7 +91,7 @@ export class PromotionController {
               this.logger.error(error);
               throw new InternalServerErrorException(error);
           });
-        return res.status(200).json(this.successMsg);
+        return res.status(200).json(this.getSuccessMessage());
     }
 
     @ApiResponse({ description: '프로모션 대상자 삭제' })
@@ -95,7 +103,7 @@ export class PromotionController {
                this.logger.error(error);
                throw new InternalServerErrorException(error);
            });
-         return res.status(200).json(this.successMsg);
+         return res.status(200).json(this.getSuccessMessage());
     }
 
     @ApiResponse({ description: '대상자 조건 JSON 형식 미리보기' })
