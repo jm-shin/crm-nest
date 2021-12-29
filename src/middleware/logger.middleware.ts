@@ -2,6 +2,7 @@ import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 //winston
 import  *  as  winston  from  'winston';
+import { utilities as nestWinstonModuleUtilities} from 'nest-winston';
 
 const transport = new (require('winston-daily-rotate-file'))({
   filename: 'API.%DATE%.log',
@@ -12,6 +13,11 @@ const transport = new (require('winston-daily-rotate-file'))({
   maxSize: '10m',
   maxFiles: '7d',
   symlinkName: 'API.log',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.ms(),
+    nestWinstonModuleUtilities.format.nestLike('HTTP', { prettyPrint: true })
+  )
 });
 
 const winstonLogger = winston.createLogger({
