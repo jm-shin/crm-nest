@@ -62,4 +62,12 @@ export class User {
 
     @OneToMany(() => PromotionReceiverInfo, (receiverInfo) => receiverInfo.User)
     ReceiverInfo: PromotionReceiverInfo[];
+
+    static of(params: Partial<User>): User {
+        const user = new User();
+
+        Object.assign(user, params);
+
+        return user;
+    }
 }

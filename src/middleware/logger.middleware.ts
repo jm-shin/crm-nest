@@ -14,7 +14,7 @@ const transport = new (require('winston-daily-rotate-file'))({
   maxFiles: '7d',
   symlinkName: 'API.log',
   format: winston.format.combine(
-    winston.format.timestamp(),
+    winston.format.timestamp({format: 'HH:mm:ss.SSS'}),
     winston.format.ms(),
     nestWinstonModuleUtilities.format.nestLike('HTTP', { prettyPrint: true })
   )
@@ -33,15 +33,17 @@ export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const { ip, method, originalUrl } = req;
     const userAgent = req.get('user-agent') || '';
+    const authToke = req.header('Authorization');
 
     res.on('finish', () => {
       const { statusCode } = res;
       const contentLength = res.get('content-length');
+      const body = JSON.stringify(req.body);
 
       this.logger.log(
-        `${method} ${originalUrl} [${statusCode}] ${contentLength} - ${userAgent} ${ip} (authorization: ${req.header('Authorization')}) - ${JSON.stringify(req.body)}`,
+        `${method} ${originalUrl} [${statusCode}] ${contentLength} - ${userAgent} ${ip} (authorization: ${authToke}) - ${body}`,
       );
-      winstonLogger.info(`${method} ${originalUrl} [${statusCode}] ${contentLength} - ${userAgent} ${ip} (authorization: ${req.header('Authorization')}) - ${JSON.stringify(req.body)}`);
+      winstonLogger.info(`${method} ${originalUrl} [${statusCode}] ${contentLength} - ${userAgent} ${ip} (authorization: ${authToke}) - ${body}`);
     });
     next();
   }
