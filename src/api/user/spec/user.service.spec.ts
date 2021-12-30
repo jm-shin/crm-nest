@@ -33,10 +33,10 @@ describe('UsersService', () => {
       ];
 
       const userRepositoryFindSpy = jest
-        .spyOn(userRepository, 'find')
-        .mockResolvedValue(existingUserList);
+        .spyOn(userRepository, 'findAll')
+        .mockResolvedValue(existingUserList)
 
-      const result = await userService.getUsers();
+      const result = await userService.findAll();
 
       expect(userRepositoryFindSpy).toBeCalled();
       expect(result).toBe(existingUserList);

@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PromotionService } from '../promotion.service';
+import { ReceiverService } from '../receiver.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PromotionReceiverInfo } from '../entities/promotionReceiverInfo.entity';
 
@@ -29,12 +29,12 @@ class MockPromotionReceiverRepository {
 }
 
 describe('PromotionService', () => {
-  let service: PromotionService;
+  let service: ReceiverService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        PromotionService, //{ provide: PromotionService, useClass: PromotionService }
+        ReceiverService, //{ provide: ReceiverService, useClass: ReceiverService }
         {
           provide: getRepositoryToken(PromotionReceiverInfo),
           useClass: MockPromotionReceiverRepository,
@@ -42,7 +42,7 @@ describe('PromotionService', () => {
       ],
     }).compile();
 
-    service = module.get<PromotionService>(PromotionService);
+    service = module.get<ReceiverService>(ReceiverService);
   });
 
   it('should be defined', () => {

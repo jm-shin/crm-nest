@@ -1,22 +1,20 @@
 import { AuthModule } from './auth/auth.module';
 import { Module, NestModule, MiddlewareConsumer, Logger } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { AppService } from './app.service';
 import * as winston from 'winston';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { UserService } from './user/user.service';
-import { UserController } from './user/user.controller';
-import { UserModule } from './user/user.module';
+import { UserService } from './api/user/user.service';
+import { UserController } from './api/user/user.controller';
+import { UserModule } from './api/user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { PromotionController } from './promotion/promotion.controller';
-import { PromotionService } from './promotion/promotion.service';
-import { PromotionModule } from './promotion/promotion.module';
+import { ReceiverController } from './api/promotion/receiver/receiver.controller';
+import { ReceiverService } from './api/promotion/receiver/receiver.service';
+import { ReceiverModule } from './api/promotion/receiver/receiver.module';
 
 const transports = {
   format: winston.format.combine(
@@ -29,10 +27,10 @@ const transports = {
       level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
       dirname: './logs',
       filename: '%DATE%.log',
-      datePattern: 'YYYY-MM-DD'
+      datePattern: 'YYYY-MM-DD',
     }),
   ],
-}
+};
 
 @Module({
   imports: [
@@ -41,15 +39,16 @@ const transports = {
     WinstonModule.forRoot(transports),
     UserModule,
     AuthModule,
-    PromotionModule
+    ReceiverModule,
   ],
-  controllers: [AppController, UserController, PromotionController],
-  providers: [AppService, UserService, PromotionService],
+  controllers: [UserController, ReceiverController],
+  providers: [UserService, ReceiverService],
 })
 
 export class AppModule implements NestModule {
   constructor(private connection: Connection) {
   }
+
   configure(consumer: MiddlewareConsumer): any {
     consumer
       .apply(LoggerMiddleware)
