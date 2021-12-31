@@ -38,12 +38,9 @@ export class ReceiverService {
 
   async getOne(id: number): Promise<PromotionReceiverInfo> {
     try {
-      // const receiver = await this.promotionReceiverInfoRepository.findOne({
-      //     where: {receiverId: id},
-      //     relations: ['User']
-      // });
+      this.logger.log(`getOne() target id: ${id}`);
       const receiver = await this.promotionReceiverInfoRepository.getOne(id);
-      this.logger.log(`getOne ${JSON.stringify(receiver)}`);
+      this.logger.log(`getOne() result: ${JSON.stringify(receiver)}`);
       return receiver ? receiver : [];
     } catch (error) {
       this.logger.error(error);
@@ -52,7 +49,7 @@ export class ReceiverService {
 
   async save(receiverData: CreateReceiverDto, userId: string): Promise<void> {
     this.logger.log(`receiverData: ${JSON.stringify(receiverData)}, userId: ${userId}`);
-    const { title, description, conditionText } = receiverData;
+    const { title, description, conditionText, groupNo } = receiverData;
 
     try {
       const conditionJson = JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
@@ -67,6 +64,7 @@ export class ReceiverService {
         conditionText,
         conditionJson,
         validState: 1,
+        groupNo: groupNo? groupNo : 0,
       };
       this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
 
@@ -77,7 +75,8 @@ export class ReceiverService {
   }
 
   async update(receiverId: number, updateData: UpdateReceiverDto, userId: string): Promise<void> {
-    const { title, description, conditionText } = updateData;
+    this.logger.log(`update() start. receiverId: ${receiverId}, updateData: ${JSON.stringify(receiverId)}`);
+    const { title, description, conditionText, groupNo } = updateData;
 
     try {
       const conditionJson = JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
@@ -91,6 +90,7 @@ export class ReceiverService {
         userIdx: registrantInfo.idx,
         conditionText,
         conditionJson,
+        groupNo: groupNo? groupNo : 0,
         updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       };
       this.logger.log(`updateReceiverData ${JSON.stringify(updateReceiverData)}`);
@@ -103,8 +103,8 @@ export class ReceiverService {
 
   async delete(receiverIds: number[]): Promise<void> {
     try {
-      // await this.promotionReceiverInfoRepository.delete({ receiverId: receiverId });
-      await this.promotionReceiverInfoRepository.delete(receiverIds);
+      await this.promotionReceiverInfoRepository.updateValidState(receiverIds);
+      this.logger.log(`delete done.(${JSON.stringify(receiverIds)} SET valid state = 0)`)
     } catch (error) {
       this.logger.error(error);
     }
@@ -112,6 +112,7 @@ export class ReceiverService {
 
   async conditionPreview(conditionText: string): Promise<any> {
     try {
+      this.logger.log('conditionPreview');
       return this.factorConverter.makeJsonCondition(conditionText);
     } catch (error) {
       this.logger.error(error);

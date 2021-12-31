@@ -15,6 +15,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ReceiverController } from './api/promotion/receiver/receiver.controller';
 import { ReceiverService } from './api/promotion/receiver/receiver.service';
 import { ReceiverModule } from './api/promotion/receiver/receiver.module';
+import { GroupModule } from './api/promotion/group/group.module';
+import { GroupController } from './api/promotion/group/group.controller';
+import { GroupService } from './api/promotion/group/group.service';
 
 const transports = {
   format: winston.format.combine(
@@ -40,9 +43,8 @@ const transports = {
     UserModule,
     AuthModule,
     ReceiverModule,
-  ],
-  controllers: [UserController, ReceiverController],
-  providers: [UserService, ReceiverService],
+    GroupModule,
+  ]
 })
 
 export class AppModule implements NestModule {

@@ -24,11 +24,11 @@ export class CreateReceiverDto {
     @ApiProperty({type: String, description: '추출 조건 텍스트'})
     readonly conditionText: string;
 
-    /*
     @IsNumber()
     @ApiProperty({type: Number, description: '그룹 번호'})
     readonly groupNo: number;
 
+    /*
     @IsOptional()
     @IsString()
     readonly conditionJson: string;

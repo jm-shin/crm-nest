@@ -10,11 +10,11 @@ import { PromotionReceiverInfoRepository } from './repo/promotionReceiverInfoRep
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      PromotionReceiverInfo, User, PromotionReceiverInfoRepository
+      User, PromotionReceiverInfoRepository
     ]),
     FactorConverter,
   ],
-  exports: [TypeOrmModule, ReceiverService],
+  exports: [TypeOrmModule],
   controllers: [ReceiverController],
   providers: [ReceiverService],
 })

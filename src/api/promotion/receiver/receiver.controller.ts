@@ -21,7 +21,7 @@ import { ApiResponse } from '@nestjs/swagger';
 import { ReadReceiverDto } from './dto/readReceiver.dto';
 import { Request, Response } from 'express';
 
-@Controller('api/promotion')
+@Controller('api/promotion/receiver')
 export class ReceiverController {
   constructor(
     private readonly promotionService: ReceiverService,
@@ -44,7 +44,7 @@ export class ReceiverController {
   //receiver api
   @ApiResponse({ description: '프로모션 대상자 등록' })
   @UseGuards(JwtAuthGuard)
-  @Post('/receiver')
+  @Post('')
   create(@Body() receiverData: CreateReceiverDto, @Req() req: Request, @Res() res: Response) {
     this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
     this.promotionService.save(receiverData, req.user['id']).catch((error) => {
@@ -56,7 +56,7 @@ export class ReceiverController {
 
   @ApiResponse({ description: '프로모션 대상자 리스트 조회' })
   @UseGuards(JwtAuthGuard)
-  @Post('/receiver/bring/list')
+  @Post('/bring/list')
   async getAll(@Body() searchInfo: ReadReceiverDto, @Res() res: Response) {
     const receiverInfoList = await this.promotionService.getAll(searchInfo)
       .catch((error) => {
@@ -68,7 +68,7 @@ export class ReceiverController {
 
   @ApiResponse({ description: '프로모션 대상자 상세 조회' })
   @UseGuards(JwtAuthGuard)
-  @Post('/receiver/bring')
+  @Post('/bring')
   @HttpCode(HttpStatus.OK)
   async getOne(@Body('idx') receiverId: number, @Res() res: Response) {
     const receiverInfo = await this.promotionService.getOne(receiverId)
@@ -81,7 +81,7 @@ export class ReceiverController {
 
   @ApiResponse({ description: '프로모션 대상자 수정' })
   @UseGuards(JwtAuthGuard)
-  @Put('/receiver')
+  @Put('')
   async patch(@Body('idx') receiverId: number, @Body() updateData: UpdateReceiverDto, @Req() req: Request, @Res() res: Response) {
     this.logger.log(`updateData: ${JSON.stringify(updateData)}`);
     await this.promotionService.update(receiverId, updateData, req.user['id'])
@@ -94,7 +94,7 @@ export class ReceiverController {
 
   @ApiResponse({ description: '프로모션 대상자 삭제' })
   @UseGuards(JwtAuthGuard)
-  @Delete('/receiver')
+  @Delete('')
   async remove(@Body('idx') receiverId: number[], @Res() res: Response) {
     await this.promotionService.delete(receiverId)
       .catch((error) => {
@@ -106,7 +106,7 @@ export class ReceiverController {
 
   @ApiResponse({ description: '대상자 조건 JSON 형식 미리보기' })
   @UseGuards(JwtAuthGuard)
-  @Post('/receiver/preview')
+  @Post('/preview')
   @HttpCode(200)
   async getJsonConvPreview(@Body() body: { conditionText: string }, @Res() res: Response) {
     if (body.conditionText) {

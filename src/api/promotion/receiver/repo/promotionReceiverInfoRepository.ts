@@ -28,8 +28,9 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
         'receiverInfo.receiverId AS receiverId', 'receiverInfo.title AS title', 'user.userName AS registrant',
         'date_format(receiverInfo.createdAt, "%Y-%m-%d %T") AS createdAt',
       ])
+      .andWhere('receiverInfo.validState = 1')
       .andWhere(`receiverInfo.title LIKE (:title)`, { title })
-      .andWhere(`user.userName LIKE (:registrant)`, { registrant });
+      .andWhere(`user.userName LIKE (:registrant)`, { registrant })
 
     return qb.getRawMany();
   }
@@ -52,6 +53,7 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
     return qb.getRawOne();
   }
 
+  /* 삭제 > 상태업데이트로 변경
   public async delete(ids) {
     const qb = this.repository
       .createQueryBuilder()
@@ -60,5 +62,15 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
 
     return qb.execute();
   }
+  */
 
+  public async updateValidState(ids) {
+    const qb = this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ validState: 0 })
+      .where('receiver_id IN (:ids)', { ids });
+
+    return qb.execute();
+  }
 }
