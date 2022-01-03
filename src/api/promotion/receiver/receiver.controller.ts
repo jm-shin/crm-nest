@@ -63,7 +63,7 @@ export class ReceiverController {
         this.logger.error(error);
         throw new InternalServerErrorException(error);
       });
-    return res.status(200).json(this.getSuccessMessage(receiverInfoList));
+    return res.status(200).json(receiverInfoList);
   }
 
   @ApiResponse({ description: '프로모션 대상자 상세 조회' })
@@ -76,7 +76,7 @@ export class ReceiverController {
         this.logger.error(error);
         throw new InternalServerErrorException(error);
       });
-    return res.status(200).json(this.getSuccessMessage(receiverInfo));
+    return res.status(200).json(receiverInfo);
   }
 
   @ApiResponse({ description: '프로모션 대상자 수정' })

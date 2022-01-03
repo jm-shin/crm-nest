@@ -8,16 +8,10 @@ import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
-import { UserService } from './api/user/user.service';
-import { UserController } from './api/user/user.controller';
 import { UserModule } from './api/user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { ReceiverController } from './api/promotion/receiver/receiver.controller';
-import { ReceiverService } from './api/promotion/receiver/receiver.service';
 import { ReceiverModule } from './api/promotion/receiver/receiver.module';
 import { GroupModule } from './api/promotion/group/group.module';
-import { GroupController } from './api/promotion/group/group.controller';
-import { GroupService } from './api/promotion/group/group.service';
 
 const transports = {
   format: winston.format.combine(

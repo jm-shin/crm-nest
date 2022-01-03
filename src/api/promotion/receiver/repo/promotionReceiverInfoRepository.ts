@@ -25,7 +25,7 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
       .createQueryBuilder('receiverInfo')
       .leftJoinAndSelect('receiverInfo.User', 'user')
       .select([
-        'receiverInfo.receiverId AS receiverId', 'receiverInfo.title AS title', 'user.userName AS registrant',
+        'receiverInfo.receiverId AS idx', 'receiverInfo.title AS title', 'user.userName AS registrant',
         'date_format(receiverInfo.createdAt, "%Y-%m-%d %T") AS createdAt',
       ])
       .andWhere('receiverInfo.validState = 1')
@@ -41,7 +41,7 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
       .leftJoinAndSelect('receiverInfo.User', 'user')
       .select([
         //receiverInfo
-        'receiverInfo.receiverId AS receiverId', 'receiverInfo.title AS title', 'receiverInfo.description AS description',
+        'receiverInfo.receiverId AS idx', 'receiverInfo.title AS title', 'receiverInfo.description AS description',
         'receiverInfo.conditionText AS conditionText',
         //'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
 

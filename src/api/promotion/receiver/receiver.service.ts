@@ -4,7 +4,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as moment from 'moment';
+import moment from 'moment';
 import { FactorConverter } from '../../../common/utils/factorConverter';
 import { User } from '../../user/entities/user.entity';
 import { PromotionReceiverInfoRepository } from './repo/promotionReceiverInfoRepository';
@@ -47,7 +47,7 @@ export class ReceiverService {
     }
   }
 
-  async save(receiverData: CreateReceiverDto, userId: string): Promise<void> {
+  async save(receiverData: CreateReceiverDto, userId: string): Promise<PromotionReceiverInfo> {
     this.logger.log(`receiverData: ${JSON.stringify(receiverData)}, userId: ${userId}`);
     const { title, description, conditionText, groupNo } = receiverData;
 
@@ -68,7 +68,7 @@ export class ReceiverService {
       };
       this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
 
-      await this.promotionReceiverInfoRepository.save(createReceiverData);
+      return await this.promotionReceiverInfoRepository.save(createReceiverData);
     } catch (error) {
       this.logger.error(error);
     }
