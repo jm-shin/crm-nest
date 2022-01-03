@@ -48,6 +48,7 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
         //user
         'user.userName AS registrant', 'user.department AS department', 'user.email AS email',
       ])
+      .andWhere('receiverInfo.validState = 1')
       .andWhere('receiverInfo.receiverId = :id', { id });
 
     return qb.getRawOne();

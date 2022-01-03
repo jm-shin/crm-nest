@@ -17,6 +17,9 @@ export class FactorConverter {
     const convArr = { ...conditionJsonList };
 
     const {
+      //promotionInfo
+      group, Ci, Cipromotionid, prevpromotionid, nextpromotionid, pkgscount, prevPromotionPassedMonths,
+      freeEndReceivePassedDays, startdate, enddate, retentionpkgs, purchasepkgs, phase,
       //join
       isauth, isfirstjoin, joindevice,membertype, nonlogindays, nonlogindaystype, nonloginoverorunder,
       //pay
@@ -29,40 +32,57 @@ export class FactorConverter {
     } = convArr;
 
     const condition = {
-      "join": {
-        "isauth" : isauth? isauth : "",
-        "isfirstjoin": isfirstjoin? isfirstjoin : "",
-        "joindevice": joindevice? joindevice : "",
-        "membertype": membertype? membertype : "",
-        "nonlogindays": nonlogindays? nonlogindays : "",
-        "nonlogindaystype": nonlogindaystype? nonlogindaystype : "",
-        "nonloginoverorunder": nonloginoverorunder? nonloginoverorunder : "",
+      "info": {
+        "group": group? group : "",
+        "Ci": Ci? Ci : "",
+        "Cipromotionid": Cipromotionid? Cipromotionid : "",
+        "prevpromotionid": prevpromotionid? prevpromotionid : "",
+        "nextpromotionid": nextpromotionid? nextpromotionid : "",
+        "pkgscount": pkgscount? pkgscount : "",
+        "prevPromotionPassedMonths": prevPromotionPassedMonths? prevPromotionPassedMonths : "",
+        "freeEndReceivePassedDays": freeEndReceivePassedDays? freeEndReceivePassedDays : "",
+        "startdate": startdate? startdate : "",
+        "enddate": enddate? enddate : "",
+        "retentionpkgs": retentionpkgs? retentionpkgs : "",
+        "purchasepkgs": purchasepkgs? purchasepkgs : "",
+        "phase": phase? phase : ""
       },
-      "pay": {
-        "continuousoverorunder": continuousoverorunder? continuousoverorunder : "",
-        "continuouspaiddays": continuouspaiddays? continuouspaiddays : "",
-        "continuouspaiddaystype": continuouspaiddaystype? continuouspaiddaystype : "",
-        "isableupsell": isableupsell? isableupsell : "",
-        "isexistpaid": isexistpaid? isexistpaid : "",
-        "ispaid": ispaid? ispaid : "",
-        "pgid": pgid? pgid : "",
-      },
-      "terminate": {
-        "isterminateapplied": isterminateapplied? isterminateapplied : "",
-        "isterminatereceipt": isterminatereceipt? isterminatereceipt : "",
-      },
-      "receive": {
-        "discountoverorunder": discountoverorunder? discountoverorunder : "",
-        "discountpasseddays": discountpasseddays? discountpasseddays : "",
-        "discountpasseddaystype": discountpasseddaystype? discountpasseddaystype : "",
-        "isexistdefensivecoin": isexistdefensivecoin? isexistdefensivecoin : "",
-        "isexistdiscount": isexistdiscount? isexistdiscount : "",
-        "isexistpayback": isexistpayback? isexistpayback : "",
-        "isexistupsell": isexistupsell? isexistupsell : "",
-        "isvipbenefitsinrcv": isvipbenefitsinrcv? isvipbenefitsinrcv : "",
-        "paybackoverorunder": paybackoverorunder? paybackoverorunder : "",
-        "paybackpasseddays": paybackpasseddays? paybackpasseddays : "",
-        "paybackpasseddaystype": paybackpasseddaystype? paybackpasseddaystype : "",
+      "condition" : {
+        "join": {
+          "isauth" : isauth? isauth : "",
+          "isfirstjoin": isfirstjoin? isfirstjoin : "",
+          "joindevice": joindevice? joindevice : "",
+          "membertype": membertype? membertype : "",
+          "nonlogindays": nonlogindays? nonlogindays : "",
+          "nonlogindaystype": nonlogindaystype? nonlogindaystype : "",
+          "nonloginoverorunder": nonloginoverorunder? nonloginoverorunder : "",
+        },
+        "pay": {
+          "continuousoverorunder": continuousoverorunder? continuousoverorunder : "",
+          "continuouspaiddays": continuouspaiddays? continuouspaiddays : "",
+          "continuouspaiddaystype": continuouspaiddaystype? continuouspaiddaystype : "",
+          "isableupsell": isableupsell? isableupsell : "",
+          "isexistpaid": isexistpaid? isexistpaid : "",
+          "ispaid": ispaid? ispaid : "",
+          "pgid": pgid? pgid : "",
+        },
+        "terminate": {
+          "isterminateapplied": isterminateapplied? isterminateapplied : "",
+          "isterminatereceipt": isterminatereceipt? isterminatereceipt : "",
+        },
+        "receive": {
+          "discountoverorunder": discountoverorunder? discountoverorunder : "",
+          "discountpasseddays": discountpasseddays? discountpasseddays : "",
+          "discountpasseddaystype": discountpasseddaystype? discountpasseddaystype : "",
+          "isexistdefensivecoin": isexistdefensivecoin? isexistdefensivecoin : "",
+          "isexistdiscount": isexistdiscount? isexistdiscount : "",
+          "isexistpayback": isexistpayback? isexistpayback : "",
+          "isexistupsell": isexistupsell? isexistupsell : "",
+          "isvipbenefitsinrcv": isvipbenefitsinrcv? isvipbenefitsinrcv : "",
+          "paybackoverorunder": paybackoverorunder? paybackoverorunder : "",
+          "paybackpasseddays": paybackpasseddays? paybackpasseddays : "",
+          "paybackpasseddaystype": paybackpasseddaystype? paybackpasseddaystype : "",
+        }
       }
     };
 

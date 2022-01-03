@@ -6,7 +6,7 @@ import { PromotionReceiverInfo } from '../entities/promotionReceiverInfo.entity'
 class MockPromotionReceiverRepository {
   #data = [
     {
-      receiver_id: 1,
+      idx: 1,
       title: "제목",
       description: "내용",
       user_idx: 1,
@@ -17,7 +17,7 @@ class MockPromotionReceiverRepository {
     }
   ];
   findOne({ receiver_id: id }){
-    const data = this.#data.find((v) => v.receiver_id === id);
+    const data = this.#data.find((v) => v.idx === id);
     if (data) {
       return data;
     }
@@ -54,7 +54,7 @@ describe('PromotionService', () => {
       const receiverId = 1;
       const result = await service.getOne(receiverId);
       expect(result).toEqual({
-        receiver_id: 1,
+        idx: 1,
         title: "제목",
         description: "내용",
         user_idx: 1,

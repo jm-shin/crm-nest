@@ -47,12 +47,14 @@ export class ReceiverService {
     }
   }
 
-  async save(receiverData: CreateReceiverDto, userId: string): Promise<PromotionReceiverInfo> {
+  async save(receiverData: CreateReceiverDto, userId: string): Promise<void> {
     this.logger.log(`receiverData: ${JSON.stringify(receiverData)}, userId: ${userId}`);
-    const { title, description, conditionText, groupNo } = receiverData;
+    const { title, description, conditionText } = receiverData;
 
     try {
-      const conditionJson = JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
+      const factorConvResult = this.factorConverter.makeJsonCondition(conditionText);
+      const groupNo = factorConvResult.info.group === '' ? 0 : parseInt(factorConvResult.info.group);
+      const conditionJson = JSON.stringify(factorConvResult);
       this.logger.log(`conditionJson: ${conditionJson}`);
 
       const registrantInfo = await this.userRepository.findOne({ where: { userId } });
@@ -64,11 +66,11 @@ export class ReceiverService {
         conditionText,
         conditionJson,
         validState: 1,
-        groupNo: groupNo? groupNo : 0,
+        groupNo,
       };
       this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
 
-      return await this.promotionReceiverInfoRepository.save(createReceiverData);
+      await this.promotionReceiverInfoRepository.save(createReceiverData);
     } catch (error) {
       this.logger.error(error);
     }
@@ -76,10 +78,12 @@ export class ReceiverService {
 
   async update(receiverId: number, updateData: UpdateReceiverDto, userId: string): Promise<void> {
     this.logger.log(`update() start. receiverId: ${receiverId}, updateData: ${JSON.stringify(receiverId)}`);
-    const { title, description, conditionText, groupNo } = updateData;
+    const { title, description, conditionText } = updateData;
 
     try {
-      const conditionJson = JSON.stringify(this.factorConverter.makeJsonCondition(conditionText));
+      const factorConvResult = this.factorConverter.makeJsonCondition(conditionText);
+      const groupNo = factorConvResult.info.group === '' ? 0 : parseInt(factorConvResult.info.group);
+      const conditionJson = JSON.stringify(factorConvResult);
       this.logger.log(`conditionJson: ${conditionJson}`);
 
       const registrantInfo = await this.userRepository.findOne({ where: { userId } });
@@ -90,7 +94,7 @@ export class ReceiverService {
         userIdx: registrantInfo.idx,
         conditionText,
         conditionJson,
-        groupNo: groupNo? groupNo : 0,
+        groupNo,
         updatedAt: moment().format('YYYY-MM-DD HH:mm:ss'),
       };
       this.logger.log(`updateReceiverData ${JSON.stringify(updateReceiverData)}`);
@@ -104,7 +108,7 @@ export class ReceiverService {
   async delete(receiverIds: number[]): Promise<void> {
     try {
       await this.promotionReceiverInfoRepository.updateValidState(receiverIds);
-      this.logger.log(`delete done.(${JSON.stringify(receiverIds)} SET valid state = 0)`)
+      this.logger.log(`delete done.(${JSON.stringify(receiverIds)} SET valid state = 0)`);
     } catch (error) {
       this.logger.error(error);
     }
