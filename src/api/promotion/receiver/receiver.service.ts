@@ -40,7 +40,6 @@ export class ReceiverService {
     try {
       this.logger.log(`getOne() target id: ${id}`);
       const receiver = await this.promotionReceiverInfoRepository.getOne(id);
-      this.logger.log(receiver);
       this.logger.log(`getOne() result: ${JSON.stringify(receiver)}`);
       return receiver ? receiver : [];
     } catch (error) {
