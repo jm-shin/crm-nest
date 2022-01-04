@@ -18,7 +18,7 @@ export class FactorConverter {
 
     const {
       //promotionInfo
-      group, Ci, Cipromotionid, prevpromotionid, nextpromotionid, pkgscount, prevPromotionPassedMonths,
+      group, ci, cipromotionid, prevpromotionid, nextpromotionid, pkgscount, prevPromotionPassedMonths,
       freeEndReceivePassedDays, startdate, enddate, retentionpkgs, purchasepkgs, phase,
       //join
       isauth, isfirstjoin, joindevice,membertype, nonlogindays, nonlogindaystype, nonloginoverorunder,
@@ -34,8 +34,8 @@ export class FactorConverter {
     const condition = {
       "info": {
         "group": group? group : "",
-        "Ci": Ci? Ci : "",
-        "Cipromotionid": Cipromotionid? Cipromotionid : "",
+        "ci": ci? ci : "",
+        "cipromotionid": cipromotionid? cipromotionid : "",
         "prevpromotionid": prevpromotionid? prevpromotionid : "",
         "nextpromotionid": nextpromotionid? nextpromotionid : "",
         "pkgscount": pkgscount? pkgscount : "",
@@ -85,7 +85,6 @@ export class FactorConverter {
         }
       }
     };
-
     this.logger.log(`convResult type: ${typeof condition} convResult: ${JSON.stringify(condition)}`);
     return condition;
   }

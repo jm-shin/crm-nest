@@ -13,11 +13,31 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
     const qb = this.repository
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.User', 'user')
-      .select(['group.groupId AS groupId', 'group.title AS title', 'group.groupNo AS groupNo',
+      .select(['group.groupId AS idx', 'group.title AS title', 'group.groupNo AS groupNo',
         'date_format(group.createdAt, "%Y-%m-%d %T") AS createdAt', 'user.userName AS registrant',
       ])
       .andWhere('group.title LIKE (:title)', { title })
-      .andWhere('user.userName LIKE (:registrant)', { registrant });
+      .andWhere('user.userName LIKE (:registrant)', { registrant })
+      .andWhere('group.validState = 1');
     return qb.execute();
+  }
+
+  updateValidState(ids) {
+    const qb = this.repository
+      .createQueryBuilder()
+      .update()
+      .set({ validState: 0 })
+      .where('groupId IN (:ids)', { ids });
+
+    return qb.execute();
+  }
+
+  findUnoList(idx) {
+    const qb = this.repository
+      .createQueryBuilder('group')
+      .select(['group.unoList'])
+      .where('group.groupId = :idx', {idx})
+
+    return qb.getOne();
   }
 }

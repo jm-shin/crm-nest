@@ -1,18 +1,17 @@
 import {
   Body,
-  Controller,
-  InternalServerErrorException,
+  Controller, Delete, Get, HttpCode,
   Logger,
-  Post, Req,
-  Res,
-  UploadedFile,
+  Post, Res,
+  UploadedFile, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GroupService } from './group.service';
-import { Response } from 'express';
 import { ApiResponse } from '@nestjs/swagger';
-import { CreateGroupDto } from './dto/createGroup.dto';
+import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
+import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('api/promotion/group')
 export class GroupController {
@@ -24,26 +23,51 @@ export class GroupController {
   private readonly logger = new Logger(GroupController.name);
 
   @ApiResponse({ description: 'UNO 그룹 등록' })
-  @Post('uno/upload')
+  @UseGuards(JwtAuthGuard)
+  @Post('')
   @UseInterceptors(FileInterceptor('file'))
+  @HttpCode(200)
+  @UseInterceptors(TransformInterceptor)
   public async unoCsvFileUpload(
     @UploadedFile() file: Express.Multer.File,
     @Body() createData,
-    @Res() res: Response,
   ) {
-    this.logger.log('uno group create!');
-    await this.groupService.create(file, createData).catch((error) => {
-      this.logger.error(error);
-      throw new InternalServerErrorException(error);
-    });
-    return res.status(200).json({ statusCode: 200, message: 'upload success' });
+    this.logger.log('uno group unoCsvFileUpload()');
+    return await this.groupService.create(file, createData);
   }
 
   @ApiResponse({ description: 'UNO 그룹 조회' })
+  @UseGuards(JwtAuthGuard)
   @Post('bring/list')
-  async getAllGroup(@Res() res: Response, @Body() info: { title, registrant }) {
+  @HttpCode(200)
+  async getAllGroup(@Body() info: { title, registrant }) {
     this.logger.log('uno group getAll()');
-    const groupList = await this.groupService.getAll(info);
-    return res.status(200).json({ statusCode: 200, message: 'success', list: groupList });
+    return await this.groupService.getAll(info);
+  }
+
+  @ApiResponse({ description: 'UNO 그룹 삭제' })
+  @UseGuards(JwtAuthGuard)
+  @Delete('')
+  @UseInterceptors(TransformInterceptor)
+  async remove(@Body('idx') groupId: number[]) {
+    this.logger.log('uno group remove()');
+    return await this.groupService.remove(groupId);
+  }
+
+  @ApiResponse({ description: 'uno list csv 다운로드' })
+  @UseGuards(JwtAuthGuard)
+  @Get('uno/download')
+  async download(@Body('idx') groupId: number, @Res() res: Response) {
+    this.logger.log('uno group download()');
+    try {
+      const nowDate = new Date().getMonth() + new Date().getDate();
+      const uno = await this.groupService.getUnoList(groupId);
+      res.type('text/csv');
+      res.set('Content-Disposition', `attachment; filename=idx${groupId}_${nowDate}.csv`);
+      res.write(uno);
+      res.end();
+    } catch (error) {
+     this.logger.log(error);
+    }
   }
 }
