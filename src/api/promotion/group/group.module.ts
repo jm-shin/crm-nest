@@ -3,11 +3,13 @@ import { GroupController } from './group.controller';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PromotionReceiverGroupInfoRepository } from './repo/promotionReceiverGroupInfoRepository';
+import { User } from '../../user/entities/user.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      PromotionReceiverGroupInfoRepository
+      PromotionReceiverGroupInfoRepository,
+      User
     ]),
   ],
   exports:[TypeOrmModule],

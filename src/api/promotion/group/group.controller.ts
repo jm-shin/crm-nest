@@ -1,8 +1,8 @@
 import {
   Body,
-  Controller, Delete, Get, HttpCode,
-  Logger,
-  Post, Res,
+  Controller, Delete, Get, HttpCode, InternalServerErrorException,
+  Logger, ParseIntPipe,
+  Post, Req, Res,
   UploadedFile, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -11,7 +11,10 @@ import { GroupService } from './group.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import moment from 'moment';
+import { CreateGroupDto } from './dto/createGroup.dto';
+import { ReadGroupDto } from './dto/readGroup.dto';
 
 @Controller('api/promotion/group')
 export class GroupController {
@@ -28,12 +31,13 @@ export class GroupController {
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(200)
   @UseInterceptors(TransformInterceptor)
-  public async unoCsvFileUpload(
+  async unoCsvFileUpload(
     @UploadedFile() file: Express.Multer.File,
-    @Body() createData,
+    @Body() createData: CreateGroupDto,
+    @Req() req: Request,
   ) {
     this.logger.log('uno group unoCsvFileUpload()');
-    return await this.groupService.create(file, createData);
+    return await this.groupService.create(file, createData, req.user['id']);
   }
 
   @ApiResponse({ description: 'UNO 그룹 조회' })
@@ -41,8 +45,17 @@ export class GroupController {
   @Post('bring/list')
   @HttpCode(200)
   async getAllGroup(@Body() info: { title, registrant }) {
-    this.logger.log('uno group getAll()');
+    this.logger.log('uno group getAllGroup()');
     return await this.groupService.getAll(info);
+  }
+
+  @ApiResponse({ description: 'UNO 그룹 상세보기' })
+  @UseGuards(JwtAuthGuard)
+  @Post('bring')
+  @HttpCode(200)
+  async getGroup(@Body('idx') groupId: number){
+    this.logger.log('uno group getGroup()');
+    return this.groupService.getOne(groupId);
   }
 
   @ApiResponse({ description: 'UNO 그룹 삭제' })
@@ -60,14 +73,16 @@ export class GroupController {
   async download(@Body('idx') groupId: number, @Res() res: Response) {
     this.logger.log('uno group download()');
     try {
-      const nowDate = new Date().getMonth() + new Date().getDate();
+      const groupNo = await this.groupService.getOne(groupId).then((info) => info.groupNo);
+      const currentDate = moment().format('YYMMDD');
       const uno = await this.groupService.getUnoList(groupId);
       res.type('text/csv');
-      res.set('Content-Disposition', `attachment; filename=idx${groupId}_${nowDate}.csv`);
+      res.set('Content-Disposition', `attachment; filename=group${groupNo}_${currentDate}.csv`);
       res.write(uno);
       res.end();
     } catch (error) {
-     this.logger.log(error);
+      this.logger.log(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }

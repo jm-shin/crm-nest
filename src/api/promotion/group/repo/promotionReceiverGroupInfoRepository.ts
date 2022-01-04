@@ -22,6 +22,16 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
     return qb.execute();
   }
 
+  findOne(id) {
+    const qb = this.repository
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.User', 'user')
+      .select(['group.groupId AS idx','group.title AS title', 'group.unoCount AS unoCount', 'group.groupNo AS groupNo',
+        'user.userName AS registrant', 'DATE_FORMAT(group.updatedAt, "%Y-%m-%d %T") AS updatedAt'])
+      .andWhere('group.groupId = :id', { id });
+    return qb.getRawOne();
+  }
+
   updateValidState(ids) {
     const qb = this.repository
       .createQueryBuilder()
@@ -36,7 +46,7 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
     const qb = this.repository
       .createQueryBuilder('group')
       .select(['group.unoList'])
-      .where('group.groupId = :idx', {idx})
+      .where('group.groupId = :idx', { idx });
 
     return qb.getOne();
   }

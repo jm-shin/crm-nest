@@ -1,50 +1,46 @@
-import { IsDate, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateReceiverDto {
-    @IsOptional()
-    @IsNumber()
-    readonly idx: number;
+  @IsString()
+  @ApiProperty({ type: String, description: '제목' })
+  readonly title: string;
 
-    @IsString()
-    @ApiProperty({type: String, description: '제목'})
-    readonly title: string;
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ type: String, description: '설명' })
+  readonly description: string;
 
-    @IsOptional()
-    @IsString()
-    @ApiProperty({type: String, description: '설명'})
-    readonly description: string;
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ type: Number, description: '유저 인덱스' })
+  readonly userIdx: number;
 
-    @IsOptional()
-    @IsNumber()
-    @ApiProperty({type: Number, description: '유저 인덱스'})
-    readonly userIdx: number;
+  @IsString()
+  @ApiProperty({ type: String, description: '추출 조건 텍스트' })
+  readonly conditionText: string;
 
-    @IsString()
-    @ApiProperty({type: String, description: '추출 조건 텍스트'})
-    readonly conditionText: string;
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty({ type: Number, description: '그룹 번호' })
+  readonly groupNo: number;
 
-    @IsOptional()
-    @IsNumber()
-    @ApiProperty({type: Number, description: '그룹 번호'})
-    readonly groupNo: number;
+  /*
+  @IsOptional()
+  @IsString()
+  readonly conditionJson: string;
 
-    /*
-    @IsOptional()
-    @IsString()
-    readonly conditionJson: string;
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({type: Number, description: '유효'})
+  readonly validState: number;
 
-    @IsNumber()
-    @IsOptional()
-    @ApiProperty({type: Number, description: '유효'})
-    readonly validState: number;
+  @IsOptional()
+  @IsDate()
+  readonly createdAt: Date;
 
-    @IsOptional()
-    @IsDate()
-    readonly createdAt: Date;
-
-    @IsOptional()
-    @IsDate()
-    readonly updatedAt: Date;
-     */
+  @IsOptional()
+  @IsDate()
+  readonly updatedAt: Date;
+   */
 }

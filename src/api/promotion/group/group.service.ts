@@ -1,19 +1,24 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PromotionReceiverGroupInfoRepository } from './repo/promotionReceiverGroupInfoRepository';
 import { CsvConverter } from '../../../common/utils/csvConverter';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../../user/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class GroupService {
   constructor(
     private readonly promotionReceiverGroupInfoRepository: PromotionReceiverGroupInfoRepository,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {
   }
 
   private readonly logger = new Logger(GroupService.name);
   private readonly csvConverter = new CsvConverter();
 
-  async create(file, body) {
-    const { title, userIdx, groupNo } = body;
+  async create(file, body, userId) {
+    const { title, groupNo } = body;
 
     try {
       const originalUnoArray = file.buffer.toString().split('\r\n').slice(1);
@@ -21,13 +26,15 @@ export class GroupService {
       const unoList = JSON.stringify(originalUnoArray);
       const unoCount = originalUnoArray.length;
 
+      const registrantInfo = await this.userRepository.findOne({ where: { userId } });
+
       this.logger.log(`uno list: ${unoList}`);
       this.logger.log(`uno length: ${unoCount}`);
 
       const data = {
         title,
         groupNo: groupNo ? groupNo : null,
-        userIdx,
+        userIdx: registrantInfo.idx,
         unoCount,
         unoList,
         validState: 1,
@@ -47,6 +54,16 @@ export class GroupService {
         registrant: info.registrant.replace(/^$/, '%'),
       };
       return await this.promotionReceiverGroupInfoRepository.find(data);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getOne(idx) {
+    try {
+      const groupInfo = await this.promotionReceiverGroupInfoRepository.findOne(idx);
+      return groupInfo ? groupInfo : [];
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);

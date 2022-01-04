@@ -14,6 +14,7 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true,
     transform: true,
+    // transformOptions: {enableImplicitConversion: true}
   }));
   setSwagger(app);
   await app.listen(port).then(() => console.info(`server listening on port:${port}`));
