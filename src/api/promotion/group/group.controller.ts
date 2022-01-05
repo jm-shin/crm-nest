@@ -40,11 +40,11 @@ export class GroupController {
     return await this.groupService.create(file, createData, req.user['id']);
   }
 
-  @ApiResponse({ description: 'UNO 그룹 조회' })
+  @ApiResponse({ description: 'UNO 그룹 리스트 조회' })
   @UseGuards(JwtAuthGuard)
   @Post('bring/list')
   @HttpCode(200)
-  async getAllGroup(@Body() info: { title, registrant }) {
+  async getAllGroup(@Body() info: { title, registrant, groupNo }) {
     this.logger.log('uno group getAllGroup()');
     return await this.groupService.getAll(info);
   }
@@ -53,7 +53,7 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Post('bring')
   @HttpCode(200)
-  async getGroup(@Body('idx') groupId: number){
+  async getGroup(@Body('idx') groupId: number) {
     this.logger.log('uno group getGroup()');
     return this.groupService.getOne(groupId);
   }
@@ -81,8 +81,16 @@ export class GroupController {
       res.write(uno);
       res.end();
     } catch (error) {
-      this.logger.log(error);
+      this.logger.error(error);
       throw new InternalServerErrorException(error);
     }
+  }
+
+  @ApiResponse({ description: 'UNO 그룹 리스트 번호만 조회' })
+  @UseGuards(JwtAuthGuard)
+  @Get('bring/list/number')
+  async getGroupNumList() {
+    this.logger.log(`getGroupNumList()`);
+    return await this.groupService.getGroupNumList();
   }
 }

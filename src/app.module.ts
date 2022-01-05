@@ -26,8 +26,14 @@ const transports = {
     new (require('winston-daily-rotate-file'))({
       level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
       dirname: './logs',
-      filename: '%DATE%.log',
-      datePattern: 'YYYY-MM-DD',
+      filename: 'PROM.%DATE%.log',
+      datePattern: 'MMDD',
+      prettyPrint: true,
+      maxSize: '10m',
+      maxFiles: '7d',
+      showLevel: true,
+      createSymlink: true,
+      symlinkName: 'PROM.log'
     }),
   ],
 };

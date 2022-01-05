@@ -9,7 +9,7 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
   }
 
   public find(findOpt) {
-    const { title, registrant } = findOpt;
+    const { title, registrant, groupNo } = findOpt;
     const qb = this.repository
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.User', 'user')
@@ -18,6 +18,7 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
       ])
       .andWhere('group.title LIKE (:title)', { title })
       .andWhere('user.userName LIKE (:registrant)', { registrant })
+      .andWhere('group.groupNo LIKE (:groupNo)', { groupNo })
       .andWhere('group.validState = 1');
     return qb.execute();
   }
@@ -26,7 +27,7 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
     const qb = this.repository
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.User', 'user')
-      .select(['group.groupId AS idx','group.title AS title', 'group.unoCount AS unoCount', 'group.groupNo AS groupNo',
+      .select(['group.groupId AS idx', 'group.title AS title', 'group.unoCount AS unoCount', 'group.groupNo AS groupNo',
         'user.userName AS registrant', 'user.email AS email', 'user.department AS department',
         'DATE_FORMAT(group.updatedAt, "%Y-%m-%d %T") AS updatedAt',
       ])
@@ -51,5 +52,9 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
       .where('group.groupId = :idx', { idx });
 
     return qb.getOne();
+  }
+
+  findGnoList() {
+    return this.repository.find({ select: ['groupNo'], where: { validState: 1 } });
   }
 }

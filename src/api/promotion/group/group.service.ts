@@ -4,6 +4,7 @@ import { CsvConverter } from '../../../common/utils/csvConverter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Repository } from 'typeorm';
+import { error } from 'winston';
 
 @Injectable()
 export class GroupService {
@@ -52,8 +53,11 @@ export class GroupService {
       const data = {
         title: info.title.replace(/^|$/g, '%'),
         registrant: info.registrant.replace(/^$/, '%'),
+        groupNo: info.groupNo.toString().replace(/^|$/g, '%'),
       };
-      return await this.promotionReceiverGroupInfoRepository.find(data);
+      const groupList = await this.promotionReceiverGroupInfoRepository.find(data);
+      this.logger.log(`groupList: ${JSON.stringify(groupList)}`);
+      return groupList;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);
@@ -63,6 +67,7 @@ export class GroupService {
   async getOne(idx) {
     try {
       const groupInfo = await this.promotionReceiverGroupInfoRepository.findOne(idx);
+      this.logger.log(`getOne() groupInfo: ${JSON.stringify(groupInfo)}`);
       return groupInfo ? groupInfo : [];
     } catch (error) {
       this.logger.error(error);
@@ -73,6 +78,7 @@ export class GroupService {
   async remove(ids) {
     try {
       await this.promotionReceiverGroupInfoRepository.updateValidState(ids);
+      this.logger.log('remove() done');
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);
@@ -84,6 +90,25 @@ export class GroupService {
       return await this.promotionReceiverGroupInfoRepository.findUnoList(idx)
         .then((uno) => this.csvConverter.unoToCsv(uno.unoList))
         .catch(() => `uno`);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getGroupNumList() {
+    try {
+      this.logger.log('getGroupNumList()');
+      const groupNoList = await this.promotionReceiverGroupInfoRepository.findGnoList()
+        .then((list) => {
+          const result = list.reduce((acc, cur, i) => {
+            acc.push(cur.groupNo);
+            return acc;
+          }, []);
+          return [...new Set(result)];
+        });
+      this.logger.log(`groupNoList: ${JSON.stringify(groupNoList)}`);
+      return groupNoList;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);
