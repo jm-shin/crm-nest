@@ -12,6 +12,9 @@ import { UserModule } from './api/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReceiverModule } from './api/promotion/receiver/receiver.module';
 import { GroupModule } from './api/promotion/group/group.module';
+import { ManagementController } from './api/promotion/management/management.controller';
+import { ManagementService } from './api/promotion/management/management.service';
+import { ManagementModule } from './api/promotion/management/management.module';
 
 const transports = {
   format: winston.format.combine(
@@ -38,7 +41,10 @@ const transports = {
     AuthModule,
     ReceiverModule,
     GroupModule,
-  ]
+    ManagementModule,
+  ],
+  controllers: [ManagementController],
+  providers: [ManagementService]
 })
 
 export class AppModule implements NestModule {

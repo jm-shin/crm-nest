@@ -39,10 +39,12 @@ export class LoggerMiddleware implements NestMiddleware {
       const { statusCode } = res;
       const contentLength = res.get('content-length');
       const body = JSON.stringify(req.body);
-
+      /*
+      //log 분리
       this.logger.log(
         `${method} ${originalUrl} [${statusCode}] ${contentLength} - ${userAgent} ${ip} (authorization: ${authToke}) - ${body}`,
       );
+       */
       winstonLogger.info(`${method} ${originalUrl} [${statusCode}] ${contentLength} - ${userAgent} ${ip} (authorization: ${authToke}) - ${body}`);
     });
     next();
