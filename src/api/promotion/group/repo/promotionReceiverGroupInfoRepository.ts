@@ -27,7 +27,9 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.User', 'user')
       .select(['group.groupId AS idx','group.title AS title', 'group.unoCount AS unoCount', 'group.groupNo AS groupNo',
-        'user.userName AS registrant', 'DATE_FORMAT(group.updatedAt, "%Y-%m-%d %T") AS updatedAt'])
+        'user.userName AS registrant', 'user.email AS email', 'user.department AS department',
+        'DATE_FORMAT(group.updatedAt, "%Y-%m-%d %T") AS updatedAt',
+      ])
       .andWhere('group.groupId = :id', { id });
     return qb.getRawOne();
   }
