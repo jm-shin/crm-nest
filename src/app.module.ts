@@ -1,13 +1,10 @@
 import { AuthModule } from './auth/auth.module';
-import { Module, NestModule, MiddlewareConsumer, Logger } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import * as winston from 'winston';
-import {
-  utilities as nestWinstonModuleUtilities,
-  WinstonModule,
-} from 'nest-winston';
+import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { UserModule } from './api/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { ReceiverModule } from './api/promotion/receiver/receiver.module';
@@ -15,6 +12,7 @@ import { GroupModule } from './api/promotion/group/group.module';
 import { ManagementController } from './api/promotion/management/management.controller';
 import { ManagementService } from './api/promotion/management/management.service';
 import { ManagementModule } from './api/promotion/management/management.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const transports = {
   format: winston.format.combine(
@@ -43,6 +41,7 @@ const transports = {
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot(),
     WinstonModule.forRoot(transports),
+    ScheduleModule.forRoot(),
     UserModule,
     AuthModule,
     ReceiverModule,

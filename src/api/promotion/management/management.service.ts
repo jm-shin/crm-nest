@@ -11,6 +11,7 @@ export class ManagementService {
   private readonly logger = new Logger(ManagementService.name);
 
   async save(data) {
+    this.logger.log('save() start');
     try {
       const { promotionId, title, description, receiverId, groupNo, conditionJson } = data;
       const createData = {
@@ -29,4 +30,53 @@ export class ManagementService {
     }
   }
 
+  async remove(idx) {
+    try {
+      this.logger.log('remove() start');
+      await this.promotionInfoRepository.updateValidState(idx)
+        .then(() => this.logger.log('remove() done'));
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getAll(findOpt) {
+    this.logger.log('getAll() start');
+    const target = {
+      title: findOpt.title.replace(/^|$/g, '%'),
+      description: findOpt.description.replace(/^|$/g, '%'),
+      registrant: findOpt.registrant.replace(/^|$/g, '%'),
+    };
+    try {
+      this.logger.log(`find target option: ${JSON.stringify(target)}`);
+      return this.promotionInfoRepository.getAll(target);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getOne(idx) {
+    try {
+      this.logger.log(`getOne() start - promotion idx: ${idx}`);
+      const promotionInfo = await this.promotionInfoRepository.getOne(idx);
+      this.logger.log(`promotionInfo: ${JSON.stringify(promotionInfo)}`);
+      return promotionInfo ? promotionInfo : [];
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async update(data) {
+    try {
+      this.logger.log('update() start');
+      await this.promotionInfoRepository.update(data);
+      this.logger.log('update() done');
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

@@ -12,7 +12,7 @@ export class UserController {
   private logger = new Logger(UserController.name);
 
   @UseGuards(JwtAuthGuard)
-  @Get('')
+  @Get()
   @ApiResponse({ description: 'CRM 2.0 시스템 유저 리스트' })
   getAll() {
     this.logger.log('user list getAll()');

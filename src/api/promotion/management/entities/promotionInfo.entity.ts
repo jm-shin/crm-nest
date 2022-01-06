@@ -27,6 +27,9 @@ export class PromotionInfo {
   @Column({ name: 'condition_json' })
   conditionJson: string;
 
+  @Column({name: 'progress_state'})
+  progressState: number;
+
   @Column('timestamp', { name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 

@@ -35,12 +35,12 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
     return qb.getRawOne();
   }
 
-  updateValidState(ids) {
+  updateValidState(idx) {
     const qb = this.repository
       .createQueryBuilder()
       .update()
       .set({ validState: 0 })
-      .where('groupId IN (:ids)', { ids });
+      .where('groupId = :idx', { idx });
 
     return qb.execute();
   }
@@ -49,7 +49,8 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
     const qb = this.repository
       .createQueryBuilder('group')
       .select(['group.unoList'])
-      .where('group.groupId = :idx', { idx });
+      .where('group.groupId = :idx', { idx })
+      .andWhere('group.validState = 1')
 
     return qb.getOne();
   }

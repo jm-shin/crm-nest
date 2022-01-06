@@ -1,10 +1,9 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { PromotionReceiverGroupInfoRepository } from './repo/promotionReceiverGroupInfoRepository';
 import { CsvConverter } from '../../../common/utils/csvConverter';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { error } from 'winston';
 
 @Injectable()
 export class GroupService {
@@ -75,9 +74,9 @@ export class GroupService {
     }
   }
 
-  async remove(ids) {
+  async remove(idx) {
     try {
-      await this.promotionReceiverGroupInfoRepository.updateValidState(ids);
+      await this.promotionReceiverGroupInfoRepository.updateValidState(idx);
       this.logger.log('remove() done');
     } catch (error) {
       this.logger.error(error);

@@ -1,9 +1,16 @@
 import {
   Body,
-  Controller, Delete, Get, HttpCode, InternalServerErrorException,
-  Logger, ParseIntPipe,
-  Post, Req, Res,
-  UploadedFile, UseGuards,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  InternalServerErrorException,
+  Logger,
+  Post,
+  Req,
+  Res,
+  UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -44,9 +51,9 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Post('bring/list')
   @HttpCode(200)
-  async getAllGroup(@Body() info: { title, registrant, groupNo }) {
+  async getAllGroup(@Body() findOpt: ReadGroupDto) {
     this.logger.log('uno group getAllGroup()');
-    return await this.groupService.getAll(info);
+    return await this.groupService.getAll(findOpt);
   }
 
   @ApiResponse({ description: 'UNO 그룹 상세보기' })
@@ -62,7 +69,7 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Delete('')
   @UseInterceptors(TransformInterceptor)
-  async remove(@Body('idx') groupId: number[]) {
+  async remove(@Body('idx') groupId: number) {
     this.logger.log('uno group remove()');
     return await this.groupService.remove(groupId);
   }

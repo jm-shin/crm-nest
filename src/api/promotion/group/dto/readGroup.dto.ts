@@ -1,18 +1,14 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsDefined, IsString } from 'class-validator';
 
 export class ReadGroupDto {
+  @IsDefined()
   @IsString()
   readonly title: string;
 
-  @IsNumber()
-  readonly unoCount: number;
-
-  @IsNumber()
-  readonly groupNo: number;
-
+  @IsDefined()
   @IsString()
   readonly registrant: string;
 
-  @IsString()
-  readonly updateAt: string;
+  @IsDefined()
+  readonly groupNo: number;
 }
