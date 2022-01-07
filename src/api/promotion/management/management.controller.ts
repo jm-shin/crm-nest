@@ -13,10 +13,10 @@ import {
 import { ManagementService } from './management.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
-import { CreatePromotionDto } from './dto/createPromotion.dto';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { UpdatePromotionDto } from './dto/updatePromotion.dto';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
+import { CreatePromotionDto } from './dto/createPromotion.dto';
 
 @Controller('api/promotion/management')
 export class ManagementController {
@@ -33,6 +33,7 @@ export class ManagementController {
   @HttpCode(200)
   @UseInterceptors(TransformInterceptor)
   async create(@Body() createData: CreatePromotionDto) {
+    console.log(createData);
     return this.managementService.save(createData);
   }
 

@@ -70,7 +70,7 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Delete('')
   @UseInterceptors(TransformInterceptor)
-  async remove(@Body('idx', ParseIntPipe) groupId: number) {
+  async remove(@Body('idx') groupId: number[]) {
     this.logger.log('uno group remove()');
     return await this.groupService.remove(groupId);
   }

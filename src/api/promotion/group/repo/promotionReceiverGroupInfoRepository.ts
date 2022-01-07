@@ -14,6 +14,7 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
       .createQueryBuilder('group')
       .leftJoinAndSelect('group.User', 'user')
       .select(['group.groupId AS idx', 'group.title AS title', 'group.groupNo AS groupNo',
+        'group.unoCount AS unoCount',
         'date_format(group.createdAt, "%Y-%m-%d %T") AS createdAt', 'user.userName AS registrant',
       ])
       .andWhere('group.title LIKE (:title)', { title })
@@ -40,7 +41,7 @@ export class PromotionReceiverGroupInfoRepository extends AbstractRepository<Pro
       .createQueryBuilder()
       .update()
       .set({ validState: 0 })
-      .where('groupId = :idx', { idx });
+      .where('groupId IN (:idx)', { idx });
 
     return qb.execute();
   }
