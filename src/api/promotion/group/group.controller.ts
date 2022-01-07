@@ -6,6 +6,7 @@ import {
   HttpCode,
   InternalServerErrorException,
   Logger,
+  ParseIntPipe,
   Post,
   Req,
   Res,
@@ -60,7 +61,7 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Post('bring')
   @HttpCode(200)
-  async getGroup(@Body('idx') groupId: number) {
+  async getGroup(@Body('idx', ParseIntPipe) groupId: number) {
     this.logger.log('uno group getGroup()');
     return this.groupService.getOne(groupId);
   }
@@ -69,7 +70,7 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Delete('')
   @UseInterceptors(TransformInterceptor)
-  async remove(@Body('idx') groupId: number) {
+  async remove(@Body('idx', ParseIntPipe) groupId: number) {
     this.logger.log('uno group remove()');
     return await this.groupService.remove(groupId);
   }
@@ -77,7 +78,7 @@ export class GroupController {
   @ApiResponse({ description: 'uno list csv 다운로드' })
   @UseGuards(JwtAuthGuard)
   @Get('uno/download')
-  async download(@Body('idx') groupId: number, @Res() res: Response) {
+  async download(@Body('idx', ParseIntPipe) groupId: number, @Res() res: Response) {
     this.logger.log('uno group download()');
     try {
       const groupNo = await this.groupService.getOne(groupId).then((info) => info.groupNo);

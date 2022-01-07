@@ -100,7 +100,7 @@ export class FactorConverter {
         }
       }
     };
-    this.logger.log(`convResult type: ${typeof condition} convResult: ${JSON.stringify(condition)}`);
+    this.logger.log(`factorConvertor Result: ${JSON.stringify(condition)}`);
     return condition;
   }
 }

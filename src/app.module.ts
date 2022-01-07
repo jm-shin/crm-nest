@@ -13,6 +13,9 @@ import { ManagementController } from './api/promotion/management/management.cont
 import { ManagementService } from './api/promotion/management/management.service';
 import { ManagementModule } from './api/promotion/management/management.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { StatsController } from './api/promotion/stats/stats.controller';
+import { StatsService } from './api/promotion/stats/stats.service';
+import { StatsModule } from './api/promotion/stats/stats.module';
 
 const transports = {
   format: winston.format.combine(
@@ -47,9 +50,10 @@ const transports = {
     ReceiverModule,
     GroupModule,
     ManagementModule,
+    StatsModule,
   ],
-  controllers: [ManagementController],
-  providers: [ManagementService]
+  controllers: [ManagementController, StatsController],
+  providers: [ManagementService, StatsService]
 })
 
 export class AppModule implements NestModule {

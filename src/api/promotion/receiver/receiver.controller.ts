@@ -2,24 +2,25 @@ import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { ReceiverService } from './receiver.service';
 import {
-  Controller,
-  Post,
-  Body,
-  Logger,
-  Delete,
-  UseGuards,
-  Put,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
   HttpCode,
-  Req,
-  Res,
   HttpStatus,
-  InternalServerErrorException, UseInterceptors,
+  InternalServerErrorException,
+  Logger,
+  ParseIntPipe,
+  Post,
+  Put,
+  Req,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { ReadReceiverDto } from './dto/readReceiver.dto';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 
 @Controller('api/promotion/receiver')
@@ -59,7 +60,7 @@ export class ReceiverController {
   @UseGuards(JwtAuthGuard)
   @Post('/bring')
   @HttpCode(HttpStatus.OK)
-  async getOne(@Body('idx') receiverId: number) {
+  async getOne(@Body('idx', ParseIntPipe) receiverId: number) {
     return await this.promotionService.getOne(receiverId)
       .catch((error) => {
         this.logger.error(error);
@@ -71,7 +72,7 @@ export class ReceiverController {
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @Put('')
-  async patch(@Body('idx') receiverId: number, @Body() updateData: UpdateReceiverDto, @Req() req: Request) {
+  async patch(@Body('idx', ParseIntPipe) receiverId: number, @Body() updateData: UpdateReceiverDto, @Req() req: Request) {
     this.logger.log(`updateData: ${JSON.stringify(updateData)}`);
     return await this.promotionService.update(receiverId, updateData, req.user['id'])
       .catch((error) => {
@@ -83,7 +84,7 @@ export class ReceiverController {
   @ApiResponse({ description: '프로모션 대상자 삭제' })
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
-  @Delete('')
+  @Delete()
   async remove(@Body('idx') receiverId: number[]) {
     return await this.promotionService.delete(receiverId)
       .catch((error) => {

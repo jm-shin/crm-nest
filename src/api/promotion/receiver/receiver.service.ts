@@ -117,16 +117,16 @@ export class ReceiverService {
   async conditionPreview(conditionText: string): Promise<any> {
     try {
       this.logger.log('conditionPreview');
-      const condJson =  this.factorConverter.makeJsonCondition(conditionText);
+      const condJson = this.factorConverter.makeJsonCondition(conditionText);
       const preview = {
         Pay: condJson['condition']['pay'],
         PromotionInfo: condJson['info'],
         Terminate: condJson['condition']['terminate'],
         Receive: condJson['condition']['receive'],
         Join: condJson['condition']['join'],
-      }
+      };
       this.logger.log(preview);
-      return preview;
+      return { condition: preview };
     } catch (error) {
       this.logger.error(error);
     }

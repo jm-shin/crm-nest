@@ -1,4 +1,15 @@
-import { Body, Controller, Delete, HttpCode, Logger, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  Logger,
+  ParseIntPipe,
+  Post,
+  Put,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ManagementService } from './management.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
@@ -29,7 +40,7 @@ export class ManagementController {
   @Post('bring')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
-  async findOne(@Body('idx') idx: number) {
+  async findOne(@Body('idx', ParseIntPipe) idx: number) {
     return this.managementService.getOne(idx);
   }
 
