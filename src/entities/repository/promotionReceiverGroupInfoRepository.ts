@@ -1,5 +1,5 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { PromotionReceiverGroupInfo } from '../entities/promotionReceiverGroupInfo.entity';
+import { PromotionReceiverGroupInfo } from '../promotionReceiverGroupInfo.entity';
 
 @EntityRepository(PromotionReceiverGroupInfo)
 export class PromotionReceiverGroupInfoRepository extends AbstractRepository<PromotionReceiverGroupInfo> {

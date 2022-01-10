@@ -33,7 +33,7 @@ export class ManagementController {
   @HttpCode(200)
   @UseInterceptors(TransformInterceptor)
   async create(@Body() createData: CreatePromotionDto) {
-    console.log(createData);
+    this.logger.log(`createData: ${JSON.stringify(createData)}`);
     return this.managementService.save(createData);
   }
 

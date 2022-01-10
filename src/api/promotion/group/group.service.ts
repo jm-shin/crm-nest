@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { PromotionReceiverGroupInfoRepository } from './repo/promotionReceiverGroupInfoRepository';
+import { PromotionReceiverGroupInfoRepository } from '../../../entities/repository/promotionReceiverGroupInfoRepository';
 import { CsvConverter } from '../../../common/utils/csvConverter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../../entities/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

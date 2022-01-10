@@ -2,8 +2,8 @@ import { GroupService } from './group.service';
 import { GroupController } from './group.controller';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PromotionReceiverGroupInfoRepository } from './repo/promotionReceiverGroupInfoRepository';
-import { User } from '../../user/entities/user.entity';
+import { PromotionReceiverGroupInfoRepository } from '../../../entities/repository/promotionReceiverGroupInfoRepository';
+import { User } from '../../../entities/user.entity';
 
 @Module({
   imports: [

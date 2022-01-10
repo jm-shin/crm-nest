@@ -1,5 +1,5 @@
-import { AbstractRepository, EntityRepository, getRepository } from 'typeorm';
-import { PromotionReceiverInfo } from '../entities/promotionReceiverInfo.entity';
+import { AbstractRepository, EntityRepository } from 'typeorm';
+import { PromotionReceiverInfo } from '../promotionReceiverInfo.entity';
 import { Logger } from '@nestjs/common';
 
 export interface PromotionFindOption {

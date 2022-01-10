@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from '../../../user/entities/user.entity';
+import { User } from './user.entity';
 
 @Entity()
 export class PromotionInfo {
@@ -38,6 +38,10 @@ export class PromotionInfo {
 
   @Column({ name: 'valid_state' })
   validState: number;
+
+  //add
+  @Column({name: 'actions'})
+  actions: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_idx', referencedColumnName: 'idx' })

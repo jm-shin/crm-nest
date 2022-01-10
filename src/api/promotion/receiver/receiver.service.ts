@@ -1,13 +1,13 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { Injectable, Logger } from '@nestjs/common';
-import { PromotionReceiverInfo } from './entities/promotionReceiverInfo.entity';
+import { PromotionReceiverInfo } from '../../../entities/promotionReceiverInfo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import moment from 'moment';
 import { FactorConverter } from '../../../common/utils/factorConverter';
-import { User } from '../../user/entities/user.entity';
-import { PromotionReceiverInfoRepository } from './repo/promotionReceiverInfoRepository';
+import { User } from '../../../entities/user.entity';
+import { PromotionReceiverInfoRepository } from '../../../entities/repository/promotionReceiverInfoRepository';
 
 @Injectable()
 export class ReceiverService {

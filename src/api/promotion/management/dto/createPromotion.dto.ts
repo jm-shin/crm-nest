@@ -19,7 +19,10 @@ export class CreatePromotionDto {
   @IsDefined()
   @Type(() => Number)
   readonly groupNo: number;
-
+  
   @IsString()
   conditionJson: string;
+
+  @IsDefined()
+  actions: string;
 }

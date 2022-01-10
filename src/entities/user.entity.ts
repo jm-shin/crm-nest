@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { PromotionReceiverInfo } from '../../promotion/receiver/entities/promotionReceiverInfo.entity';
+import { PromotionReceiverInfo } from './promotionReceiverInfo.entity';
 
 @Entity()
 export class User {

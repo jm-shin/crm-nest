@@ -1,5 +1,5 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { PromotionInfo } from '../entities/promotionInfo.entity';
+import { PromotionInfo } from '../promotionInfo.entity';
 
 @EntityRepository(PromotionInfo)
 export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
@@ -31,7 +31,8 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
       .where('promotion.validState = 1')
       .andWhere('promotion.title LIKE (:title)', { title })
       .andWhere('promotion.description LIKE (:description)', { description })
-      .andWhere('user.userName LIKE (:registrant)', { registrant });
+      .andWhere('user.userName LIKE (:registrant)', { registrant })
+      .orderBy('promotion.idx')
 
     return qb.getRawMany();
   }
@@ -44,8 +45,8 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
         'promotion.idx AS idx', 'promotion.title AS title', 'promotion.description AS description',
         'user.userName AS userName', 'user.email AS email',
         'promotion.promotionId AS promotionId', 'promotion.groupNo AS groupNo', 'promotion.receiverId AS receiverId',
-        'promotion.conditionJson AS conditionJson', 'promotion.progressState AS progressState',
-        'DATE_FORMAT(promotion.createdAt, "%Y-%m-%d %T") AS createdAt',
+        'promotion.conditionJson AS conditionJson','promotion.actions AS actions',
+        'promotion.progressState AS progressState', 'DATE_FORMAT(promotion.createdAt, "%Y-%m-%d %T") AS createdAt',
       ])
       .where('promotion.validState = 1')
       .andWhere('promotion.idx = :idx', { idx });
