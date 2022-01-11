@@ -42,7 +42,7 @@ export class PromotionReceiverInfoRepository extends AbstractRepository<Promotio
       .select([
         //receiverInfo
         'receiverInfo.receiverId AS idx', 'receiverInfo.title AS title', 'receiverInfo.description AS description',
-        'receiverInfo.groupNo AS groupNo', 'receiverInfo.conditionText AS conditionText',
+        'receiverInfo.groupNo AS groupNo', 'receiverInfo.conditionText AS conditionText', 'receiverInfo.conditionJson AS conditionJson',
         //'date_format(r.updatedAt, "%Y-%m-%d %T") AS updatedAt', 'date_format(r.createdAt, "%Y-%m-%d %T") AS createdAt',
 
         //user

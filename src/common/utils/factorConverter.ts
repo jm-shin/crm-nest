@@ -18,62 +18,24 @@ export class FactorConverter {
 
     const {
       //promotionInfo
-      group,
-      ci,
-      cipromotionid,
-      prevpromotionid,
-      nextpromotionid,
-      pkgscount,
-      prevPromotionPassedMonths,
-      freeEndReceivePassedDays,
-      startdate,
-      enddate,
-      retentionpkgs,
-      purchasepkgs,
-      phase,
+      group, ci, cipromotionid, prevpromotionid, nextpromotionid, pkgscount,
+      prevPromotionPassedMonths, freeEndReceivePassedDays, startdate,
+      enddate, retentionpkgs, purchasepkgs, phase,
       //join
-      isauth,
-      isfirstjoin,
-      joindevice,
-      membertype,
-      nonlogindays,
-      nonlogindaystype,
-      nonloginoverorunder,
-      ismembertypesocial,
-      ismembertypesimple,
-      ismembertypeb2b,
+      isauth, isfirstjoin, joindevice, membertype, nonlogindays, nonlogindaystype,
+      nonloginoverorunder, ismembertypesocial, ismembertypesimple, ismembertypeb2b,
       nologinpasseddays,
       //pay
-      continuousoverorunder,
-      continuouspaiddays,
-      continuouspaiddaystype,
-      isableupsell,
-      isexistpaid,
-      ispaid,
-      pgid,
-      iscouponcharged,
-      ispaylettercharged,
-      isexternalpgcharged,
-      isitunesstore,
-      iststore,
-      continuouspaidcount,
-      discountpassedmonth,
-      paybackreceivepassedmonth,
+      continuousoverorunder, continuouspaiddays, continuouspaiddaystype,
+      isableupsell, isexistpaid, ispaid, pgid, iscouponcharged, ispaylettercharged,
+      isexternalpgcharged, isitunesstore, iststore, continuouspaidcount,
+      discountpassedmonth, paybackreceivepassedmonth,
       //terminate
-      isterminateapplied,
-      isterminatereceipt,
+      isterminateapplied, isterminatereceipt,
       //receive
-      discountoverorunder,
-      discountpasseddays,
-      discountpasseddaystype,
-      isexistdefensivecoin,
-      isexistdiscount,
-      isexistpayback,
-      isexistupsell,
-      isvipbenefitsinrcv,
-      paybackoverorunder,
-      paybackpasseddays,
-      paybackpasseddaystype,
+      discountoverorunder, discountpasseddays, discountpasseddaystype,
+      isexistdefensivecoin, isexistdiscount, isexistpayback, isexistupsell,
+      isvipbenefitsinrcv, paybackoverorunder, paybackpasseddays, paybackpasseddaystype,
     } = convArr;
 
     const condition = {
@@ -146,11 +108,12 @@ export class FactorConverter {
     return condition;
   }
 
-  async makeJsonAction(cond) {
+  async makeJsonAction(info) {
     const {
-      actioncode, actiontype, benefitdays, benefitdaystype, discounttype, discountamount, discountrate,
-      bonuscointype, cointype, bonuscoinamount, bonuscoinrate, bonuscoindays, bonuspackageid, bonuscoupon,
-    } = cond;
+      actioncode, actiontype, benefitdays, benefitdaystype, discounttype,
+      discountamount, discountrate, bonuscointype, cointype, bonuscoinamount,
+      bonuscoinrate, bonuscoindays, bonuspackageid, bonuscoupon,
+    } = info;
 
     const actions = {
       action: {
@@ -175,196 +138,116 @@ export class FactorConverter {
     return actions;
   }
 
-  async makeJsonDisplay() {
-    // const {messagecase, message, messageurl, devicetype,
-    //   alarm, push, edm, android} = cond;
-    const android = {
-      'layerpopup': {
-        'text': '1',
-        'color': 'red',
-        'url': '',
-      },
-      'lnbtoptext': {
-        'text': '2',
-        'color': '',
-        'url': '',
-      },
-      'lnbtopbutton': {
-        'text': '3',
-        'color': '',
-        'url': '',
-      },
-      'homeband': {
-        'image': '4',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'voucher_index': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-    };
+  async makeJsonDisplay(info) {
+    const {
+      messagecase, message, messageurl, alarm, push, edm,
+      android, ios, pc, mobile,
+    } = info;
 
-    const mobile = {
-      'layerpopup': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'lnbtoptext': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'lnbtopbutton': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'homeband': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'voucher_index': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-    };
-
-    const pc = {
-      'layerpopup': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'lnbtoptext': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'lnbtopbutton': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'homeband': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'voucher_index': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-    };
-
-    const ios = {
-      'layerpopup': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'lnbtoptext': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'lnbtopbutton': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'homeband': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-      'voucher_index': {
-        'image': '',
-        'text': '',
-        'color': '',
-        'url': '',
-      },
-    };
-
-    const deviceArray = [
-      { device: 'android', ...android },
-      { device: 'mobile', ...mobile },
-      { device: 'pc', ...pc },
-      { device: 'ios', ...ios },
-    ];
-
-    let device_area = [];
-
-    /*
-    const final = {
-      messagecase: messagecase? messagecase : "",
-      message: message? message : "",
-      messageurl: messageurl? messageurl : "",
-      devices: [
-        //android
-        {
-          devicetype: "android",
-          alarm: alarm? alarm : "n",
-          push: push? push : "n",
-          edm: edm? edm : "n",
-          areas: [
-            {
-              areatype: "layerpopup",
-              areaitems: [android.layerpopup]
-            },
-            {
-              areatype: "lnbtopbutton",
-              areaitems: [android.lnbtopbutton]
-            },
-            {
-              areatype: "homeband",
-              areaitems: [android.homeband]
-            },
-            {
-              areatype: "voucher_index",
-              areaitems: [android.voucher_index]
-            }
-          ]
-        },
-        //ios
-      ]
+    async function deleteNull(device) {
+      const col = ['image', 'text', 'color', 'url'];
+      for (const key of Object.keys(device)) {
+        // console.log(key, device[key]['image']);
+        await col.forEach((i) => {
+          if (device[key][i] == '') delete device[key][i];
+        });
+        if (Object.keys(device[key]).length === 0) delete device[key];
+      }
     }
-    */
 
+    async function makeAreaForm(device) {
+      //return
+      if (Object.keys(device).length === 0) {
+        return [
+          {
+            areatype: '',
+            areaitems: [
+              {},
+            ],
+          },
+        ];
+      }
+      return Object.keys(device).reduce((acc, cur, i) => {
+        const area = {
+          areatype: cur,
+          areaitems: [
+            device[cur],
+          ],
+        };
+        acc.push(area);
+        return acc;
+      }, []);
+    }
+
+    this.logger.log('make display json start');
+
+    await deleteNull(ios);
+    await deleteNull(android);
+    await deleteNull(mobile);
+    await deleteNull(pc);
+
+    const areas_ios = await makeAreaForm(ios);
+    const areas_pc = await makeAreaForm(pc);
+    const areas_mobile = await makeAreaForm(mobile);
+    const areas_android = await makeAreaForm(android);
+
+    const display = [
+        {
+        messagecase: messagecase? messagecase : "",
+        message: message? message : "",
+        messageurl: messageurl? messageurl : "",
+        devices: [
+          //android
+          {
+            devicetype: 'android',
+            alarm: alarm? alarm : "n",
+            push: push? push : "n",
+            edm: edm? edm : "n",
+            areas: areas_android,
+          },
+          //ios
+          {
+            devicetype: 'ios',
+            alarm: alarm? alarm : "n",
+            push: push? push : "n",
+            edm: edm? edm : "n",
+            areas: areas_ios,
+          },
+          //mobile
+          {
+            devicetype: 'mobile',
+            alarm: alarm? alarm : "n",
+            push: push? push : "n",
+            edm: edm? edm : "n",
+            areas: areas_mobile,
+          },
+          //pc
+          {
+            devicetype: 'pc',
+            alarm: alarm? alarm : "n",
+            push: push? push : "n",
+            edm: edm? edm : "n",
+            areas: areas_pc,
+          },
+        ],
+      }
+    ]
+    this.logger.log(JSON.stringify(display));
+    return display;
   }
 
-  async finalJsonForm(promotionId, actions, cond) {
+  async finalJsonForm(promotionId, infoAndCondition, actions, display) {
+    console.log(`promotionId: ${promotionId}`);
+    console.log(`infoAndCondition: ${JSON.stringify(infoAndCondition.info)}`);
+    console.log(`actions: ${JSON.stringify(actions)}`);
+    console.log(`display: ${JSON.stringify(display)}`);
 
-    const final = {
+    return  {
       id: promotionId,
-      info: cond.info,
+      info: infoAndCondition.info,
       actions: actions,
-      condition: cond.condition,
-      display: {},
+      condition: infoAndCondition.condition,
+      display: display,
     };
-
-    return final;
   }
-
 }

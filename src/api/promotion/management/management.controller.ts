@@ -16,7 +16,6 @@ import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { UpdatePromotionDto } from './dto/updatePromotion.dto';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
-import { CreatePromotionDto } from './dto/createPromotion.dto';
 
 @Controller('api/promotion/management')
 export class ManagementController {
@@ -32,7 +31,8 @@ export class ManagementController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @UseInterceptors(TransformInterceptor)
-  async create(@Body() createData: CreatePromotionDto) {
+  // async create(@Body() createData: CreatePromotionDto) {
+  async create(@Body() createData) {
     this.logger.log(`createData: ${JSON.stringify(createData)}`);
     return this.managementService.save(createData);
   }

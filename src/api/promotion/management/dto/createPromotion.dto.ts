@@ -17,12 +17,8 @@ export class CreatePromotionDto {
   readonly receiverId: number;
 
   @IsDefined()
-  @Type(() => Number)
-  readonly groupNo: number;
-  
-  @IsString()
-  conditionJson: string;
+  action: string;
 
   @IsDefined()
-  actions: string;
+  benefit: string;
 }

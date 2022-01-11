@@ -18,31 +18,49 @@ export class ManagementService {
     this.logger.log('save() start');
     try {
       const {
-        promotionId, title, description, receiverId,
-        groupNo, conditionJson,
+        title, description, groupNo,
+        promotionId, receiverId,
+        action, benefit,
       } = data;
 
       //조건 json: actions
-      const actions = await this.factorConvertor.makeJsonAction(data.actions);
+      const actionsJson = [
+        {
+          action: action,
+          benefit: benefit,
+        },
+      ];
+
+      //display json 생성 정보
+      const displayCreateInfo = {
+        android: data.android,
+        ios: data.ios,
+        pc: data.pc,
+        mobile: data.mobile,
+      };
+
       //조건 json: display
-      const display = await this.factorConvertor
+      const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
 
       //condition,info 조건 불러오기
-      const JsonInfoAndCondition = await this.promotionReceiverInfoRepository.getOne(receiverId);
-      console.log(JsonInfoAndCondition);
+      const promotionInfo = await this.promotionReceiverInfoRepository.getOne(receiverId);
+      this.logger.log(`promotionInfo ${JSON.stringify(promotionInfo)}`);
+      const infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
+      this.logger.log(`infoAndConditionJson ${JSON.stringify(infoAndConditionJson)}`);
 
       //최종 json 형식 만들기
-      const finalJson = this.factorConvertor.finalJsonForm(promotionId, actions, JsonInfoAndCondition.conditionJson);
+      const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
+      this.logger.log(`final json: ${JSON.stringify(finalJson)}`);
 
       const createData = {
         promotionId,
         title,
         description,
         receiverId,
-        groupNo,
-        conditionJson,
+        groupNo: promotionInfo.groupNo,
+        conditionJson: JSON.stringify(finalJson),
         userIdx: 1,
-        actions: JSON.stringify(actions),
+        actions: JSON.stringify(actionsJson),
       };
       await this.promotionInfoRepository.save(createData);
     } catch (error) {
