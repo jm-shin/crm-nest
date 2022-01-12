@@ -1,6 +1,5 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-//winston
+import { NextFunction, Request, Response } from 'express';
 import winston from 'winston';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
 
@@ -8,10 +7,12 @@ const transport = new (require('winston-daily-rotate-file'))({
   filename: 'API.%DATE%.log',
   dirname: './logs/API',
   datePattern: 'MMDD',
-  zippedArchive: true,
+  zippedArchive: false,
   prettyPrint: true,
   maxSize: '10m',
   maxFiles: '7d',
+  showLevel: true,
+  createSymlink: true,
   symlinkName: 'API.log',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'HH:mm:ss.SSS' }),

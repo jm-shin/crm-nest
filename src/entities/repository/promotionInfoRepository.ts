@@ -45,7 +45,7 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
         'promotion.idx AS idx', 'promotion.title AS title', 'promotion.description AS description',
         'user.userName AS userName', 'user.email AS email',
         'promotion.promotionId AS promotionId', 'promotion.groupNo AS groupNo', 'promotion.receiverId AS receiverId',
-        'promotion.conditionJson AS conditionJson','promotion.actions AS actions',
+        'promotion.conditionJson AS conditionJson',
         'promotion.progressState AS progressState', 'DATE_FORMAT(promotion.createdAt, "%Y-%m-%d %T") AS createdAt',
       ])
       .where('promotion.validState = 1')

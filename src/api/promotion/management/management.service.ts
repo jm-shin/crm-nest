@@ -14,30 +14,47 @@ export class ManagementService {
   private readonly factorConvertor = new FactorConverter();
   private readonly logger = new Logger(ManagementService.name);
 
-  async save(data) {
+  async save(data, files) {
     this.logger.log('save() start');
     try {
-      const {
-        title, description, groupNo,
-        promotionId, receiverId,
-        action, benefit,
-      } = data;
+      const { description, receiverId, action, benefit } = data;
+      const title = data.name;
+      const promotionId = data.id;
+
+      console.log(files);
 
       //조건 json: actions
+      // const actionsJson = [
+      //     {
+      //         action: action,
+      //         benefit: benefit,
+      //     },
+      // ];
+
       const actionsJson = [
         {
-          action: action,
-          benefit: benefit,
+          action: JSON.parse(action),
+          benefit: JSON.parse(benefit),
         },
       ];
 
+      console.log(actionsJson);
+
       //display json 생성 정보
+      // const displayCreateInfo = {
+      //     android: data.android,
+      //     ios: data.ios,
+      //     pc: data.pc,
+      //     mobile: data.mobile,
+      // };
       const displayCreateInfo = {
-        android: data.android,
-        ios: data.ios,
-        pc: data.pc,
-        mobile: data.mobile,
+        android: JSON.parse(data.android),
+        ios: JSON.parse(data.ios),
+        pc: JSON.parse(data.pc),
+        mobile: JSON.parse(data.mobile),
       };
+
+      console.log(displayCreateInfo);
 
       //조건 json: display
       const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
@@ -60,7 +77,6 @@ export class ManagementService {
         groupNo: promotionInfo.groupNo,
         conditionJson: JSON.stringify(finalJson),
         userIdx: 1,
-        actions: JSON.stringify(actionsJson),
       };
       await this.promotionInfoRepository.save(createData);
     } catch (error) {
@@ -104,12 +120,29 @@ export class ManagementService {
 
       this.logger.log(`promotionInfo: ${JSON.stringify(promotionInfo)}`);
 
-      if (promotionInfo.actions) {
-        const actions = await JSON.parse(promotionInfo.actions);
-        delete promotionInfo.actions;
-        promotionInfo.actions = actions;
+      let promotionInfoResponseForm;
+      if (promotionInfo) {
+        const condition = JSON.parse(promotionInfo.conditionJson);
+        promotionInfoResponseForm = {
+          idx: promotionInfo.idx,
+          name: promotionInfo.title,
+          description: promotionInfo.description,
+          userName: promotionInfo.userName,
+          email: promotionInfo.email,
+          id: promotionInfo.promotionId,
+          receiverId: promotionInfo.receiverId,
+          groupNo: promotionInfo.groupNo,
+          actions: condition.actions[0].action,
+          benefit: condition.actions[0].benefit,
+          android: condition.display[0].devices[0],
+          ios: condition.display[0].devices[1],
+          mobile: condition.display[0].devices[2],
+          pc: condition.display[0].devices[3],
+        };
+        this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
       }
-      return promotionInfo ? promotionInfo : [];
+
+      return promotionInfo ? promotionInfoResponseForm : [];
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(error);

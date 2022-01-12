@@ -38,11 +38,7 @@ export class PromotionInfo {
 
   @Column({ name: 'valid_state' })
   validState: number;
-
-  //add
-  @Column({name: 'actions'})
-  actions: string;
-
+  
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_idx', referencedColumnName: 'idx' })
   User: User;
