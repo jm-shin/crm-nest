@@ -8,7 +8,6 @@ import {
   Logger,
   ParseIntPipe,
   Post,
-  Req,
   Res,
   UploadedFile,
   UseGuards,
@@ -19,10 +18,11 @@ import { GroupService } from './group.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import moment from 'moment';
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { ReadGroupDto } from './dto/readGroup.dto';
+import { User } from '../../../common/decorators/user.decorator';
 
 @Controller('api/promotion/group')
 export class GroupController {
@@ -42,10 +42,10 @@ export class GroupController {
   async unoCsvFileUpload(
     @UploadedFile() file: Express.Multer.File,
     @Body() createData: CreateGroupDto,
-    @Req() req: Request,
+    @User() user,
   ) {
     this.logger.log('uno group unoCsvFileUpload()');
-    return await this.groupService.create(file, createData, req.user['id']);
+    return await this.groupService.create(file, createData, user.id);
   }
 
   @ApiResponse({ description: 'UNO 그룹 리스트 조회' })
@@ -90,7 +90,7 @@ export class GroupController {
       res.end();
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 

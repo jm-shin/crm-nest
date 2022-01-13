@@ -16,10 +16,11 @@ import { ManagementService } from './management.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
-import { UpdatePromotionDto } from './dto/updatePromotion.dto';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../../../common/utils/multerOptions';
+import { User } from '../../../common/decorators/user.decorator';
+import { uploadImageFileList } from '../../../common/utils/uploadImageFileList';
 
 @Controller('api/promotion/management')
 export class ManagementController {
@@ -34,37 +35,13 @@ export class ManagementController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'android_layerpopup_image', maxCount: 1 },
-    { name: 'android_lnbtoptext_image', maxCount: 1 },
-    { name: 'android_lnbtopbutton_image', maxCount: 1 },
-    { name: 'android_homeband_image', maxCount: 1 },
-    { name: 'android_voucher_index_image', maxCount: 1 },
-    //ios
-    { name: 'ios_layerpopup_image', maxCount: 1 },
-    { name: 'ios_lnbtoptext_image', maxCount: 1 },
-    { name: 'ios_lnbtopbutton_image', maxCount: 1 },
-    { name: 'ios_homeband_image', maxCount: 1 },
-    { name: 'ios_voucher_index_image', maxCount: 1 },
-    //pc
-    { name: 'pc_layerpopup_image', maxCount: 1 },
-    { name: 'pc_lnbtoptext_image', maxCount: 1 },
-    { name: 'pc_lnbtopbutton_image', maxCount: 1 },
-    { name: 'pc_homeband_image', maxCount: 1 },
-    { name: 'pc_voucher_index_image', maxCount: 1 },
-    //mobile
-    { name: 'mobile_layerpopup_image', maxCount: 1 },
-    { name: 'mobile_lnbtoptext_image', maxCount: 1 },
-    { name: 'mobile_lnbtopbutton_image', maxCount: 1 },
-    { name: 'mobile_homeband_image', maxCount: 1 },
-    { name: 'mobile_voucher_index_image', maxCount: 1 },
-  ], multerOptions))
+  @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @UseInterceptors(TransformInterceptor)
   // async create(@Body() createData: CreatePromotionDto) {
-  async create(@Body() createData, @UploadedFiles() files: Express.Multer.File[]) {
+  async create(@Body() createData, @UploadedFiles() files: Express.Multer.File[], @User() user) {
     this.logger.log(`createData: ${JSON.stringify(createData)}`);
-    const sendFiles = Object.assign({}, files);
-    return this.managementService.save(createData, sendFiles);
+    const uploadedImgFiles = Object.assign({}, files);
+    return this.managementService.save(createData, uploadedImgFiles, user.id);
   }
 
   @ApiResponse({ description: '프로모션 상세보기' })
@@ -86,9 +63,16 @@ export class ManagementController {
   @ApiResponse({ description: '프로모션 수정' })
   @Put()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @UseInterceptors(TransformInterceptor)
-  async update(@Body() updateData: UpdatePromotionDto) {
-    return this.managementService.update(updateData);
+  async update(
+    @UploadedFiles() files: Express.Multer.File[],
+    // @Body() updateData: UpdatePromotionDto,
+    @Body() updateData,
+    @User() user,
+  ) {
+    const uploadedImgFiles = Object.assign({}, files);
+    return this.managementService.update(updateData, uploadedImgFiles, user.id);
   }
 
   @ApiResponse({ description: '프로모션 삭제' })

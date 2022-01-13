@@ -5,7 +5,7 @@ import { PromotionInfo } from '../promotionInfo.entity';
 export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
 
   save(data) {
-    return this.repository.save(data);
+    return this.repository.save(data)
   }
 
   updateValidState(ids) {

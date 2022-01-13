@@ -2,59 +2,77 @@ import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common
 import { PromotionInfoRepository } from '../../../entities/repository/promotionInfoRepository';
 import { FactorConverter } from '../../../common/utils/factorConverter';
 import { PromotionReceiverInfoRepository } from '../../../entities/repository/promotionReceiverInfoRepository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../../../entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ManagementService {
   constructor(
     private readonly promotionInfoRepository: PromotionInfoRepository,
     private readonly promotionReceiverInfoRepository: PromotionReceiverInfoRepository,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {
   }
 
   private readonly factorConvertor = new FactorConverter();
   private readonly logger = new Logger(ManagementService.name);
 
-  async save(data, files) {
+  async save(data, uploadFiles, userId) {
     this.logger.log('save() start');
     try {
-      const { description, receiverId, action, benefit } = data;
+      // if json type
+      // const { action, benefit, android, ios, pc, mobile} = data;
+
       const title = data.name;
+      const description = data.description;
+      const receiverId = parseInt(data.receiverId);
       const promotionId = data.id;
+      const imgUrl = process.env.LOAD_LOCATION || '';
 
-      console.log(files);
+      //json parse
+      const action = JSON.parse(data.action);
+      const benefit = JSON.parse(data.benefit);
+      let android = JSON.parse(data.android);
+      let ios = JSON.parse(data.ios);
+      let pc = JSON.parse(data.pc);
+      let mobile = JSON.parse(data.mobile);
 
-      //조건 json: actions
-      // const actionsJson = [
-      //     {
-      //         action: action,
-      //         benefit: benefit,
-      //     },
-      // ];
+      //add image url
+      if (uploadFiles) {
+        for (const file of Object.keys(uploadFiles)) {
+          const filename = uploadFiles[file][0].filename;
+          const arr = file.split('_');
+          const device = arr[0];
+          const type = arr[1];
+          if (device == 'android') {
+            android[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'ios') {
+            ios[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'mobile') {
+            mobile[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'pc') {
+            pc[type].image = `${imgUrl}${filename}`;
+          }
+        }
+      }
 
+      //create actions json
       const actionsJson = [
         {
-          action: JSON.parse(action),
-          benefit: JSON.parse(benefit),
+          action: action,
+          benefit: benefit,
         },
       ];
 
-      console.log(actionsJson);
-
-      //display json 생성 정보
-      // const displayCreateInfo = {
-      //     android: data.android,
-      //     ios: data.ios,
-      //     pc: data.pc,
-      //     mobile: data.mobile,
-      // };
+      //create display json
       const displayCreateInfo = {
-        android: JSON.parse(data.android),
-        ios: JSON.parse(data.ios),
-        pc: JSON.parse(data.pc),
-        mobile: JSON.parse(data.mobile),
+        android: android,
+        ios: ios,
+        pc: pc,
+        mobile: mobile,
       };
-
-      console.log(displayCreateInfo);
 
       //조건 json: display
       const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
@@ -62,12 +80,15 @@ export class ManagementService {
       //condition,info 조건 불러오기
       const promotionInfo = await this.promotionReceiverInfoRepository.getOne(receiverId);
       this.logger.log(`promotionInfo ${JSON.stringify(promotionInfo)}`);
+
       const infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
       this.logger.log(`infoAndConditionJson ${JSON.stringify(infoAndConditionJson)}`);
 
-      //최종 json 형식 만들기
+      //final json 형식 만들기
       const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
       this.logger.log(`final json: ${JSON.stringify(finalJson)}`);
+
+      const registrantInfo = await this.userRepository.findOne({ where: { userId } });
 
       const createData = {
         promotionId,
@@ -76,12 +97,12 @@ export class ManagementService {
         receiverId,
         groupNo: promotionInfo.groupNo,
         conditionJson: JSON.stringify(finalJson),
-        userIdx: 1,
+        userIdx: registrantInfo.idx,
       };
       await this.promotionInfoRepository.save(createData);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -92,7 +113,7 @@ export class ManagementService {
         .then(() => this.logger.log('remove() done'));
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -108,7 +129,7 @@ export class ManagementService {
       return this.promotionInfoRepository.getAll(target);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -145,18 +166,97 @@ export class ManagementService {
       return promotionInfo ? promotionInfoResponseForm : [];
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
-  async update(data) {
+  async update(data, uploadFiles, userId) {
     try {
       this.logger.log('update() start');
-      await this.promotionInfoRepository.update(data);
+
+      const title = data.name;
+      const description = data.description;
+      const receiverId = parseInt(data.receiverId);
+      const promotionId = data.id;
+      const imgUrl = process.env.LOAD_LOCATION || '';
+
+      const action = JSON.parse(data.action);
+      const benefit = JSON.parse(data.benefit);
+      let android = JSON.parse(data.android);
+      let ios = JSON.parse(data.ios);
+      let pc = JSON.parse(data.pc);
+      let mobile = JSON.parse(data.mobile);
+
+      console.log(android);
+
+      console.log(uploadFiles);
+      if (uploadFiles) {
+        for (const file of Object.keys(uploadFiles)) {
+          const filename = uploadFiles[file][0].filename;
+          const arr = file.replace('_image', '').split(/\_/);
+          console.log(arr);
+          const device = arr[0];
+          const type = arr[1];
+          if (device == 'android') {
+            console.log('안드로이드')
+            android[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'ios') {
+            console.log('아이오에스')
+            ios[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'mobile') {
+            mobile[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'pc') {
+            pc[type].image = `${imgUrl}${filename}`;
+          }
+        }
+      }
+
+      const actionsJson = [
+        {
+          action: action,
+          benefit: benefit,
+        },
+      ];
+
+      const displayCreateInfo = {
+        android: android,
+        ios: ios,
+        pc: pc,
+        mobile: mobile,
+      };
+
+      const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
+
+      const promotionInfo = await this.promotionReceiverInfoRepository.getOne(receiverId);
+      this.logger.log(`promotionInfo ${JSON.stringify(promotionInfo)}`);
+
+      const infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
+      this.logger.log(`infoAndConditionJson ${JSON.stringify(infoAndConditionJson)}`);
+
+      const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
+      this.logger.log(`final json: ${JSON.stringify(finalJson)}`);
+
+      const registrantInfo = await this.userRepository.findOne({ where: { userId } });
+
+      const updateData = {
+        idx: data.idx,
+        // promotionId,
+        title,
+        description,
+        receiverId,
+        groupNo: promotionInfo.groupNo,
+        conditionJson: JSON.stringify(finalJson),
+        userIdx: registrantInfo.idx,
+      };
+
+      console.log(updateData);
+
+      await this.promotionInfoRepository.update(updateData);
+
       this.logger.log('update() done');
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 }

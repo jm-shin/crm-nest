@@ -43,7 +43,7 @@ export class GroupService {
       await this.promotionReceiverGroupInfoRepository.save(data);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(`${error}`);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -59,7 +59,7 @@ export class GroupService {
       return groupList;
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -70,7 +70,7 @@ export class GroupService {
       return groupInfo ? groupInfo : [];
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -80,7 +80,7 @@ export class GroupService {
       this.logger.log('remove() done');
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -91,7 +91,7 @@ export class GroupService {
         .catch(() => `uno`);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -110,7 +110,7 @@ export class GroupService {
       return groupNoList;
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     }
   }
 }

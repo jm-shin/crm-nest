@@ -1,6 +1,6 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { PromotionReceiverInfo } from '../../../entities/promotionReceiverInfo.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -44,6 +44,7 @@ export class ReceiverService {
       return receiver ? receiver : [];
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -73,6 +74,7 @@ export class ReceiverService {
       await this.promotionReceiverInfoRepository.save(createReceiverData);
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -102,6 +104,7 @@ export class ReceiverService {
       await this.promotionReceiverInfoRepository.update({ receiverId }, updateReceiverData);
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -111,6 +114,7 @@ export class ReceiverService {
       this.logger.log(`delete done.(${JSON.stringify(receiverIds)} SET valid state = 0)`);
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -129,6 +133,7 @@ export class ReceiverService {
       return { condition: preview };
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 }

@@ -13,15 +13,14 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { ApiResponse } from '@nestjs/swagger';
 import { ReadReceiverDto } from './dto/readReceiver.dto';
-import { Request } from 'express';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
+import { User } from '../../../common/decorators/user.decorator';
 
 @Controller('api/promotion/receiver')
 export class ReceiverController {
@@ -37,11 +36,11 @@ export class ReceiverController {
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @Post('')
-  create(@Body() receiverData: CreateReceiverDto, @Req() req: Request) {
+  create(@Body() receiverData: CreateReceiverDto, @User() user) {
     this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
-    return this.promotionService.save(receiverData, req.user['id']).catch((error) => {
+    return this.promotionService.save(receiverData, user.id).catch((error) => {
       this.logger.error(error);
-      throw new InternalServerErrorException(error);
+      throw new InternalServerErrorException();
     });
   }
 
@@ -52,7 +51,7 @@ export class ReceiverController {
     return await this.promotionService.getAll(searchInfo)
       .catch((error) => {
         this.logger.error(error);
-        throw new InternalServerErrorException(error);
+        throw new InternalServerErrorException();
       });
   }
 
@@ -64,7 +63,7 @@ export class ReceiverController {
     return await this.promotionService.getOne(receiverId)
       .catch((error) => {
         this.logger.error(error);
-        throw new InternalServerErrorException(error);
+        throw new InternalServerErrorException();
       });
   }
 
@@ -72,12 +71,12 @@ export class ReceiverController {
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @Put('')
-  async patch(@Body('idx', ParseIntPipe) receiverId: number, @Body() updateData: UpdateReceiverDto, @Req() req: Request) {
+  async patch(@Body('idx', ParseIntPipe) receiverId: number, @Body() updateData: UpdateReceiverDto, @User() user) {
     this.logger.log(`updateData: ${JSON.stringify(updateData)}`);
-    return await this.promotionService.update(receiverId, updateData, req.user['id'])
+    return await this.promotionService.update(receiverId, updateData, user.id)
       .catch((error) => {
         this.logger.error(error);
-        throw new InternalServerErrorException(error);
+        throw new InternalServerErrorException();
       });
   }
 
@@ -89,7 +88,7 @@ export class ReceiverController {
     return await this.promotionService.delete(receiverId)
       .catch((error) => {
         this.logger.error(error);
-        throw new InternalServerErrorException(error);
+        throw new InternalServerErrorException();
       });
   }
 
@@ -102,7 +101,7 @@ export class ReceiverController {
       return await this.promotionService.conditionPreview(body.conditionText)
         .catch((error) => {
           this.logger.error(error);
-          throw new InternalServerErrorException(error);
+          throw new InternalServerErrorException();
         });
     } else {
       return new BadRequestException('check conditionText');

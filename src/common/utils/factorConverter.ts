@@ -192,46 +192,46 @@ export class FactorConverter {
     const areas_android = await makeAreaForm(android);
 
     const display = [
-        {
-        messagecase: messagecase? messagecase : "",
-        message: message? message : "",
-        messageurl: messageurl? messageurl : "",
+      {
+        messagecase: messagecase ? messagecase : '',
+        message: message ? message : '',
+        messageurl: messageurl ? messageurl : '',
         devices: [
           //android
           {
             devicetype: 'android',
-            alarm: alarm? alarm : "n",
-            push: push? push : "n",
-            edm: edm? edm : "n",
+            alarm: alarm ? alarm : 'n',
+            push: push ? push : 'n',
+            edm: edm ? edm : 'n',
             areas: areas_android,
           },
           //ios
           {
             devicetype: 'ios',
-            alarm: alarm? alarm : "n",
-            push: push? push : "n",
-            edm: edm? edm : "n",
+            alarm: alarm ? alarm : 'n',
+            push: push ? push : 'n',
+            edm: edm ? edm : 'n',
             areas: areas_ios,
           },
           //mobile
           {
             devicetype: 'mobile',
-            alarm: alarm? alarm : "n",
-            push: push? push : "n",
-            edm: edm? edm : "n",
+            alarm: alarm ? alarm : 'n',
+            push: push ? push : 'n',
+            edm: edm ? edm : 'n',
             areas: areas_mobile,
           },
           //pc
           {
             devicetype: 'pc',
-            alarm: alarm? alarm : "n",
-            push: push? push : "n",
-            edm: edm? edm : "n",
+            alarm: alarm ? alarm : 'n',
+            push: push ? push : 'n',
+            edm: edm ? edm : 'n',
             areas: areas_pc,
           },
         ],
-      }
-    ]
+      },
+    ];
     this.logger.log(JSON.stringify(display));
     return display;
   }
@@ -242,7 +242,7 @@ export class FactorConverter {
     console.log(`actions: ${JSON.stringify(actions)}`);
     console.log(`display: ${JSON.stringify(display)}`);
 
-    return  {
+    return {
       id: promotionId,
       info: infoAndCondition.info,
       actions: actions,
