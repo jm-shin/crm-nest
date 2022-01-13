@@ -18,7 +18,7 @@ async function bootstrap() {
     transform: true,
     // transformOptions: {enableImplicitConversion: true}
   }));
-  app.useStaticAssets(path.join(__dirname, '..', 'upload/image'), { prefix: '/imgurl/' });
+  app.useStaticAssets(path.join(__dirname, '..', 'upload/image'), { prefix: '/api/promotion/imgurl/' });
   setSwagger(app);
   await app.listen(port).then(() => console.info(`server listening on port:${port}`));
 }

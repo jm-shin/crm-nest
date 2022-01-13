@@ -21,7 +21,7 @@ const transports = {
   transports: [
     new winston.transports.Console(),
     new (require('winston-daily-rotate-file'))({
-      level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
+      level: process.env.LEVEL === 'production' ? 'info' : 'debug',
       dirname: './logs',
       filename: 'PROM.%DATE%.log',
       datePattern: 'MMDD',

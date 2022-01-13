@@ -39,7 +39,7 @@ export class ManagementController {
   @UseInterceptors(TransformInterceptor)
   // async create(@Body() createData: CreatePromotionDto) {
   async create(@Body() createData, @UploadedFiles() files: Express.Multer.File[], @User() user) {
-    this.logger.log(`createData: ${JSON.stringify(createData)}`);
+    // this.logger.log(`createData: ${JSON.stringify(createData)}`);
     const uploadedImgFiles = Object.assign({}, files);
     return this.managementService.save(createData, uploadedImgFiles, user.id);
   }

@@ -38,10 +38,12 @@ export class ManagementService {
       let ios = JSON.parse(data.ios);
       let pc = JSON.parse(data.pc);
       let mobile = JSON.parse(data.mobile);
-
+      
       //add image url
       if (uploadFiles) {
         for (const file of Object.keys(uploadFiles)) {
+          console.log('--------------------------------------------');
+          console.log(uploadFiles);
           const filename = uploadFiles[file][0].filename;
           const arr = file.split('_');
           const device = arr[0];
