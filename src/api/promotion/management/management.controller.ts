@@ -39,9 +39,10 @@ export class ManagementController {
   @UseInterceptors(TransformInterceptor)
   // async create(@Body() createData: CreatePromotionDto) {
   async create(@Body() createData, @UploadedFiles() files: Express.Multer.File[], @User() user) {
-    // this.logger.log(`createData: ${JSON.stringify(createData)}`);
+    this.logger.log(createData);
     const uploadedImgFiles = Object.assign({}, files);
-    return this.managementService.save(createData, uploadedImgFiles, user.id);
+    return this.managementService.save(createData, uploadedImgFiles, user.id)
+      .then(() => this.logger.log('save done()'));
   }
 
   @ApiResponse({ description: '프로모션 상세보기' })
@@ -81,6 +82,15 @@ export class ManagementController {
   @UseInterceptors(TransformInterceptor)
   async delete(@Body('idx') idx: number[]) {
     return this.managementService.remove(idx);
+  }
+  
+  //TODO: 프리뷰 만들기
+  @ApiResponse({description: '프로모션 조건 프리뷰 - 최종 JSON'})
+  @Post('preview')
+  @UseGuards(JwtAuthGuard)
+  preview (@Body() body) {
+
+    return;
   }
 
   //파일업로드 테스트

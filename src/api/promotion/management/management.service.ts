@@ -22,32 +22,27 @@ export class ManagementService {
   async save(data, uploadFiles, userId) {
     this.logger.log('save() start');
     try {
-      // if json type
-      // const { action, benefit, android, ios, pc, mobile} = data;
-
       const title = data.name;
       const description = data.description;
       const receiverId = parseInt(data.receiverId);
       const promotionId = data.id;
       const imgUrl = process.env.LOAD_LOCATION || '';
 
-      //json parse
-      const action = JSON.parse(data.action);
-      const benefit = JSON.parse(data.benefit);
-      let android = JSON.parse(data.android);
-      let ios = JSON.parse(data.ios);
-      let pc = JSON.parse(data.pc);
-      let mobile = JSON.parse(data.mobile);
+      //json parse twice
+      const action = JSON.parse(JSON.parse(data.action));
+      const benefit = JSON.parse(JSON.parse(data.benefit));
+      let android = JSON.parse(JSON.parse(data.android));
+      let ios = JSON.parse(JSON.parse(data.ios));
+      let pc = JSON.parse(JSON.parse(data.pc));
+      let mobile = JSON.parse(JSON.parse(data.mobile));
       
       //add image url
       if (uploadFiles) {
         for (const file of Object.keys(uploadFiles)) {
-          console.log('--------------------------------------------');
-          console.log(uploadFiles);
           const filename = uploadFiles[file][0].filename;
-          const arr = file.split('_');
-          const device = arr[0];
-          const type = arr[1];
+          const NameArr = file.replace('_image', '').split('_');
+          const device = NameArr[0];
+          const type = NameArr[2]? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
           if (device == 'android') {
             android[type].image = `${imgUrl}${filename}`;
           } else if (device == 'ios') {
@@ -182,28 +177,22 @@ export class ManagementService {
       const promotionId = data.id;
       const imgUrl = process.env.LOAD_LOCATION || '';
 
-      const action = JSON.parse(data.action);
-      const benefit = JSON.parse(data.benefit);
-      let android = JSON.parse(data.android);
-      let ios = JSON.parse(data.ios);
-      let pc = JSON.parse(data.pc);
-      let mobile = JSON.parse(data.mobile);
+      const action = JSON.parse(JSON.parse(data.action));
+      const benefit = JSON.parse(JSON.parse(data.benefit));
+      let android = JSON.parse(JSON.parse(data.android));
+      let ios = JSON.parse(JSON.parse(data.ios));
+      let pc = JSON.parse(JSON.parse(data.pc));
+      let mobile = JSON.parse(JSON.parse(data.mobile));
 
-      console.log(android);
-
-      console.log(uploadFiles);
       if (uploadFiles) {
         for (const file of Object.keys(uploadFiles)) {
           const filename = uploadFiles[file][0].filename;
-          const arr = file.replace('_image', '').split(/\_/);
-          console.log(arr);
-          const device = arr[0];
-          const type = arr[1];
+          const NameArr = file.replace('_image', '').split('_');
+          const device = NameArr[0];
+          const type = NameArr[2]? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
           if (device == 'android') {
-            console.log('안드로이드')
             android[type].image = `${imgUrl}${filename}`;
           } else if (device == 'ios') {
-            console.log('아이오에스')
             ios[type].image = `${imgUrl}${filename}`;
           } else if (device == 'mobile') {
             mobile[type].image = `${imgUrl}${filename}`;
