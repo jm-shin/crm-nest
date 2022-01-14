@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GroupService } from './group.service';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { Response } from 'express';
@@ -33,7 +33,7 @@ export class GroupController {
 
   private readonly logger = new Logger(GroupController.name);
 
-  @ApiResponse({ description: 'UNO 그룹 등록' })
+  @ApiOperation({ summary: 'UNO 그룹 등록', description: 'UNO 그룹관리에서 그룹을 등록한다.' })
   @UseGuards(JwtAuthGuard)
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
@@ -48,7 +48,7 @@ export class GroupController {
     return await this.groupService.create(file, createData, user.id);
   }
 
-  @ApiResponse({ description: 'UNO 그룹 리스트 조회' })
+  @ApiOperation({ summary: 'UNO 그룹 리스트 조회', description: 'UNO 그룹을 리스트 조회한다.' })
   @UseGuards(JwtAuthGuard)
   @Post('bring/list')
   @HttpCode(200)
@@ -57,7 +57,7 @@ export class GroupController {
     return await this.groupService.getAll(findOpt);
   }
 
-  @ApiResponse({ description: 'UNO 그룹 상세보기' })
+  @ApiOperation({ summary: 'UNO 그룹 상세보기', description: 'UNO 그룹 하나를 상세보기한다.' })
   @UseGuards(JwtAuthGuard)
   @Post('bring')
   @HttpCode(200)
@@ -66,7 +66,7 @@ export class GroupController {
     return this.groupService.getOne(groupId);
   }
 
-  @ApiResponse({ description: 'UNO 그룹 삭제' })
+  @ApiOperation({ summary: 'UNO 그룹 삭제', description: 'UNO 그룹들을 삭제한다.' })
   @UseGuards(JwtAuthGuard)
   @Delete('')
   @UseInterceptors(TransformInterceptor)
@@ -75,7 +75,7 @@ export class GroupController {
     return await this.groupService.remove(groupId);
   }
 
-  @ApiResponse({ description: 'uno list csv 다운로드' })
+  @ApiOperation({ summary: 'UNO 그룹 정보 CSV 파일 다운로드', description: 'UNO 정보 리스트를 CSV 형식으로 다운로드한다.' })
   @UseGuards(JwtAuthGuard)
   @Get('uno/download')
   async download(@Body('idx', ParseIntPipe) groupId: number, @Res() res: Response) {
@@ -94,7 +94,7 @@ export class GroupController {
     }
   }
 
-  @ApiResponse({ description: 'UNO 그룹 리스트 번호만 조회' })
+  @ApiOperation({ summary: 'UNO 그룹 리스트 번호 조회', description: 'UNO 그룹 리스트 중 번호만 조회한다.' })
   @UseGuards(JwtAuthGuard)
   @Get('bring/list/number')
   async getGroupNumList() {

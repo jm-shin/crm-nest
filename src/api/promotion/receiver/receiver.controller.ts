@@ -17,7 +17,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateReceiverDto } from './dto/createReceiver.dto';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { ReadReceiverDto } from './dto/readReceiver.dto';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { User } from '../../../common/decorators/user.decorator';
@@ -32,7 +32,7 @@ export class ReceiverController {
   private logger = new Logger(ReceiverController.name);
 
   //receiver api
-  @ApiResponse({ description: '프로모션 대상자 등록' })
+  @ApiOperation({ summary: '프로모션 대상자 등록', description: '프로모션 대상자를 등록한다.' })
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @Post('')
@@ -44,7 +44,7 @@ export class ReceiverController {
     });
   }
 
-  @ApiResponse({ description: '프로모션 대상자 리스트 조회' })
+  @ApiOperation({ summary: '프로모션 대상자 리스트', description: '프로모션 대상자 리스트를 조회한다.' })
   @UseGuards(JwtAuthGuard)
   @Post('/bring/list')
   async getAll(@Body() searchInfo: ReadReceiverDto) {
@@ -55,7 +55,7 @@ export class ReceiverController {
       });
   }
 
-  @ApiResponse({ description: '프로모션 대상자 상세 조회' })
+  @ApiOperation({ summary: '프로모션 대상자 상세보기', description: '프로모션 대상자 하나를 상세 조회한다' })
   @UseGuards(JwtAuthGuard)
   @Post('/bring')
   @HttpCode(HttpStatus.OK)
@@ -67,7 +67,7 @@ export class ReceiverController {
       });
   }
 
-  @ApiResponse({ description: '프로모션 대상자 수정' })
+  @ApiOperation({ summary: '프로모션 대상자 수정', description: '프로모션 대상자 하나를 수정한다.' })
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @Put('')
@@ -80,7 +80,7 @@ export class ReceiverController {
       });
   }
 
-  @ApiResponse({ description: '프로모션 대상자 삭제' })
+  @ApiOperation({ summary: '프로모션 대상자 삭제', description: '프로모션 대상자를 삭제한다. 복수 대상 가능함.' })
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @Delete()
@@ -92,7 +92,7 @@ export class ReceiverController {
       });
   }
 
-  @ApiResponse({ description: '대상자 조건 JSON 형식 미리보기' })
+  @ApiOperation({ summary: '프로모션 대상자 JSON 프리뷰',description: '프로모션 대상자 조건을 JSON 형식 미리보기한다.' })
   @UseGuards(JwtAuthGuard)
   @Post('/preview')
   @HttpCode(200)

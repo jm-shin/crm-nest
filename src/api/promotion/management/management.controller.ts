@@ -12,7 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ManagementService } from './management.service';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
@@ -30,7 +30,7 @@ export class ManagementController {
 
   private readonly logger = new Logger(ManagementController.name);
 
-  @ApiResponse({ description: '프로모션 등록' })
+  @ApiOperation({ summary: '프로모션관리 등록', description: '프로모션 관리에서 프로모션을 추가한다.' })
   @Post()
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
@@ -44,7 +44,7 @@ export class ManagementController {
       .then(() => this.logger.log('save done()'));
   }
 
-  @ApiResponse({ description: '프로모션 상세보기' })
+  @ApiOperation({ summary: '프로모션관리 상세보기', description: '프로모션 정보 하나를 상세보기한다.' })
   @Post('bring')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
@@ -52,7 +52,7 @@ export class ManagementController {
     return this.managementService.getOne(idx);
   }
 
-  @ApiResponse({ description: '프로모션 리스트 조회' })
+  @ApiOperation({ summary: '프로모션관리 리스트 조회', description: '프로모션 리스트를 조회한다.' })
   @Post('bring/list')
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
@@ -60,7 +60,7 @@ export class ManagementController {
     return this.managementService.getAll(findOpt);
   }
 
-  @ApiResponse({ description: '프로모션 수정' })
+  @ApiOperation({ summary: '프로모션관리 수정', description: '프로모션 정보를 수정한다' })
   @Put()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
@@ -75,7 +75,7 @@ export class ManagementController {
     return this.managementService.update(updateData, uploadedImgFiles, user.id);
   }
 
-  @ApiResponse({ description: '프로모션 삭제' })
+  @ApiOperation({ summary: '프로모션관리 삭제', description: '프로모션 정보를 삭제한다.(복수 허용)' })
   @Delete()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(TransformInterceptor)
@@ -83,7 +83,7 @@ export class ManagementController {
     return this.managementService.remove(idx);
   }
 
-  @ApiResponse({ description: '프로모션 조건 프리뷰 - 최종 JSON' })
+  @ApiOperation({ summary: '프로모션 최종 JSON 조건 프리뷰', description: '프로모션 조건 최종 JSON 형식 미리보기한다.' })
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @Post('preview')
   @UseGuards(JwtAuthGuard)
