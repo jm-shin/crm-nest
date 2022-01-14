@@ -5,7 +5,7 @@ import { PromotionInfo } from '../promotionInfo.entity';
 export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
 
   save(data) {
-    return this.repository.save(data)
+    return this.repository.save(data);
   }
 
   updateValidState(ids) {
@@ -19,7 +19,7 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
   }
 
   getAll(findOpt) {
-    const { title, description, registrant } = findOpt;
+    const { title, description, registrant, promotionId } = findOpt;
     const qb = this.repository
       .createQueryBuilder('promotion')
       .leftJoinAndSelect('promotion.User', 'user')
@@ -31,8 +31,9 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
       .where('promotion.validState = 1')
       .andWhere('promotion.title LIKE (:title)', { title })
       .andWhere('promotion.description LIKE (:description)', { description })
+      .andWhere('promotion.promotionId LIKE (:promotionId)', { promotionId })
       .andWhere('user.userName LIKE (:registrant)', { registrant })
-      .orderBy('promotion.idx')
+      .orderBy('promotion.idx');
 
     return qb.getRawMany();
   }
@@ -58,7 +59,7 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
       .createQueryBuilder()
       .update()
       .set(data)
-      .where('idx = :idx', {idx: data.idx})
+      .where('promotionId = :promotionId', { promotionId: data.promotionId });
     return qb.execute();
   }
 }

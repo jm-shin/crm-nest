@@ -12,4 +12,8 @@ export class ReadPromotionDto {
   @IsDefined()
   @IsString()
   readonly registrant: string;
+
+  @IsDefined()
+  @IsString()
+  readonly promotionId: string;
 }

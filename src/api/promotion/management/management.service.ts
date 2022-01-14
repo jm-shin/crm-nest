@@ -1,10 +1,11 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 import { PromotionInfoRepository } from '../../../entities/repository/promotionInfoRepository';
 import { FactorConverter } from '../../../common/utils/factorConverter';
 import { PromotionReceiverInfoRepository } from '../../../entities/repository/promotionReceiverInfoRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../entities/user.entity';
 import { Repository } from 'typeorm';
+import * as fs from 'fs';
 
 @Injectable()
 export class ManagementService {
@@ -19,6 +20,7 @@ export class ManagementService {
   private readonly factorConvertor = new FactorConverter();
   private readonly logger = new Logger(ManagementService.name);
 
+  //등록
   async save(data, uploadFiles, userId) {
     this.logger.log('save() start');
     try {
@@ -35,14 +37,14 @@ export class ManagementService {
       let ios = JSON.parse(JSON.parse(data.ios));
       let pc = JSON.parse(JSON.parse(data.pc));
       let mobile = JSON.parse(JSON.parse(data.mobile));
-      
+
       //add image url
       if (uploadFiles) {
         for (const file of Object.keys(uploadFiles)) {
           const filename = uploadFiles[file][0].filename;
           const NameArr = file.replace('_image', '').split('_');
           const device = NameArr[0];
-          const type = NameArr[2]? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+          const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
           if (device == 'android') {
             android[type].image = `${imgUrl}${filename}`;
           } else if (device == 'ios') {
@@ -79,6 +81,8 @@ export class ManagementService {
       this.logger.log(`promotionInfo ${JSON.stringify(promotionInfo)}`);
 
       const infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
+      infoAndConditionJson.info.name = title;
+      infoAndConditionJson.info.description = description;
       this.logger.log(`infoAndConditionJson ${JSON.stringify(infoAndConditionJson)}`);
 
       //final json 형식 만들기
@@ -99,7 +103,11 @@ export class ManagementService {
       await this.promotionInfoRepository.save(createData);
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException();
+      if (error.errno === 1062) {
+        throw new HttpException('ER_DUP_ENTRY', 409);
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
   }
 
@@ -120,6 +128,7 @@ export class ManagementService {
       title: findOpt.title.replace(/^|$/g, '%'),
       description: findOpt.description.replace(/^|$/g, '%'),
       registrant: findOpt.registrant.replace(/^|$/g, '%'),
+      promotionId: findOpt.promotionId.replace(/^|$/g, '%'),
     };
     try {
       this.logger.log(`find target option: ${JSON.stringify(target)}`);
@@ -189,7 +198,7 @@ export class ManagementService {
           const filename = uploadFiles[file][0].filename;
           const NameArr = file.replace('_image', '').split('_');
           const device = NameArr[0];
-          const type = NameArr[2]? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+          const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
           if (device == 'android') {
             android[type].image = `${imgUrl}${filename}`;
           } else if (device == 'ios') {
@@ -222,6 +231,8 @@ export class ManagementService {
       this.logger.log(`promotionInfo ${JSON.stringify(promotionInfo)}`);
 
       const infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
+      infoAndConditionJson.info.name = title;
+      infoAndConditionJson.info.description = description;
       this.logger.log(`infoAndConditionJson ${JSON.stringify(infoAndConditionJson)}`);
 
       const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
@@ -230,8 +241,7 @@ export class ManagementService {
       const registrantInfo = await this.userRepository.findOne({ where: { userId } });
 
       const updateData = {
-        idx: data.idx,
-        // promotionId,
+        promotionId,
         title,
         description,
         receiverId,
@@ -240,11 +250,75 @@ export class ManagementService {
         userIdx: registrantInfo.idx,
       };
 
-      console.log(updateData);
+      this.logger.log(updateData);
 
       await this.promotionInfoRepository.update(updateData);
 
       this.logger.log('update() done');
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getPreview(data, uploadFiles) {
+    this.logger.log('getPreview() start');
+
+    try {
+      const title = data.name;
+      const description = data.description;
+      const imgUrl = process.env.LOAD_LOCATION || '';
+      const receiverId = parseInt(data.receiverId);
+      const promotionId = data.id;
+
+      const action = JSON.parse(JSON.parse(data.action));
+      const benefit = JSON.parse(JSON.parse(data.benefit));
+      let android = JSON.parse(JSON.parse(data.android));
+      let ios = JSON.parse(JSON.parse(data.ios));
+      let pc = JSON.parse(JSON.parse(data.pc));
+      let mobile = JSON.parse(JSON.parse(data.mobile));
+
+      if (uploadFiles) {
+        for (const file of Object.keys(uploadFiles)) {
+          const filename = uploadFiles[file][0].filename;
+          fs.unlinkSync(`${process.env.UPLOAD_LOCATION}/${filename}`);
+          const NameArr = file.replace('_image', '').split('_');
+          const device = NameArr[0];
+          const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+          if (device == 'android') {
+            android[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'ios') {
+            ios[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'mobile') {
+            mobile[type].image = `${imgUrl}${filename}`;
+          } else if (device == 'pc') {
+            pc[type].image = `${imgUrl}${filename}`;
+          }
+        }
+      }
+
+      const actionsJson = [
+        {
+          action: action,
+          benefit: benefit,
+        },
+      ];
+
+      const displayCreateInfo = {
+        android: android,
+        ios: ios,
+        pc: pc,
+        mobile: mobile,
+      };
+
+      const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
+      const promotionInfo = await this.promotionReceiverInfoRepository.getOne(receiverId);
+      let infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
+      infoAndConditionJson.info.name = title;
+      infoAndConditionJson.info.description = description;
+      const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
+
+      return finalJson;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();

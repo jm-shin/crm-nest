@@ -7,7 +7,6 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Req,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -83,24 +82,15 @@ export class ManagementController {
   async delete(@Body('idx') idx: number[]) {
     return this.managementService.remove(idx);
   }
-  
-  //TODO: 프리뷰 만들기
-  @ApiResponse({description: '프로모션 조건 프리뷰 - 최종 JSON'})
+
+  @ApiResponse({ description: '프로모션 조건 프리뷰 - 최종 JSON' })
+  @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @Post('preview')
   @UseGuards(JwtAuthGuard)
-  preview (@Body() body) {
-
-    return;
-  }
-
-  //파일업로드 테스트
-  @Post('upload')
-  @UseInterceptors(FileFieldsInterceptor([
-    { name: 'file', maxCount: 1 },
-    { name: 'image', maxCount: 1 },
-  ], multerOptions))
-  uploadImage(@UploadedFiles() files: Express.Multer.File[], @Body('json') json, @Req() request) {
-    // const obj = JSON.parse(JSON.stringify(files));
-    // console.log(obj);
+  @HttpCode(200)
+  preview(@Body() body, @UploadedFiles() files: Express.Multer.File[]) {
+    //const data = Object.assign({}, body);
+    const uploadedImgFiles = Object.assign({}, files);
+    return this.managementService.getPreview(body, uploadedImgFiles);
   }
 }
