@@ -1,32 +1,4 @@
-import { IsDefined, IsOptional, IsString } from 'class-validator';
-import { Type } from 'class-transformer';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreatePromotionDto } from './createPromotion.dto';
 
-export class UpdatePromotionDto {
-
-  @IsDefined()
-  @Type(() => Number)
-  readonly idx: number;
-
-  @IsDefined()
-  @IsString()
-  readonly title: string;
-
-  @IsOptional()
-  @IsString()
-  readonly description: string;
-
-  @IsOptional()
-  @IsString()
-  readonly promotionId: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  readonly groupNo: number;
-  
-  @IsOptional()
-  @Type(() => Number)
-  readonly receiverId: number;
-
-  @IsOptional()
-  readonly conditionJson: string;
-}
+export class UpdatePromotionDto extends PartialType(CreatePromotionDto){}

@@ -1,7 +1,7 @@
 import { AuthModule } from './auth/auth.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { Connection } from 'typeorm';
-import { LoggerMiddleware } from './middleware/logger.middleware';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
 import { UserModule } from './api/user/user.module';
@@ -52,6 +52,7 @@ const transports = {
       synchronize: false,
       connectTimeout: 10000,
       logging: true,
+      autoLoadEntities: true,
     }),
     TypeOrmModule.forRoot({
       name: 'stats',
@@ -62,11 +63,12 @@ const transports = {
       password: process.env.EX_DB_PASS,
       database: process.env.EX_DB_NAME,
       entities: [
-        'dist/entities/*.entity{.ts,.js}',
+        'dist/entities/external/*.entity{.ts,.js}',
       ],
       synchronize: false,
       connectTimeout: 10000,
       logging: true,
+      autoLoadEntities: true,
     }),
     WinstonModule.forRoot(transports),
     ScheduleModule.forRoot(),

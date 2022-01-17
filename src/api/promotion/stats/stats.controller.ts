@@ -12,5 +12,11 @@ export class StatsController {
   getOne() {
     return this.statsService.find();
   }
+  
+  @ApiOperation({ summary: '통계 다운로드', description:'통계 csv 파일로 다운로드'})
+  @Get('download')
+  downloadBenefitStat () {
+    return this.statsService.getBenefitStatDownload();
+  }
 
 }

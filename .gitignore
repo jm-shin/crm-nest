@@ -39,8 +39,9 @@ lerna-debug.log*
 ormconfig.json
 
 #json file
-factor.json
-request.factor.json
+/tmp
+tmp/factor.json
+tmp/request.factor.json
 
 #upload files
 /upload

@@ -2,7 +2,7 @@ import { GroupService } from './group.service';
 import { GroupController } from './group.controller';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PromotionReceiverGroupInfoRepository } from '../../../entities/repository/promotionReceiverGroupInfoRepository';
+import { PromotionReceiverGroupInfoRepository } from '../../../repository/promotionReceiverGroupInfo.repository';
 import { User } from '../../../entities/user.entity';
 
 @Module({

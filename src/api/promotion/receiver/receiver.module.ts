@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { FactorConverter } from '../../../common/utils/factorConverter';
 import { User } from '../../../entities/user.entity';
-import { PromotionReceiverInfoRepository } from '../../../entities/repository/promotionReceiverInfoRepository';
+import { PromotionReceiverInfoRepository } from '../../../repository/promotionReceiverInfo.repository';
 
 @Module({
   imports: [

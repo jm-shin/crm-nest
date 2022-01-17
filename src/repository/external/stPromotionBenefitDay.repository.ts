@@ -1,5 +1,5 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { stPromotionBenefitDay } from '../stPromotionBenefitDay.entity';
+import { stPromotionBenefitDay } from '../../entities/external/stPromotionBenefitDay.entity';
 
 
 @EntityRepository(stPromotionBenefitDay)

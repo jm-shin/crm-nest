@@ -1,5 +1,5 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { User } from '../../entities/user.entity';
+import { User } from '../entities/user.entity';
 import { Logger } from '@nestjs/common';
 
 @EntityRepository(User)

@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  UploadedFile,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -16,10 +17,12 @@ import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
-import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../../../common/utils/multerOptions';
 import { User } from '../../../common/decorators/user.decorator';
 import { uploadImageFileList } from '../../../common/utils/uploadImageFileList';
+import { CreatePromotionDto } from './dto/createPromotion.dto';
+import { UpdatePromotionDto } from './dto/updatePromotion.dto';
 
 @Controller('api/promotion/management')
 export class ManagementController {
@@ -36,8 +39,7 @@ export class ManagementController {
   @HttpCode(200)
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @UseInterceptors(TransformInterceptor)
-  // async create(@Body() createData: CreatePromotionDto) {
-  async create(@Body() createData, @UploadedFiles() files: Express.Multer.File[], @User() user) {
+  async create(@Body() createData: CreatePromotionDto, @UploadedFiles() files: Express.Multer.File[], @User() user) {
     this.logger.log(createData);
     const uploadedImgFiles = Object.assign({}, files);
     return this.managementService.save(createData, uploadedImgFiles, user.id)
@@ -67,8 +69,7 @@ export class ManagementController {
   @UseInterceptors(TransformInterceptor)
   async update(
     @UploadedFiles() files: Express.Multer.File[],
-    // @Body() updateData: UpdatePromotionDto,
-    @Body() updateData,
+    @Body() updateData: UpdatePromotionDto,
     @User() user,
   ) {
     const uploadedImgFiles = Object.assign({}, files);
@@ -89,8 +90,15 @@ export class ManagementController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   preview(@Body() body, @UploadedFiles() files: Express.Multer.File[]) {
-    //const data = Object.assign({}, body);
     const uploadedImgFiles = Object.assign({}, files);
     return this.managementService.getPreview(body, uploadedImgFiles);
+  }
+  
+  @ApiOperation({summary: '프로모션관리 등록 JSON TYPE', description: '프로모션관리 등록에서 JSON 타입으로 등록한다.'})
+  @UseInterceptors(FileInterceptor('file'))
+  @Post('json')
+  createPromotionTypeJSON (@UploadedFile() file: Express.Multer.File) {
+      console.log(file);
+      return this.managementService.registerJSON(file);
   }
 }

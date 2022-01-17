@@ -1,7 +1,7 @@
 import { HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { PromotionInfoRepository } from '../../../entities/repository/promotionInfoRepository';
+import { PromotionInfoRepository } from '../../../repository/promotionInfo.repository';
 import { FactorConverter } from '../../../common/utils/factorConverter';
-import { PromotionReceiverInfoRepository } from '../../../entities/repository/promotionReceiverInfoRepository';
+import { PromotionReceiverInfoRepository } from '../../../repository/promotionReceiverInfo.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../entities/user.entity';
 import { Repository } from 'typeorm';
@@ -20,7 +20,6 @@ export class ManagementService {
   private readonly factorConvertor = new FactorConverter();
   private readonly logger = new Logger(ManagementService.name);
 
-  //등록
   async save(data, uploadFiles, userId) {
     this.logger.log('save() start');
     try {
@@ -73,10 +72,10 @@ export class ManagementService {
         mobile: mobile,
       };
 
-      //조건 json: display
+      //condition: display
       const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
 
-      //condition,info 조건 불러오기
+      //get condition,info
       const promotionInfo = await this.promotionReceiverInfoRepository.getOne(receiverId);
       this.logger.log(`promotionInfo ${JSON.stringify(promotionInfo)}`);
 
@@ -85,7 +84,7 @@ export class ManagementService {
       infoAndConditionJson.info.description = description;
       this.logger.log(`infoAndConditionJson ${JSON.stringify(infoAndConditionJson)}`);
 
-      //final json 형식 만들기
+      //final json form
       const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
       this.logger.log(`final json: ${JSON.stringify(finalJson)}`);
 
@@ -323,5 +322,12 @@ export class ManagementService {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
+  }
+
+  async registerJSON(file) {
+    const obj = JSON.parse(file.buffer.toString());
+    console.log(obj.info);
+
+    // await this.promotionReceiverInfoRepository.save();
   }
 }

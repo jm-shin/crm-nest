@@ -3,7 +3,7 @@ import { UserController } from '../user.controller';
 import { UserService } from '../user.service';
 import * as faker from 'faker';
 import { User } from '../../../entities/user.entity';
-import { UserRepository } from '../user.repository';
+import { UserRepository } from '../../../repository/user.repository';
 
 describe('UsersController', () => {
   let userController: UserController;

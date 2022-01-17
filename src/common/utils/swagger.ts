@@ -13,5 +13,5 @@ export function setSwagger(app: INestApplication): void {
       'access-token')
     .build();
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('api/promotion/swagger', app, document);
+  SwaggerModule.setup('api', app, document);
 }
