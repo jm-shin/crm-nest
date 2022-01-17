@@ -26,7 +26,7 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
       .select([
         'promotion.idx AS idx', 'promotion.title AS title', 'promotion.description AS description',
         'promotion.promotionId AS promotionId', 'DATE_FORMAT(promotion.createdAt, "%Y-%m-%d %T") AS createdAt',
-        'user.userName AS userName',
+        'user.userName AS registrant',
       ])
       .where('promotion.validState = 1')
       .andWhere('promotion.title LIKE (:title)', { title })
@@ -44,7 +44,7 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
       .leftJoinAndSelect('promotion.User', 'user')
       .select([
         'promotion.idx AS idx', 'promotion.title AS title', 'promotion.description AS description',
-        'user.userName AS userName', 'user.email AS email',
+        'user.userName AS registrant', 'user.email AS email',
         'promotion.promotionId AS promotionId', 'promotion.groupNo AS groupNo', 'promotion.receiverId AS receiverId',
         'promotion.conditionJson AS conditionJson',
         'promotion.progressState AS progressState', 'DATE_FORMAT(promotion.createdAt, "%Y-%m-%d %T") AS createdAt',

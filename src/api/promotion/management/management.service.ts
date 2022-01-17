@@ -153,7 +153,7 @@ export class ManagementService {
           idx: promotionInfo.idx,
           name: promotionInfo.title,
           description: promotionInfo.description,
-          userName: promotionInfo.userName,
+          registrant: promotionInfo.registrant,
           email: promotionInfo.email,
           id: promotionInfo.promotionId,
           receiverId: promotionInfo.receiverId,
@@ -324,10 +324,32 @@ export class ManagementService {
     }
   }
 
-  async registerJSON(file) {
-    const obj = JSON.parse(file.buffer.toString());
-    console.log(obj.info);
+  async registerJSON(file, userId) {
+    this.logger.log('registerJSON() start');
+    try {
+      const obj = JSON.parse(file.buffer.toString());
+      this.logger.log(JSON.stringify(obj));
+      const info = obj.info;
+      const registrantInfo = await this.userRepository.findOne({ where: { userId } });
 
-    // await this.promotionReceiverInfoRepository.save();
+      const createData = {
+        promotionId: obj.id,
+        title: info.name,
+        description: info.description,
+        userIdx: registrantInfo.idx,
+        receiverId: 0,
+        groupNo: info.group,
+        conditionJson: JSON.stringify(obj),
+        progress_state: 0,
+      };
+      await this.promotionInfoRepository.save(createData);
+    } catch (error) {
+      this.logger.error(error);
+      if (error.errno === 1062) {
+        throw new HttpException('ER_DUP_ENTRY', 409);
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 }

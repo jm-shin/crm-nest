@@ -1,4 +1,4 @@
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './api/auth/auth.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
@@ -53,6 +53,7 @@ const transports = {
       connectTimeout: 10000,
       logging: true,
       autoLoadEntities: true,
+      keepConnectionAlive: true,
     }),
     TypeOrmModule.forRoot({
       name: 'stats',
@@ -69,6 +70,7 @@ const transports = {
       connectTimeout: 10000,
       logging: true,
       autoLoadEntities: true,
+      keepConnectionAlive: true,
     }),
     WinstonModule.forRoot(transports),
     ScheduleModule.forRoot(),

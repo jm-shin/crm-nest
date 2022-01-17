@@ -96,9 +96,10 @@ export class ManagementController {
   
   @ApiOperation({summary: '프로모션관리 등록 JSON TYPE', description: '프로모션관리 등록에서 JSON 타입으로 등록한다.'})
   @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(TransformInterceptor)
+  @HttpCode(200)
   @Post('json')
-  createPromotionTypeJSON (@UploadedFile() file: Express.Multer.File) {
-      console.log(file);
-      return this.managementService.registerJSON(file);
+  createPromotionTypeJSON (@UploadedFile() file: Express.Multer.File, @User() user) {
+      return this.managementService.registerJSON(file, user.id);
   }
 }
