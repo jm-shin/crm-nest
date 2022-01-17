@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { stPromotionBenefitDay } from '../../../entities/external/stPromotionBenefitDay.entity';
+import { stPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
 import { Repository } from 'typeorm';
 import { parse } from 'json2csv';
 

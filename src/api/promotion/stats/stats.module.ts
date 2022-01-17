@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StatsController } from './stats.controller';
 import { StatsService } from './stats.service';
-import { stPromotionBenefitDay } from '../../../entities/external/stPromotionBenefitDay.entity';
+import { stPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
 
 @Module({
   imports: [

@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { ManagementService } from './management.service';
 import { ApiOperation } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';

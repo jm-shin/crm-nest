@@ -1,9 +1,9 @@
 import { HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { PromotionInfoRepository } from '../../../repository/promotionInfo.repository';
+import { PromotionInfoRepository } from '../../../model/repository/promotionInfo.repository';
 import { FactorConverter } from '../../../common/utils/factorConverter';
-import { PromotionReceiverInfoRepository } from '../../../repository/promotionReceiverInfo.repository';
+import { PromotionReceiverInfoRepository } from '../../../model/repository/promotionReceiverInfo.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../../entities/user.entity';
+import { User } from '../../../model/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
 

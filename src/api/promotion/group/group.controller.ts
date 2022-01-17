@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { GroupService } from './group.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { Response } from 'express';
 import moment from 'moment';
 import { CreateGroupDto } from './dto/createGroup.dto';

@@ -3,8 +3,8 @@ import { ReceiverController } from './receiver.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { FactorConverter } from '../../../common/utils/factorConverter';
-import { User } from '../../../entities/user.entity';
-import { PromotionReceiverInfoRepository } from '../../../repository/promotionReceiverInfo.repository';
+import { User } from '../../../model/entities/user.entity';
+import { PromotionReceiverInfoRepository } from '../../../model/repository/promotionReceiverInfo.repository';
 
 @Module({
   imports: [

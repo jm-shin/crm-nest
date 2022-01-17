@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ReceiverService } from '../receiver.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PromotionReceiverInfo } from '../../../../entities/promotionReceiverInfo.entity';
+import { PromotionReceiverInfo } from '../../../../model/entities/promotionReceiverInfo.entity';
 
 class MockPromotionReceiverRepository {
   #data = [

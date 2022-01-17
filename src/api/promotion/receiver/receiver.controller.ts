@@ -1,5 +1,5 @@
 import { UpdateReceiverDto } from './dto/updateReceiver.dto';
-import { JwtAuthGuard } from '../../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { ReceiverService } from './receiver.service';
 import {
   BadRequestException,

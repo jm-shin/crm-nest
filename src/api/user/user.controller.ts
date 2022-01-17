@@ -1,6 +1,6 @@
 import { Controller, Get, Logger, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('api/promotion/system/user')

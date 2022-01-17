@@ -47,7 +47,7 @@ const transports = {
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
       entities: [
-        'dist/entities/*.entity{.ts,.js}',
+        'dist/model/entities/*.entity{.ts,.js}',
       ],
       synchronize: false,
       connectTimeout: 10000,
@@ -63,7 +63,7 @@ const transports = {
       password: process.env.EX_DB_PASS,
       database: process.env.EX_DB_NAME,
       entities: [
-        'dist/entities/external/*.entity{.ts,.js}',
+        'dist/model/entities/external/*.entity{.ts,.js}',
       ],
       synchronize: false,
       connectTimeout: 10000,

@@ -1,8 +1,8 @@
 import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
-import { PromotionReceiverGroupInfoRepository } from '../../../repository/promotionReceiverGroupInfo.repository';
+import { PromotionReceiverGroupInfoRepository } from '../../../model/repository/promotionReceiverGroupInfo.repository';
 import { CsvConverter } from '../../../common/utils/csvConverter';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../../../entities/user.entity';
+import { User } from '../../../model/entities/user.entity';
 import { Repository } from 'typeorm';
 
 const { parse } = require('json2csv');
