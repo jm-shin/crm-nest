@@ -2,11 +2,14 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
+  InternalServerErrorException,
   Logger,
   ParseIntPipe,
   Post,
   Put,
+  Res,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -23,6 +26,7 @@ import { User } from '../../../common/decorators/user.decorator';
 import { uploadImageFileList } from '../../../common/utils/uploadImageFileList';
 import { CreatePromotionDto } from './dto/createPromotion.dto';
 import { UpdatePromotionDto } from './dto/updatePromotion.dto';
+import { Readable } from 'stream';
 
 @Controller('api/promotion/management')
 export class ManagementController {
@@ -102,5 +106,25 @@ export class ManagementController {
   @Post('json')
   createPromotionTypeJSON (@UploadedFile() file: Express.Multer.File, @User() user) {
       return this.managementService.registerJSON(file, user.id);
+  }
+
+  @ApiOperation({summary: '프로모션관리 - JSON 파일 내려받기', description: '최종 JSON 파일을 내려받습니다.'})
+  @UseGuards(JwtAuthGuard)
+  @Get('download/json')
+  async downloadPromotionJsonFile (@Body('idx') idx, @Res() res) {
+    try {
+      const json = await this.managementService.getDownloadPromotionJson(158);
+      const result = JSON.stringify(json, null, " ");
+      //test
+      const readable = new Readable();
+      readable.push(result);
+      readable.push(null);
+      res.set('Content-Type', 'application/json');
+      res.set('Content-disposition', 'attachment; filename=' + 'factor.json');
+      readable.pipe(res);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
   }
 }

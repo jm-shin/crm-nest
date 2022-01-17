@@ -1,4 +1,4 @@
-import { HttpException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { HttpException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { PromotionInfoRepository } from '../../../model/repository/promotionInfo.repository';
 import { FactorConverter } from '../../../common/utils/factorConverter';
 import { PromotionReceiverInfoRepository } from '../../../model/repository/promotionReceiverInfo.repository';
@@ -350,6 +350,17 @@ export class ManagementService {
       } else {
         throw new InternalServerErrorException();
       }
+    }
+  }
+
+  async getDownloadPromotionJson(promotionId) {
+    this.logger.log('download promotion json file start');
+    try {
+      const conditionJson = await this.promotionInfoRepository.getOne(promotionId).then((info) => info.conditionJson);
+      return JSON.parse(conditionJson);
+    } catch (error) {
+      this.logger.error(error);
+      throw new NotFoundException();
     }
   }
 }
