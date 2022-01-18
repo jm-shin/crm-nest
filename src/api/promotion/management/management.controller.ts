@@ -27,6 +27,7 @@ import { uploadImageFileList } from '../../../common/utils/uploadImageFileList';
 import { CreatePromotionDto } from './dto/createPromotion.dto';
 import { UpdatePromotionDto } from './dto/updatePromotion.dto';
 import { Readable } from 'stream';
+import contentDisposition from 'content-disposition';
 
 @Controller('api/promotion/management')
 export class ManagementController {
@@ -97,31 +98,46 @@ export class ManagementController {
     const uploadedImgFiles = Object.assign({}, files);
     return this.managementService.getPreview(body, uploadedImgFiles);
   }
-  
-  @ApiOperation({summary: '프로모션관리 등록 JSON TYPE', description: '프로모션관리 등록에서 JSON 타입으로 등록한다.'})
+
+  @ApiOperation({ summary: '프로모션관리 등록 JSON TYPE', description: '프로모션관리 등록에서 JSON 타입으로 등록한다.' })
   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @Post('json')
-  createPromotionTypeJSON (@UploadedFile() file: Express.Multer.File, @User() user) {
-      return this.managementService.registerJSON(file, user.id);
+  createPromotionTypeJSON(@UploadedFile() file: Express.Multer.File, @User() user) {
+    return this.managementService.registerJSON(file, user.id);
   }
 
-  @ApiOperation({summary: '프로모션관리 - JSON 파일 내려받기', description: '최종 JSON 파일을 내려받습니다.'})
+  @ApiOperation({ summary: '프로모션관리 - JSON 파일 내려받기', description: '최종 JSON 파일을 내려받습니다.' })
   @UseGuards(JwtAuthGuard)
   @Get('download/json')
-  async downloadPromotionJsonFile (@Body('idx') idx, @Res() res) {
+  async downloadPromotionJsonFile(@Body('idx') idx, @Res() res) {
     try {
-      const json = await this.managementService.getDownloadPromotionJson(158);
-      const result = JSON.stringify(json, null, " ");
-      //test
+      this.logger.log('json download start');
+      const json = await this.managementService.getDownloadPromotionJson(idx);
+      const result = JSON.stringify(json, null, ' ');
+      const fileName = `${json.info.name}.json`;
+      //stream
       const readable = new Readable();
       readable.push(result);
       readable.push(null);
       res.set('Content-Type', 'application/json');
-      res.set('Content-disposition', 'attachment; filename=' + 'factor.json');
+      res.setHeader('Content-Disposition', contentDisposition(fileName));
       readable.pipe(res);
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  //TODO: json 읽기> stream > 외부 서버 > 배포
+  @ApiOperation({ summary: 'JSON 파일 배포', description: '프로모션 실행을 위해 JSON 파일 배포 실행한다.' })
+  @Post('release/json')
+  async releaseJSON() {
+    try {
+      this.logger.log('promotion release start');
+      return { statusCode: 200, message: 'success' };
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();

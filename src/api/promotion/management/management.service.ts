@@ -356,7 +356,8 @@ export class ManagementService {
   async getDownloadPromotionJson(promotionId) {
     this.logger.log('download promotion json file start');
     try {
-      const conditionJson = await this.promotionInfoRepository.getOne(promotionId).then((info) => info.conditionJson);
+      const conditionJson = await this.promotionInfoRepository.getOne(promotionId)
+        .then((info) => info.conditionJson);
       return JSON.parse(conditionJson);
     } catch (error) {
       this.logger.error(error);
