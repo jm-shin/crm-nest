@@ -39,11 +39,11 @@ export class ManagementController {
   private readonly logger = new Logger(ManagementController.name);
 
   @ApiOperation({ summary: '프로모션관리 등록', description: '프로모션 관리에서 프로모션을 추가한다.' })
-  @Post()
   @UseGuards(JwtAuthGuard)
-  @HttpCode(200)
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @UseInterceptors(TransformInterceptor)
+  @HttpCode(200)
+  @Post()
   async create(@Body() createData: CreatePromotionDto, @UploadedFiles() files: Express.Multer.File[], @User() user) {
     this.logger.log(createData);
     const uploadedImgFiles = Object.assign({}, files);
@@ -52,26 +52,26 @@ export class ManagementController {
   }
 
   @ApiOperation({ summary: '프로모션관리 상세보기', description: '프로모션 정보 하나를 상세보기한다.' })
-  @Post('bring')
-  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @Post('bring')
   async findOne(@Body('idx', ParseIntPipe) idx: number) {
     return this.managementService.getOne(idx);
   }
 
   @ApiOperation({ summary: '프로모션관리 리스트 조회', description: '프로모션 리스트를 조회한다.' })
-  @Post('bring/list')
-  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @Post('bring/list')
   async findAll(@Body() findOpt: ReadPromotionDto) {
     return this.managementService.getAll(findOpt);
   }
 
   @ApiOperation({ summary: '프로모션관리 수정', description: '프로모션 정보를 수정한다' })
-  @Put()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @UseInterceptors(TransformInterceptor)
+  @Put()
   async update(
     @UploadedFiles() files: Express.Multer.File[],
     @Body() updateData: UpdatePromotionDto,
@@ -82,27 +82,27 @@ export class ManagementController {
   }
 
   @ApiOperation({ summary: '프로모션관리 삭제', description: '프로모션 정보를 삭제한다.(복수 허용)' })
-  @Delete()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(TransformInterceptor)
+  @Delete()
   async delete(@Body('idx') idx: number[]) {
     return this.managementService.remove(idx);
   }
 
   @ApiOperation({ summary: '프로모션 최종 JSON 조건 프리뷰', description: '프로모션 조건 최종 JSON 형식 미리보기한다.' })
-  @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
-  @Post('preview')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
   @HttpCode(200)
+  @Post('preview')
   preview(@Body() body, @UploadedFiles() files: Express.Multer.File[]) {
     const uploadedImgFiles = Object.assign({}, files);
     return this.managementService.getPreview(body, uploadedImgFiles);
   }
 
   @ApiOperation({ summary: '프로모션관리 등록 JSON TYPE', description: '프로모션관리 등록에서 JSON 타입으로 등록한다.' })
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(TransformInterceptor)
-  @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @Post('json')
   createPromotionTypeJSON(@UploadedFile() file: Express.Multer.File, @User() user) {
@@ -111,7 +111,7 @@ export class ManagementController {
 
   @ApiOperation({ summary: '프로모션관리 - JSON 파일 내려받기', description: '최종 JSON 파일을 내려받습니다.' })
   @UseGuards(JwtAuthGuard)
-  @Get('download/json')
+  @Get('json/download')
   async downloadPromotionJsonFile(@Body('idx') idx, @Res() res) {
     try {
       this.logger.log('json download start');
@@ -133,8 +133,9 @@ export class ManagementController {
 
   //TODO: json 읽기> stream > 외부 서버 > 배포
   @ApiOperation({ summary: 'JSON 파일 배포', description: '프로모션 실행을 위해 JSON 파일 배포 실행한다.' })
-  @Post('release/json')
-  async releaseJSON() {
+  @HttpCode(200)
+  @Post('json/release')
+  async releaseJSON(@Body() body) {
     try {
       this.logger.log('promotion release start');
       return { statusCode: 200, message: 'success' };
