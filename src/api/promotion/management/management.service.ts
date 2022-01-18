@@ -328,6 +328,7 @@ export class ManagementService {
     this.logger.log('registerJSON() start');
     try {
       const obj = JSON.parse(file.buffer.toString());
+      console.log(obj);
       this.logger.log(JSON.stringify(obj));
       const info = obj.info;
       const registrantInfo = await this.userRepository.findOne({ where: { userId } });
@@ -335,10 +336,10 @@ export class ManagementService {
       const createData = {
         promotionId: obj.id,
         title: info.name,
-        description: info.description,
+        description: info.description? info.description : "",
         userIdx: registrantInfo.idx,
         receiverId: 0,
-        groupNo: info.group,
+        groupNo: info.group? info.group : 0,
         conditionJson: JSON.stringify(obj),
         progress_state: 0,
       };
