@@ -46,6 +46,7 @@ export class ReceiverController {
 
   @ApiOperation({ summary: '프로모션 대상자 리스트', description: '프로모션 대상자 리스트를 조회한다.' })
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
   @Post('/bring/list')
   async getAll(@Body() searchInfo: ReadReceiverDto) {
     return await this.promotionService.getAll(searchInfo)

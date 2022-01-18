@@ -24,7 +24,7 @@ export class PromotionInfoRepository extends AbstractRepository<PromotionInfo> {
       .createQueryBuilder('promotion')
       .leftJoinAndSelect('promotion.User', 'user')
       .select([
-        'promotion.idx AS idx', 'promotion.title AS title', 'promotion.description AS description',
+        'promotion.idx AS idx', 'promotion.title AS name', 'promotion.description AS description',
         'promotion.promotionId AS promotionId', 'DATE_FORMAT(promotion.createdAt, "%Y-%m-%d %T") AS createdAt',
         'user.userName AS registrant',
       ])

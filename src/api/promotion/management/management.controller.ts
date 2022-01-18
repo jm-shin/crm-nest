@@ -9,6 +9,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Res,
   UploadedFile,
   UploadedFiles,
@@ -112,15 +113,15 @@ export class ManagementController {
   @ApiOperation({ summary: '프로모션관리 - JSON 파일 내려받기', description: '최종 JSON 파일을 내려받습니다.' })
   @UseGuards(JwtAuthGuard)
   @Get('json/download')
-  async downloadPromotionJsonFile(@Body('idx') idx, @Res() res) {
+  async downloadPromotionJsonFile(@Query('idx') idx, @Res() res) {
     try {
       this.logger.log('json download start');
-      const json = await this.managementService.getDownloadPromotionJson(idx);
-      const result = JSON.stringify(json, null, ' ');
-      const fileName = `${json.info.name}.json`;
+      const promotionJSON = await this.managementService.getDownloadPromotionJson(idx);
+      const finalJSON = JSON.stringify(promotionJSON, null, ' ');
+      const fileName = `${promotionJSON.info.name}.json`;
       //stream
       const readable = new Readable();
-      readable.push(result);
+      readable.push(finalJSON);
       readable.push(null);
       res.set('Content-Type', 'application/json');
       res.setHeader('Content-Disposition', contentDisposition(fileName));

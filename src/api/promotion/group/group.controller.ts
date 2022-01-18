@@ -8,6 +8,7 @@ import {
   Logger,
   ParseIntPipe,
   Post,
+  Query,
   Res,
   UploadedFile,
   UseGuards,
@@ -19,10 +20,11 @@ import { ApiOperation } from '@nestjs/swagger';
 import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { Response } from 'express';
-import moment from 'moment';
 import { CreateGroupDto } from './dto/createGroup.dto';
 import { ReadGroupDto } from './dto/readGroup.dto';
 import { User } from '../../../common/decorators/user.decorator';
+import contentDisposition from 'content-disposition';
+import moment from 'moment';
 
 @Controller('api/promotion/group')
 export class GroupController {
@@ -75,18 +77,20 @@ export class GroupController {
     return await this.groupService.remove(groupId);
   }
 
-  @ApiOperation({ summary: 'UNO 그룹 정보 CSV 파일 다운로드', description: 'UNO 정보 리스트를 CSV 형식으로 다운로드한다.' })
+  @ApiOperation({ summary: 'UNO 그룹관리 - CSV 다운로드', description: 'UNO 정보 리스트를 CSV 형식으로 다운로드한다.' })
   @UseGuards(JwtAuthGuard)
   @Get('uno/download')
-  async download(@Body('idx', ParseIntPipe) groupId: number, @Res() res: Response) {
+  async download(@Query('idx') groupId: number, @Res() res: Response) {
     this.logger.log('uno group download()');
     try {
-      const groupNo = await this.groupService.getOne(groupId).then((info) => info.groupNo);
       const currentDate = moment().format('YYMMDD');
-      const uno = await this.groupService.getUnoList(groupId);
+      const groupTitle = await this.groupService.getOne(groupId).then((info) => info.title);
+      const unoList = await this.groupService.getUnoList(groupId);
+      const fileName = `${groupTitle}_${currentDate}.csv`;
+      //res
       res.type('text/csv');
-      res.set('Content-Disposition', `attachment; filename=group${groupNo}_${currentDate}.csv`);
-      res.write(uno);
+      res.setHeader('Content-Disposition', contentDisposition(fileName));
+      res.write(unoList);
       res.end();
     } catch (error) {
       this.logger.error(error);

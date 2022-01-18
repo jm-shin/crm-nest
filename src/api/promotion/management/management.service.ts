@@ -30,12 +30,12 @@ export class ManagementService {
       const imgUrl = process.env.LOAD_LOCATION || '';
 
       //json parse twice
-      const action = JSON.parse(JSON.parse(data.action));
-      const benefit = JSON.parse(JSON.parse(data.benefit));
-      let android = JSON.parse(JSON.parse(data.android));
-      let ios = JSON.parse(JSON.parse(data.ios));
-      let pc = JSON.parse(JSON.parse(data.pc));
-      let mobile = JSON.parse(JSON.parse(data.mobile));
+      const action = JSON.parse(data.action);
+      const benefit = JSON.parse(data.benefit);
+      let android = JSON.parse(data.android);
+      let ios = JSON.parse(data.ios);
+      let pc = JSON.parse(data.pc);
+      let mobile = JSON.parse(data.mobile);
 
       //add image url
       if (uploadFiles) {
