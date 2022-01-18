@@ -5,7 +5,7 @@ import { Optional } from '@nestjs/common';
 export class CreatePromotionDto {
   @IsDefined()
   @IsString()
-  readonly id: string;
+  readonly promotionId: string;
 
   @IsDefined()
   @IsString()

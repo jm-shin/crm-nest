@@ -26,7 +26,7 @@ export class ManagementService {
       const title = data.name;
       const description = data.description;
       const receiverId = parseInt(data.receiverId);
-      const promotionId = data.id;
+      const promotionId = data.promotionId;
       const imgUrl = process.env.LOAD_LOCATION || '';
 
       //json parse twice
@@ -143,31 +143,69 @@ export class ManagementService {
       this.logger.log(`getOne() start - promotion idx: ${idx}`);
 
       let promotionInfo = await this.promotionInfoRepository.getOne(idx);
+      if (!promotionInfo) {
+        throw new NotFoundException();
+      }
 
-      this.logger.log(`promotionInfo: ${JSON.stringify(promotionInfo)}`);
+      // this.logger.log(`promotionInfo: ${JSON.stringify(promotionInfo)}`);
 
       let promotionInfoResponseForm;
       if (promotionInfo) {
         const condition = JSON.parse(promotionInfo.conditionJson);
+        const actions = condition.actions[0].action;
+        const benefit = condition.actions[0].benefit;
+
+        const android = condition.display[0].devices[0];
+        const ios = condition.display[0].devices[1];
+        const mobile = condition.display[0].devices[2];
+        const pc = condition.display[0].devices[3];
+
+        // function findName (device, areaType) {
+        //   const data = device.areas; //배열
+        //   const arr = data.filter((item) => item.areatype == areaType);
+        //   const split =  arr[0].areaitems[0].image.split('/');
+        //   return split[split.length - 1];
+        // }
+        // const result = await findName(android, 'lnbtoptext');
+
         promotionInfoResponseForm = {
           idx: promotionInfo.idx,
+          promotionId: promotionInfo.promotionId,
+          receiverId: parseInt(promotionInfo.receiverId),
           name: promotionInfo.title,
           description: promotionInfo.description,
           registrant: promotionInfo.registrant,
           email: promotionInfo.email,
-          id: promotionInfo.promotionId,
-          receiverId: promotionInfo.receiverId,
           groupNo: promotionInfo.groupNo,
-          actions: condition.actions[0].action,
-          benefit: condition.actions[0].benefit,
-          android: condition.display[0].devices[0],
-          ios: condition.display[0].devices[1],
-          mobile: condition.display[0].devices[2],
-          pc: condition.display[0].devices[3],
+          actions: JSON.stringify(actions),
+          benefit: JSON.stringify(benefit),
+          android: JSON.stringify(android),
+          ios: JSON.stringify(ios),
+          mobile: JSON.stringify(mobile),
+          pc: JSON.stringify(pc),
+          android_layerpopup_image: android.android_layerpopup_image? android.android_layerpopup_image : "",
+          android_lnbtoptext_image: android.android_lnbtoptext_image? android.android_lnbtoptext_image : "",
+          android_lnbtopbutton_image: android.android_lnbtopbutton_image? android.android_lnbtopbutton_image : "",
+          android_homeband_image: android.android_homeband_image? android.android_homeband_image : "",
+          android_voucher_index_image: android.areas? android.android_voucher_index_image : "",
+          ios_layerpopup_image: ios.ios_layerpopup_image? ios.ios_layerpopup_image : "",
+          ios_lnbtoptext_image: ios.ios_lnbtoptext_image? ios.ios_lnbtoptext_image : "",
+          ios_lnbtopbutton_image: ios.ios_lnbtopbutton_image? ios.ios_lnbtopbutton_image : "",
+          ios_homeband_image: ios.ios_homeband_image? ios.ios_homeband_image : "",
+          ios_voucher_index_image: ios.ios_voucher_index_image? ios.ios_voucher_index_image : "",
+          pc_layerpopup_image: pc.pc_layerpopup_image? pc.pc_layerpopup_image : "",
+          pc_lnbtoptext_image: pc.pc_lnbtoptext_image? pc.pc_lnbtoptext_image : "",
+          pc_lnbtopbutton_image: pc.pc_lnbtopbutton_image? pc.pc_lnbtopbutton_image : "",
+          pc_homeband_image: pc.pc_homeband_image? pc.pc_homeband_image : "",
+          pc_voucher_index_image: pc.pc_voucher_index_image? pc.pc_voucher_index_image : "",
+          mobile_layerpopup_image: mobile.mobile_layerpopup_image? mobile.mobile_layerpopup_image : "",
+          mobile_lnbtoptext_image: mobile.mobile_lnbtoptext_image? mobile.mobile_lnbtoptext_image : "",
+          mobile_lnbtopbutton_image: mobile.mobile_lnbtopbutton_image? mobile.mobile_lnbtopbutton_image : "",
+          mobile_homeband_image: mobile.mobile_homeband_image? mobile.mobile_homeband_image : "",
+          mobile_voucher_index_image: mobile.mobile_voucher_index_image? mobile.mobile_voucher_index_image : "",
         };
-        this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
+        // this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
       }
-
       return promotionInfo ? promotionInfoResponseForm : [];
     } catch (error) {
       this.logger.error(error);
@@ -182,15 +220,15 @@ export class ManagementService {
       const title = data.name;
       const description = data.description;
       const receiverId = parseInt(data.receiverId);
-      const promotionId = data.id;
+      const promotionId = data.promotionId;
       const imgUrl = process.env.LOAD_LOCATION || '';
 
-      const action = JSON.parse(JSON.parse(data.action));
-      const benefit = JSON.parse(JSON.parse(data.benefit));
-      let android = JSON.parse(JSON.parse(data.android));
-      let ios = JSON.parse(JSON.parse(data.ios));
-      let pc = JSON.parse(JSON.parse(data.pc));
-      let mobile = JSON.parse(JSON.parse(data.mobile));
+      const action = JSON.parse(data.action);
+      const benefit = JSON.parse(data.benefit);
+      let android = JSON.parse(data.android);
+      let ios = JSON.parse(data.ios);
+      let pc = JSON.parse(data.pc);
+      let mobile = JSON.parse(data.mobile);
 
       if (uploadFiles) {
         for (const file of Object.keys(uploadFiles)) {

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -97,6 +98,9 @@ export class ManagementController {
   @Post('preview')
   preview(@Body() body, @UploadedFiles() files: Express.Multer.File[]) {
     const uploadedImgFiles = Object.assign({}, files);
+    if (!body.promotionId && !body.receiverId && !body.name) {
+      throw new BadRequestException();
+    }
     return this.managementService.getPreview(body, uploadedImgFiles);
   }
 
