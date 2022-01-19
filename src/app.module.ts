@@ -54,7 +54,7 @@ const transports = {
       logging: true,
       //add opts
       autoLoadEntities: true,
-      // keepConnectionAlive: true,
+      keepConnectionAlive: true,
     }),
     TypeOrmModule.forRoot({
       name: 'stats',

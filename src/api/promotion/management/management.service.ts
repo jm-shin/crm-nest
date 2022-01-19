@@ -144,6 +144,7 @@ export class ManagementService {
 
       let promotionInfo = await this.promotionInfoRepository.getOne(idx);
       if (!promotionInfo) {
+        this.logger.log('Not Found promotion info');
         throw new NotFoundException();
       }
 
@@ -160,13 +161,18 @@ export class ManagementService {
         const mobile = condition.display[0].devices[2];
         const pc = condition.display[0].devices[3];
 
-        // function findName (device, areaType) {
-        //   const data = device.areas; //배열
-        //   const arr = data.filter((item) => item.areatype == areaType);
-        //   const split =  arr[0].areaitems[0].image.split('/');
-        //   return split[split.length - 1];
-        // }
-        // const result = await findName(android, 'lnbtoptext');
+        async function findName (device, areaType) {
+          const data = device.areas; //배열
+          const arr = data.filter((item) => item.areatype == areaType);
+          const imageURL = arr[0]?.areaitems[0]?.image;
+          console.log(imageURL);
+          if (imageURL) {
+            const split =  imageURL.split('/');
+            return split[split.length - 1];
+          } else {
+            return "";
+          }
+        }
 
         async function makeSendForm(device) {
           const typeArr = ['layerpopup', 'homeband', 'lnbtoptext', 'lnbtopbutton', 'voucher_index'];
@@ -227,26 +233,26 @@ export class ManagementService {
           ios: await makeSendForm(ios),
           mobile: await makeSendForm(mobile),
           pc: await makeSendForm(pc),
-          android_layerpopup_image: '',
-          android_lnbtoptext_image: '',
-          android_lnbtopbutton_image: '',
-          android_homeband_image: '',
-          android_voucher_index_image: '',
-          ios_layerpopup_image: '',
-          ios_lnbtoptext_image: '',
-          ios_lnbtopbutton_image: '',
-          ios_homeband_image: '',
-          ios_voucher_index_image: '',
-          pc_layerpopup_image: '',
-          pc_lnbtoptext_image: '',
-          pc_lnbtopbutton_image: '',
-          pc_homeband_image: '',
-          pc_voucher_index_image: '',
-          mobile_layerpopup_image: '',
-          mobile_lnbtoptext_image: '',
-          mobile_lnbtopbutton_image: '',
-          mobile_homeband_image: '',
-          mobile_voucher_index_image: '',
+          android_layerpopup_image: await findName(android, 'layerpopup'),
+          android_lnbtoptext_image: await findName(android, 'lnbtoptext'),
+          android_lnbtopbutton_image: await findName(android, 'lnbtopbutton'),
+          android_homeband_image: await findName(android, 'homeband'),
+          android_voucher_index_image: await findName(android, 'voucher_index'),
+          ios_layerpopup_image: await findName(ios, 'layerpopup'),
+          ios_lnbtoptext_image: await findName(ios, 'lnbtoptext'),
+          ios_lnbtopbutton_image: await findName(ios, 'lnbtopbutton'),
+          ios_homeband_image: await findName(ios, 'homeband'),
+          ios_voucher_index_image: await findName(ios, 'voucher_index'),
+          pc_layerpopup_image: await findName(pc, 'layerpopup'),
+          pc_lnbtoptext_image: await findName(pc, 'lnbtoptext'),
+          pc_lnbtopbutton_image: await findName(pc, 'lnbtopbutton'),
+          pc_homeband_image: await findName(pc, 'homeband'),
+          pc_voucher_index_image: await findName(pc, 'voucher_index'),
+          mobile_layerpopup_image: await findName(mobile, 'layerpopup'),
+          mobile_lnbtoptext_image: await findName(mobile, 'lnbtoptext'),
+          mobile_lnbtopbutton_image: await findName(mobile, 'lnbtopbutton'),
+          mobile_homeband_image: await findName(mobile, 'homeband'),
+          mobile_voucher_index_image: await findName(mobile, 'voucher_index'),
         };
         this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
       }
