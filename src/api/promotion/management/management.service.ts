@@ -147,7 +147,7 @@ export class ManagementService {
         throw new NotFoundException();
       }
 
-      // this.logger.log(`promotionInfo: ${JSON.stringify(promotionInfo)}`);
+      this.logger.log(`promotionInfo: ${JSON.stringify(promotionInfo)}`);
 
       let promotionInfoResponseForm;
       if (promotionInfo) {
@@ -168,6 +168,50 @@ export class ManagementService {
         // }
         // const result = await findName(android, 'lnbtoptext');
 
+        async function makeSendForm(device) {
+          const typeArr = ['layerpopup', 'homeband', 'lnbtoptext', 'lnbtopbutton', 'voucher_index'];
+          const deviceArea = device.areas;
+          let basicForm = {
+            layerpopup: {
+              text: '',
+              color: '',
+              url: '',
+            },
+            homeband: {
+              text: '',
+              color: '',
+              url: '',
+            },
+            lnbtoptext: {
+              text: '',
+              color: '',
+              url: '',
+            },
+            lnbtopbutton: {
+              text: '',
+              color: '',
+              url: '',
+            },
+            voucher_index: {
+              text: '',
+              color: '',
+              url: '',
+            },
+          };
+          deviceArea.forEach((area) => {
+            typeArr.forEach((areaType) => {
+              if (area.areatype == areaType) {
+                basicForm[areaType] = {
+                  text: area.areaitems[0].text ? area.areaitems[0].text : '',
+                  color: area.areaitems[0].color ? area.areaitems[0].color : '',
+                  url: area.areaitems[0].url ? area.areaitems[0].url : '',
+                };
+              }
+            });
+          });
+          return basicForm;
+        }
+
         promotionInfoResponseForm = {
           idx: promotionInfo.idx,
           promotionId: promotionInfo.promotionId,
@@ -177,34 +221,34 @@ export class ManagementService {
           registrant: promotionInfo.registrant,
           email: promotionInfo.email,
           groupNo: promotionInfo.groupNo,
-          actions: JSON.stringify(actions),
-          benefit: JSON.stringify(benefit),
-          android: JSON.stringify(android),
-          ios: JSON.stringify(ios),
-          mobile: JSON.stringify(mobile),
-          pc: JSON.stringify(pc),
-          android_layerpopup_image: android.android_layerpopup_image? android.android_layerpopup_image : "",
-          android_lnbtoptext_image: android.android_lnbtoptext_image? android.android_lnbtoptext_image : "",
-          android_lnbtopbutton_image: android.android_lnbtopbutton_image? android.android_lnbtopbutton_image : "",
-          android_homeband_image: android.android_homeband_image? android.android_homeband_image : "",
-          android_voucher_index_image: android.areas? android.android_voucher_index_image : "",
-          ios_layerpopup_image: ios.ios_layerpopup_image? ios.ios_layerpopup_image : "",
-          ios_lnbtoptext_image: ios.ios_lnbtoptext_image? ios.ios_lnbtoptext_image : "",
-          ios_lnbtopbutton_image: ios.ios_lnbtopbutton_image? ios.ios_lnbtopbutton_image : "",
-          ios_homeband_image: ios.ios_homeband_image? ios.ios_homeband_image : "",
-          ios_voucher_index_image: ios.ios_voucher_index_image? ios.ios_voucher_index_image : "",
-          pc_layerpopup_image: pc.pc_layerpopup_image? pc.pc_layerpopup_image : "",
-          pc_lnbtoptext_image: pc.pc_lnbtoptext_image? pc.pc_lnbtoptext_image : "",
-          pc_lnbtopbutton_image: pc.pc_lnbtopbutton_image? pc.pc_lnbtopbutton_image : "",
-          pc_homeband_image: pc.pc_homeband_image? pc.pc_homeband_image : "",
-          pc_voucher_index_image: pc.pc_voucher_index_image? pc.pc_voucher_index_image : "",
-          mobile_layerpopup_image: mobile.mobile_layerpopup_image? mobile.mobile_layerpopup_image : "",
-          mobile_lnbtoptext_image: mobile.mobile_lnbtoptext_image? mobile.mobile_lnbtoptext_image : "",
-          mobile_lnbtopbutton_image: mobile.mobile_lnbtopbutton_image? mobile.mobile_lnbtopbutton_image : "",
-          mobile_homeband_image: mobile.mobile_homeband_image? mobile.mobile_homeband_image : "",
-          mobile_voucher_index_image: mobile.mobile_voucher_index_image? mobile.mobile_voucher_index_image : "",
+          action: actions.action,
+          benefit: benefit,
+          android: await makeSendForm(android),
+          ios: await makeSendForm(ios),
+          mobile: await makeSendForm(mobile),
+          pc: await makeSendForm(pc),
+          android_layerpopup_image: '',
+          android_lnbtoptext_image: '',
+          android_lnbtopbutton_image: '',
+          android_homeband_image: '',
+          android_voucher_index_image: '',
+          ios_layerpopup_image: '',
+          ios_lnbtoptext_image: '',
+          ios_lnbtopbutton_image: '',
+          ios_homeband_image: '',
+          ios_voucher_index_image: '',
+          pc_layerpopup_image: '',
+          pc_lnbtoptext_image: '',
+          pc_lnbtopbutton_image: '',
+          pc_homeband_image: '',
+          pc_voucher_index_image: '',
+          mobile_layerpopup_image: '',
+          mobile_lnbtoptext_image: '',
+          mobile_lnbtopbutton_image: '',
+          mobile_homeband_image: '',
+          mobile_voucher_index_image: '',
         };
-        // this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
+        this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
       }
       return promotionInfo ? promotionInfoResponseForm : [];
     } catch (error) {
@@ -374,10 +418,10 @@ export class ManagementService {
       const createData = {
         promotionId: obj.id,
         title: info.name,
-        description: info.description? info.description : "",
+        description: info.description ? info.description : '',
         userIdx: registrantInfo.idx,
         receiverId: 0,
-        groupNo: info.group? info.group : 0,
+        groupNo: info.group ? info.group : 0,
         conditionJson: JSON.stringify(obj),
         progress_state: 0,
       };
