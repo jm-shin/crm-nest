@@ -71,7 +71,7 @@ export class ReceiverService {
       };
       this.logger.log(`createReceiverData: ${JSON.stringify(createReceiverData)}`);
 
-      await this.promotionReceiverInfoRepository.save(createReceiverData);
+      return await this.promotionReceiverInfoRepository.save(createReceiverData);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();

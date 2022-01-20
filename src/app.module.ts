@@ -10,8 +10,8 @@ import { ReceiverModule } from './api/promotion/receiver/receiver.module';
 import { GroupModule } from './api/promotion/group/group.module';
 import { ManagementModule } from './api/promotion/management/management.module';
 import { StatsModule } from './api/promotion/stats/stats.module';
-import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const transports = {
   format: winston.format.combine(

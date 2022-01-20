@@ -35,6 +35,7 @@ export class ReceiverController {
   @ApiOperation({ summary: '프로모션 대상자 등록', description: '프로모션 대상자를 등록한다.' })
   @UseInterceptors(TransformInterceptor)
   @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
   @Post('')
   create(@Body() receiverData: CreateReceiverDto, @User() user) {
     this.logger.log(`receiverData: ${JSON.stringify(receiverData)}`);
