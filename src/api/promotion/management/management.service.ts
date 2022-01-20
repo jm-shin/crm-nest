@@ -161,6 +161,7 @@ export class ManagementService {
         const mobile = condition.display[0].devices[2];
         const pc = condition.display[0].devices[3];
 
+        //이미지 파일명 추출
         async function findName (device, areaType) {
           const data = device.areas; //배열
           const arr = data.filter((item) => item.areatype == areaType);
@@ -174,6 +175,7 @@ export class ManagementService {
           }
         }
 
+        //아래 기본 Form 형태로 데이터가 있으면 채우고, 클라이언트쪽으로 응답.
         async function makeSendForm(device) {
           const typeArr = ['layerpopup', 'homeband', 'lnbtoptext', 'lnbtopbutton', 'voucher_index'];
           const deviceArea = device.areas;
@@ -259,7 +261,7 @@ export class ManagementService {
       return promotionInfo ? promotionInfoResponseForm : [];
     } catch (error) {
       this.logger.error(error);
-      throw new InternalServerErrorException();
+      throw error;
     }
   }
 
