@@ -17,7 +17,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { GroupService } from './group.service';
 import { ApiOperation } from '@nestjs/swagger';
-import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
+import { SuccessMessageInterceptor } from '../../../common/interceptor/success.message.interceptor';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { Response } from 'express';
 import { CreateGroupDto } from './dto/createGroup.dto';
@@ -40,7 +40,7 @@ export class GroupController {
   @Post('')
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(200)
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   async unoCsvFileUpload(
     @UploadedFile() file: Express.Multer.File,
     @Body() createData: CreateGroupDto,
@@ -71,7 +71,7 @@ export class GroupController {
   @ApiOperation({ summary: 'UNO 그룹 삭제', description: 'UNO 그룹들을 삭제한다.' })
   @UseGuards(JwtAuthGuard)
   @Delete('')
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   async remove(@Body('idx') groupId: number[]) {
     this.logger.log('uno group remove()');
     return await this.groupService.remove(groupId);

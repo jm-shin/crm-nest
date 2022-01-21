@@ -78,7 +78,7 @@ export class ReceiverService {
     }
   }
 
-  async update(receiverId: number, updateData: UpdateReceiverDto, userId: string): Promise<void> {
+  async update(receiverId: number, updateData: UpdateReceiverDto, userId: string) {
     this.logger.log(`update() start. receiverId: ${receiverId}, updateData: ${JSON.stringify(receiverId)}`);
     const { title, description, conditionText } = updateData;
 
@@ -101,17 +101,17 @@ export class ReceiverService {
       };
       this.logger.log(`updateReceiverData ${JSON.stringify(updateReceiverData)}`);
 
-      await this.promotionReceiverInfoRepository.update({ receiverId }, updateReceiverData);
+      return await this.promotionReceiverInfoRepository.update({ receiverId }, updateReceiverData);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
 
-  async delete(receiverIds: number[]): Promise<void> {
+  async delete(receiverIds: number[]) {
     try {
-      await this.promotionReceiverInfoRepository.updateValidState(receiverIds);
       this.logger.log(`delete done.(${JSON.stringify(receiverIds)} SET valid state = 0)`);
+      return await this.promotionReceiverInfoRepository.updateValidState(receiverIds);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();

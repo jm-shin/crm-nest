@@ -20,7 +20,7 @@ import {
 import { ManagementService } from './management.service';
 import { ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
-import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
+import { SuccessMessageInterceptor } from '../../../common/interceptor/success.message.interceptor';
 import { ReadPromotionDto } from './dto/readPromotion.dto';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../../../common/utils/multerOptions';
@@ -43,7 +43,7 @@ export class ManagementController {
   @ApiOperation({ summary: '프로모션관리 등록', description: '프로모션 관리에서 프로모션을 추가한다.' })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @HttpCode(200)
   @Post()
   async create(@Body() createData: CreatePromotionDto, @UploadedFiles() files: Express.Multer.File[], @User() user) {
@@ -72,7 +72,7 @@ export class ManagementController {
   @ApiOperation({ summary: '프로모션관리 수정', description: '프로모션 정보를 수정한다' })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileFieldsInterceptor(uploadImageFileList, multerOptions))
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @Put()
   async update(
     @UploadedFiles() files: Express.Multer.File[],
@@ -85,7 +85,7 @@ export class ManagementController {
 
   @ApiOperation({ summary: '프로모션관리 삭제', description: '프로모션 정보를 삭제한다.(복수 허용)' })
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @Delete()
   async delete(@Body('idx') idx: number[]) {
     return this.managementService.remove(idx);
@@ -107,7 +107,7 @@ export class ManagementController {
   @ApiOperation({ summary: '프로모션관리 등록 JSON TYPE', description: '프로모션관리 등록에서 JSON 타입으로 등록한다.' })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @HttpCode(200)
   @Post('json')
   createPromotionTypeJSON(@UploadedFile() file: Express.Multer.File, @User() user) {

@@ -19,7 +19,7 @@ import {
 import { CreateReceiverDto } from './dto/createReceiver.dto';
 import { ApiOperation } from '@nestjs/swagger';
 import { ReadReceiverDto } from './dto/readReceiver.dto';
-import { TransformInterceptor } from '../../../common/interceptor/transform.interceptor';
+import { SuccessMessageInterceptor } from '../../../common/interceptor/success.message.interceptor';
 import { User } from '../../../common/decorators/user.decorator';
 
 @Controller('api/promotion/receiver')
@@ -33,7 +33,7 @@ export class ReceiverController {
 
   //receiver api
   @ApiOperation({ summary: '프로모션 대상자 등록', description: '프로모션 대상자를 등록한다.' })
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @Post('')
@@ -70,7 +70,7 @@ export class ReceiverController {
   }
 
   @ApiOperation({ summary: '프로모션 대상자 수정', description: '프로모션 대상자 하나를 수정한다.' })
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @UseGuards(JwtAuthGuard)
   @Put('')
   async patch(@Body('idx', ParseIntPipe) receiverId: number, @Body() updateData: UpdateReceiverDto, @User() user) {
@@ -83,7 +83,7 @@ export class ReceiverController {
   }
 
   @ApiOperation({ summary: '프로모션 대상자 삭제', description: '프로모션 대상자를 삭제한다. 복수 대상 가능함.' })
-  @UseInterceptors(TransformInterceptor)
+  @UseInterceptors(SuccessMessageInterceptor)
   @UseGuards(JwtAuthGuard)
   @Delete()
   async remove(@Body('idx') receiverId: number[]) {
