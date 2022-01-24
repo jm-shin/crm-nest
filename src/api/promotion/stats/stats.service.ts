@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { stPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
@@ -16,18 +16,48 @@ export class StatsService {
   private readonly logger: Logger = new Logger(StatsService.name);
 
   async findAll(info) {
+    this.logger.log(`findAll() start`);
     const promotionId = info.promotionId.replace(/^$/, '%');
-    const targetDate = info.targetDate;
-    
-    return this.stPromotionBenefitDayRepository.createQueryBuilder()
-      .select([
-        'DATE_FORMAT(stat_time, "%Y-%m-%d %T") AS statTime', 'promotion_id AS promotionId',
-        'current_count AS currentCount', 'last_count AS lastCount', 'benefit_count AS benefitCount',
-        'is_first AS isFirst',
-      ])
-      .where('stat_time BETWEEN DATE_ADD(:targetDate, INTERVAL -10 DAY) AND :targetDate', { targetDate })
-      .andWhere('promotion_id LIKE (:promotionId)', { promotionId })
-      .execute();
+    const startDate = info.startDate;
+    const endDate = info.endDate;
+
+    if (!startDate || !endDate) {
+      throw new BadRequestException('startDate, endDate must be defined.');
+    }
+
+    try {
+      const findData = await this.stPromotionBenefitDayRepository.createQueryBuilder()
+        .select([
+          'DATE_FORMAT(stat_time, "%Y-%m-%d") AS statTime', 'promotion_id AS promotionId',
+          'current_count AS currentCount', 'last_count AS lastCount', 'benefit_count AS benefitCount',
+          'is_first AS isFirst', 'title',
+        ])
+        .where('stat_time BETWEEN :startDate AND :endDate', { startDate, endDate })
+        .andWhere('promotion_id LIKE (:promotionId)', { promotionId })
+        .execute();
+
+      const promotionIdGroup = findData.map(v => v.promotionId);
+      const targetPromotionId = [...new Set(promotionIdGroup)];
+
+      let result = [];
+      targetPromotionId.forEach((id) => {
+        const form = {
+          title: findData.find((data) => data.promotionId === id).title,
+          promotionId: id,
+          users: [],
+        };
+        findData.forEach((data) => {
+          if (data.promotionId === id) {
+            form.users.push({ [data.statTime]: [parseInt(data.lastCount), parseInt(data.currentCount)] });
+          }
+        });
+        result.push(form);
+      });
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
   }
 
   async getBenefitStatDownload() {

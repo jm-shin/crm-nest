@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { ApiOperation } from '@nestjs/swagger';
 
@@ -8,7 +8,8 @@ export class StatsController {
   }
 
   @ApiOperation({ summary: 'benefit 통계' })
-  @Get('benefit')
+  @HttpCode(200)
+  @Post('benefit')
   getAll(@Body() body) {
     return this.statsService.findAll(body);
   }
