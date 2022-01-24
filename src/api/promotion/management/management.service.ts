@@ -153,7 +153,7 @@ export class ManagementService {
       let promotionInfoResponseForm;
       if (promotionInfo) {
         const condition = JSON.parse(promotionInfo.conditionJson);
-        const actions = condition.actions[0].action;
+        const action = condition.actions[0].action;
         const benefit = condition.actions[0].benefit;
 
         const android = condition.display[0].devices[0];
@@ -229,7 +229,7 @@ export class ManagementService {
           registrant: promotionInfo.registrant,
           email: promotionInfo.email,
           groupNo: promotionInfo.groupNo,
-          action: actions.action,
+          action: action,
           benefit: benefit,
           android: await makeSendForm(android),
           ios: await makeSendForm(ios),

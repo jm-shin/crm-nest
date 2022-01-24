@@ -98,9 +98,6 @@ describe('ReceiverService', () => {
   });
 
   describe('save는', () => {
-    beforeEach(async () => {
-
-    });
     it('대상자 조건을 저장한다.', async () => {
       const receiverInfo: CreateReceiverDto = {
         title: '테스트용 제목',

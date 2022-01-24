@@ -15,7 +15,7 @@ export class StatsService {
 
   private readonly logger: Logger = new Logger(StatsService.name);
 
-  async find() {
+  async findAll() {
     return this.stPromotionBenefitDayRepository.find();
   }
 
@@ -26,6 +26,7 @@ export class StatsService {
       const myData = await this.stPromotionBenefitDayRepository.find();
       const csv = parse(myData, opts);
       this.logger.log(csv);
+      //return csv;
     }catch (error) {
       this.logger.error(error);
     }
