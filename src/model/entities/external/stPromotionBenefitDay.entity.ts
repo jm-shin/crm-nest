@@ -2,21 +2,21 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class stPromotionBenefitDay {
-  @Column()
-  readonly stat_time: Date;
+  @Column({ name: 'stat_time' })
+  readonly statTime: Date;
 
-  @PrimaryGeneratedColumn()
-  readonly promotion_id: string;
+  @PrimaryGeneratedColumn({ name: 'promotion_id' })
+  readonly promotionId: string;
 
-  @Column()
-  readonly benefit_count: number;
+  @Column({ name: 'benefit_count' })
+  readonly benefitCount: number;
 
-  @Column()
-  readonly current_count: number;
+  @Column({ name: 'current_count' })
+  readonly currentCount: number;
 
-  @Column()
-  readonly last_count: number;
+  @Column({ name: 'last_count' })
+  readonly lastCount: number;
 
-  @Column()
-  readonly is_first: number;
+  @Column({ name: 'is_first' })
+  readonly isFirst: number;
 }

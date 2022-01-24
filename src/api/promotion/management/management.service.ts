@@ -162,16 +162,16 @@ export class ManagementService {
         const pc = condition.display[0].devices[3];
 
         //이미지 파일명 추출
-        async function findName (device, areaType) {
+        async function findName(device, areaType) {
           const data = device.areas; //배열
           const arr = data.filter((item) => item.areatype == areaType);
           const imageURL = arr[0]?.areaitems[0]?.image;
           console.log(imageURL);
           if (imageURL) {
-            const split =  imageURL.split('/');
+            const split = imageURL.split('/');
             return split[split.length - 1];
           } else {
-            return "";
+            return '';
           }
         }
 
@@ -282,7 +282,20 @@ export class ManagementService {
       let pc = JSON.parse(data.pc);
       let mobile = JSON.parse(data.mobile);
 
-      if (uploadFiles) {
+      //test
+      function getUploadedFileNameList(data) {
+        let acc = [];
+        for (const [key, value] of Object.entries(data)) {
+          if (key.includes('image') && value !== '') {
+            acc.push({ [key]: [{ filename: value }] });
+          }
+        }
+        return acc;
+      }
+      const uploadedFileNameList = getUploadedFileNameList(data);
+
+      if (uploadFiles || uploadedFileNameList) {
+        Object.assign(uploadFiles, ...uploadedFileNameList);
         for (const file of Object.keys(uploadFiles)) {
           const filename = uploadFiles[file][0].filename;
           const NameArr = file.replace('_image', '').split('_');
@@ -299,7 +312,7 @@ export class ManagementService {
           }
         }
       }
-
+      
       const actionsJson = [
         {
           action: action,
