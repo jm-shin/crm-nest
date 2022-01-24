@@ -5,7 +5,6 @@ import { PromotionReceiverInfoRepository } from '../../../model/repository/promo
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../model/entities/user.entity';
 import { Repository } from 'typeorm';
-import * as fs from 'fs';
 
 @Injectable()
 export class ManagementService {
@@ -283,16 +282,7 @@ export class ManagementService {
       let mobile = JSON.parse(data.mobile);
 
       //test
-      function getUploadedFileNameList(data) {
-        let acc = [];
-        for (const [key, value] of Object.entries(data)) {
-          if (key.includes('image') && value !== '') {
-            acc.push({ [key]: [{ filename: value }] });
-          }
-        }
-        return acc;
-      }
-      const uploadedFileNameList = getUploadedFileNameList(data);
+      const uploadedFileNameList = await this.getUploadedFileNameList(data);
 
       if (uploadFiles || uploadedFileNameList) {
         Object.assign(uploadFiles, ...uploadedFileNameList);
@@ -312,7 +302,7 @@ export class ManagementService {
           }
         }
       }
-      
+
       const actionsJson = [
         {
           action: action,
@@ -380,10 +370,13 @@ export class ManagementService {
       let pc = JSON.parse(data.pc);
       let mobile = JSON.parse(data.mobile);
 
-      if (uploadFiles) {
+      //test
+      const uploadedFileNameList = await this.getUploadedFileNameList(data);
+
+      if (uploadFiles || uploadedFileNameList) {
+        Object.assign(uploadFiles, ...uploadedFileNameList);
         for (const file of Object.keys(uploadFiles)) {
           const filename = uploadFiles[file][0].filename;
-          fs.unlinkSync(`${process.env.UPLOAD_LOCATION}/${filename}`);
           const NameArr = file.replace('_image', '').split('_');
           const device = NameArr[0];
           const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
@@ -467,5 +460,15 @@ export class ManagementService {
       this.logger.error(error);
       throw new NotFoundException();
     }
+  }
+
+  async getUploadedFileNameList(data) {
+    let acc = [];
+    for (const [key, value] of Object.entries(data)) {
+      if (key.includes('image') && value !== '') {
+        acc.push({ [key]: [{ filename: value }] });
+      }
+    }
+    return acc;
   }
 }
