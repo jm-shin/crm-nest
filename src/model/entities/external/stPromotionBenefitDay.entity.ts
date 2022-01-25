@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class stPromotionBenefitDay {
+export class StPromotionBenefitDay {
   @Column({ name: 'stat_time' })
   readonly statTime: Date;
 

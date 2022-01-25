@@ -52,7 +52,7 @@ const transports = {
       synchronize: false,
       connectTimeout: 10000,
       logging: true,
-      //add opts
+      //opts
       autoLoadEntities: true,
       keepConnectionAlive: true,
     }),
@@ -70,7 +70,7 @@ const transports = {
       synchronize: false,
       connectTimeout: 10000,
       logging: true,
-      //add opts
+      //opts
       autoLoadEntities: true,
       keepConnectionAlive: true,
     }),

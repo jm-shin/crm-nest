@@ -2,11 +2,15 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { StatsController } from './stats.controller';
 import { StatsService } from './stats.service';
-import { stPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
+import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
+import { StPromotionMaintainMon } from '../../../model/entities/external/stPromotionMaintainMon';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([stPromotionBenefitDay], 'stats'),
+    TypeOrmModule.forFeature([
+      StPromotionBenefitDay,
+      StPromotionMaintainMon
+    ], 'stats'),
   ],
   exports: [TypeOrmModule],
   controllers: [StatsController],
