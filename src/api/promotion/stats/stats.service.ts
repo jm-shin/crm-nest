@@ -87,7 +87,7 @@ export class StatsService {
       const findData = await this.stPromotionMaintainMonRepository
         .createQueryBuilder()
         .select([
-          'DATE_FORMAT(stat_time, "%Y-%m-%d") AS statTime', 'promotion_id AS promotionId', 'DATE_FORMAT(start_mon, "%Y-%m") AS startMon',
+          'DATE_FORMAT(stat_time, "%Y-%m") AS statTime', 'promotion_id AS promotionId', 'DATE_FORMAT(start_mon, "%Y-%m") AS startMon',
           'init_count AS initCount', 'current_count AS currentCount',
         ])
         .where('stat_time >= :startDate AND stat_time <= :endDate', { startDate, endDate })
@@ -96,17 +96,17 @@ export class StatsService {
 
       let promotionIdGroup = findData.map((v) => v.promotionId);
 
-      const result = await promotionIdGroup.reduce((acc, cur, i) => {
+      const result = await promotionIdGroup.reduce((acc, cur) => {
         const form = {
           // title: findData.find((data) => data.promotionId === cur).title,
           title: `연습 프로모션 제목 - ${cur}`,
           promotionId: cur,
-          initCount: findData.find((data) => data.promotionId === cur).initCount,
+          startMon: findData.find((data) => data.promotionId === cur).startMon,
           users: [],
         };
         findData.forEach((data) => {
           if (data.promotionId === cur) {
-            form.users.push({ [data.startMon]: [`${((data.currentCount / data.initCount) * 100).toFixed(2)}%`, data.currentCount] });
+            form.users.push({ [data.statTime]: [`${((data.currentCount / data.initCount) * 100).toFixed(2)}%`, data.currentCount] });
           }
         });
         acc.push(form);
