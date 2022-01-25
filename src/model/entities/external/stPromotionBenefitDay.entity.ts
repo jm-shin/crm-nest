@@ -8,6 +8,9 @@ export class stPromotionBenefitDay {
   @PrimaryGeneratedColumn({ name: 'promotion_id' })
   readonly promotionId: string;
 
+  @Column({ name: 'title' })
+  readonly title: string;
+
   @Column({ name: 'benefit_count' })
   readonly benefitCount: number;
 

@@ -36,7 +36,7 @@ export class StatsService {
         .andWhere('promotion_id LIKE (:promotionId)', { promotionId })
         .execute();
 
-      const promotionIdGroup = findData.map(v => v.promotionId);
+      const promotionIdGroup = findData.map(data => data.promotionId);
       const targetPromotionId = [...new Set(promotionIdGroup)];
 
       let result = [];
@@ -53,6 +53,7 @@ export class StatsService {
         });
         result.push(form);
       });
+      console.log(result);
       return result;
     } catch (error) {
       this.logger.error(error);
@@ -61,15 +62,16 @@ export class StatsService {
   }
 
   async getBenefitStatDownload() {
+    this.logger.log('csv download start');
     try {
-      const fields = ['promotion_id', 'benefit_count', 'current_count'];
+      const fields = ['title', 'promotionId', 'lastCount', 'currentCount', 'benefitCount'];
       const opts = { fields };
       const myData = await this.stPromotionBenefitDayRepository.find();
       const csv = parse(myData, opts);
-      this.logger.log(csv);
-      //return csv;
+      return csv;
     } catch (error) {
       this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 }
