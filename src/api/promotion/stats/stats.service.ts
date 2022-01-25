@@ -35,7 +35,7 @@ export class StatsService {
           'current_count AS currentCount', 'last_count AS lastCount', 'benefit_count AS benefitCount',
           'is_first AS isFirst', 'title',
         ])
-        .where('stat_time BETWEEN :startDate AND :endDate', { startDate, endDate })
+        .where('stat_time >= :startDate AND stat_time <= :endDate', { startDate, endDate })
         .andWhere('promotion_id LIKE (:promotionId)', { promotionId })
         .execute();
 
@@ -78,7 +78,9 @@ export class StatsService {
   }
 
   async findMaintainDataByDate(info) {
-    const { startDate, endDate } = info;
+    // const { startDate, endDate } = info;
+    const startDate = `${info.startDate}-01`;
+    const endDate = `${info.endDate}-31`;
     if (!startDate || !endDate) {
       throw new BadRequestException('start date, end date must be defined');
     }
