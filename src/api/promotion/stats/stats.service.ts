@@ -81,6 +81,26 @@ export class StatsService {
     // const { startDate, endDate } = info;
     const startDate = `${info.startDate}-01`;
     const endDate = `${info.endDate}-31`;
+
+    //계산
+    function countDate(start, end) {
+      const sYear = parseInt(start.slice(0, 4));
+      const eYear = parseInt(end.slice(0, 4));
+      const sDate = parseInt(start.slice(5, 7));
+      const eDate = parseInt(end.slice(5, 7));
+      console.log(sYear, sDate, eYear, eDate);
+      let count;
+      if (sYear == eYear) {
+        count = eDate - sDate;
+      } else {
+        count = (sDate - 11) + eDate;
+      }
+      console.log(count);
+      return count;
+    }
+
+    const countMonth = countDate(info.startDate, info.endDate);
+
     if (!startDate || !endDate) {
       throw new BadRequestException('start date, end date must be defined');
     }
@@ -97,11 +117,12 @@ export class StatsService {
         .execute();
 
       let promotionIdGroup = findData.map((v) => v.promotionId);
+      const targetPromotionId = [...new Set(promotionIdGroup)] as any;
 
-      const result = await promotionIdGroup.reduce((acc, cur) => {
+      const result = await targetPromotionId.reduce((acc, cur) => {
         const form = {
           // title: findData.find((data) => data.promotionId === cur).title,
-          title: `연습 프로모션 제목 - ${cur}`,
+          title: `${cur} 프로모션`,
           promotionId: cur,
           startMon: findData.find((data) => data.promotionId === cur).startMon,
           users: [],
