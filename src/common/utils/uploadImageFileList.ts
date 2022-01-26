@@ -19,4 +19,9 @@ export const uploadImageFileList = [
   { name: 'mobile_lnbtopbutton_image', maxCount: 1 },
   { name: 'mobile_homeband_image', maxCount: 1 },
   { name: 'mobile_voucher_index_image', maxCount: 1 },
+  //add
+  { name: 'android_floating_banner_icon', maxCount: 1 },
+  { name: 'ios_floating_banner_icon', maxCount: 1 },
+  { name: 'mobile_floating_banner_icon', maxCount: 1 },
+  { name: 'pc_floating_banner_icon', maxCount: 1 },
 ];

@@ -40,17 +40,17 @@ export class ManagementService {
       if (uploadFiles) {
         for (const file of Object.keys(uploadFiles)) {
           const filename = uploadFiles[file][0].filename;
-          const NameArr = file.replace('_image', '').split('_');
+          const NameArr = file.split('_');
           const device = NameArr[0];
-          const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+          const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
           if (device == 'android') {
-            android[type].image = `${imgUrl}${filename}`;
+            android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           } else if (device == 'ios') {
-            ios[type].image = `${imgUrl}${filename}`;
+            ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           } else if (device == 'mobile') {
-            mobile[type].image = `${imgUrl}${filename}`;
+            mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           } else if (device == 'pc') {
-            pc[type].image = `${imgUrl}${filename}`;
+            pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           }
         }
       }
@@ -288,17 +288,17 @@ export class ManagementService {
         Object.assign(uploadFiles, ...uploadedFileNameList);
         for (const file of Object.keys(uploadFiles)) {
           const filename = uploadFiles[file][0].filename;
-          const NameArr = file.replace('_image', '').split('_');
+          const NameArr = file.split('_');
           const device = NameArr[0];
-          const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+          const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
           if (device == 'android') {
-            android[type].image = `${imgUrl}${filename}`;
+            android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           } else if (device == 'ios') {
-            ios[type].image = `${imgUrl}${filename}`;
+            ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           } else if (device == 'mobile') {
-            mobile[type].image = `${imgUrl}${filename}`;
+            mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           } else if (device == 'pc') {
-            pc[type].image = `${imgUrl}${filename}`;
+            pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           }
         }
       }
@@ -373,6 +373,7 @@ export class ManagementService {
       //test
       const uploadedFileNameList = await this.getUploadedFileNameList(data);
 
+      /* old
       if (uploadFiles || uploadedFileNameList) {
         Object.assign(uploadFiles, ...uploadedFileNameList);
         for (const file of Object.keys(uploadFiles)) {
@@ -388,6 +389,27 @@ export class ManagementService {
             mobile[type].image = `${imgUrl}${filename}`;
           } else if (device == 'pc') {
             pc[type].image = `${imgUrl}${filename}`;
+          }
+        }
+      }
+       */
+
+      //new
+      if (uploadFiles || uploadedFileNameList) {
+        Object.assign(uploadFiles, ...uploadedFileNameList);
+        for (const file of Object.keys(uploadFiles)) {
+          const filename = uploadFiles[file][0].filename;
+          const NameArr = file.split('_');
+          const device = NameArr[0];
+          const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+          if (device == 'android') {
+            android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+          } else if (device == 'ios') {
+            ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+          } else if (device == 'mobile') {
+            mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+          } else if (device == 'pc') {
+            pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
           }
         }
       }

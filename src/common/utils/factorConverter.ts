@@ -237,10 +237,10 @@ export class FactorConverter {
   }
 
   async finalJsonForm(promotionId, infoAndCondition, actions, display) {
-    console.log(`promotionId: ${promotionId}`);
-    console.log(`infoAndCondition: ${JSON.stringify(infoAndCondition.info)}`);
-    console.log(`actions: ${JSON.stringify(actions)}`);
-    console.log(`display: ${JSON.stringify(display)}`);
+    this.logger.log(`promotionId: ${promotionId}`);
+    this.logger.log(`infoAndCondition: ${JSON.stringify(infoAndCondition.info)}`);
+    this.logger.log(`actions: ${JSON.stringify(actions)}`);
+    this.logger.log(`display: ${JSON.stringify(display)}`);
 
     return {
       id: promotionId,
