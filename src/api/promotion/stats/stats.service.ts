@@ -82,25 +82,6 @@ export class StatsService {
     const startDate = `${info.startDate}-01`;
     const endDate = `${info.endDate}-31`;
 
-    //계산
-    function countDate(start, end) {
-      const sYear = parseInt(start.slice(0, 4));
-      const eYear = parseInt(end.slice(0, 4));
-      const sDate = parseInt(start.slice(5, 7));
-      const eDate = parseInt(end.slice(5, 7));
-      console.log(sYear, sDate, eYear, eDate);
-      let count;
-      if (sYear == eYear) {
-        count = eDate - sDate;
-      } else {
-        count = (sDate - 11) + eDate;
-      }
-      console.log(count);
-      return count;
-    }
-
-    const countMonth = countDate(info.startDate, info.endDate);
-
     if (!startDate || !endDate) {
       throw new BadRequestException('start date, end date must be defined');
     }
@@ -142,4 +123,20 @@ export class StatsService {
       throw new InternalServerErrorException();
     }
   }
+
+  async getMaintainDownloadData(info) {
+    this.logger.log('getMaintainDownloadData()');
+    try {
+      const fields = ['promotionId', 'startMon', 'initCount', 'currentCount'];
+      const opts = { fields };
+      const myData = await this.stPromotionMaintainMonRepository.find();
+      console.log(myData);
+      const csv = parse(myData, opts);
+      return csv;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
 }

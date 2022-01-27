@@ -53,4 +53,19 @@ export class StatsController {
   async getStatsMaintain(@Body() body) {
     return await this.statsService.findMaintainDataByDate(body);
   }
+
+  @ApiOperation({
+    summary: '프로모션 잔존율 다운로드',
+    description: '프로모션 잔존율 csv 다운로드',
+  })
+  @HttpCode(200)
+  @Post('maintain/download')
+  async maintainStatsDownload(@Body() body, @Res() res) {
+    const csv = await this.statsService.getMaintainDownloadData(body);
+    const fileName = `프로모션 잔존율 다운로드.csv`;
+    res.type('text/csv');
+    res.set('Content-Disposition', contentDisposition(fileName));
+    res.write(csv);
+    res.end();
+  }
 }

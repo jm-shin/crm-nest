@@ -206,6 +206,7 @@ export class ManagementService {
             floating_banner: {
               startColor: '',
               endColor: '',
+              icon: '',
               iconalt: '',
               text: '',
               url: '',
@@ -223,6 +224,7 @@ export class ManagementService {
                 basicForm.floating_banner = {
                   startColor: area.areaitems[0].startColor ? area.areaitems[0].startColor : '',
                   endColor: area.areaitems[0].endColor ? area.areaitems[0].endColor : '',
+                  icon: area.areaitems[0].icon ? area.areaitems[0].icon : '',
                   iconalt: area.areaitems[0].iconalt ? area.areaitems[0].iconalt : '',
                   text: area.areaitems[0].text ? area.areaitems[0].text : '',
                   url: area.areaitems[0].url ? area.areaitems[0].url : '',
