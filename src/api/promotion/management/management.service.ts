@@ -19,6 +19,30 @@ export class ManagementService {
   private readonly factorConvertor = new FactorConverter();
   private readonly logger = new Logger(ManagementService.name);
 
+  private async createImageUrlEachDevice(data, uploadFileList) {
+    let android = JSON.parse(data.android);
+    let ios = JSON.parse(data.ios);
+    let pc = JSON.parse(data.pc);
+    let mobile = JSON.parse(data.mobile);
+    const imgUrl = process.env.LOAD_LOCATION || '';
+    for (const file of Object.keys(uploadFileList)) {
+      const filename = uploadFileList[file][0].filename;
+      const NameArr = file.split('_');
+      const device = NameArr[0];
+      const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
+      if (device == 'android') {
+        android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+      } else if (device == 'ios') {
+        ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+      } else if (device == 'mobile') {
+        mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+      } else if (device == 'pc') {
+        pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
+      }
+    }
+    return { android, ios, pc, mobile };
+  }
+
   async save(data, uploadFiles, userId) {
     this.logger.log('save() start');
     try {
@@ -26,34 +50,10 @@ export class ManagementService {
       const description = data.description;
       const receiverId = parseInt(data.receiverId);
       const promotionId = data.promotionId;
-      const imgUrl = process.env.LOAD_LOCATION || '';
-
-      //json parse twice
       const action = JSON.parse(data.action);
       const benefit = JSON.parse(data.benefit);
-      let android = JSON.parse(data.android);
-      let ios = JSON.parse(data.ios);
-      let pc = JSON.parse(data.pc);
-      let mobile = JSON.parse(data.mobile);
-
       //add image url
-      if (uploadFiles) {
-        for (const file of Object.keys(uploadFiles)) {
-          const filename = uploadFiles[file][0].filename;
-          const NameArr = file.split('_');
-          const device = NameArr[0];
-          const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
-          if (device == 'android') {
-            android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'ios') {
-            ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'mobile') {
-            mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'pc') {
-            pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          }
-        }
-      }
+      const { android, ios, pc, mobile } = await this.createImageUrlEachDevice(data, uploadFiles);
 
       //create actions json
       const actionsJson = [
@@ -165,7 +165,6 @@ export class ManagementService {
           const data = device.areas; //배열
           const arr = data.filter((item) => item.areatype == areaType);
           const imageURL = arr[0]?.areaitems[0]?.image;
-          console.log(imageURL);
           if (imageURL) {
             const split = imageURL.split('/');
             return split[split.length - 1];
@@ -173,7 +172,7 @@ export class ManagementService {
             return '';
           }
         }
-
+``
         //아래 기본 Form 형태로 데이터가 있으면 채우고, 클라이언트쪽으로 응답.
         async function makeSendForm(device) {
           const typeArr = ['layerpopup', 'homeband', 'lnbtoptext', 'lnbtopbutton', 'voucher_index'];
@@ -204,6 +203,13 @@ export class ManagementService {
               color: '',
               url: '',
             },
+            floating_banner: {
+              startColor: '',
+              endColor: '',
+              iconalt: '',
+              text: '',
+              url: '',
+            },
           };
           deviceArea.forEach((area) => {
             typeArr.forEach((areaType) => {
@@ -213,11 +219,19 @@ export class ManagementService {
                   color: area.areaitems[0].color ? area.areaitems[0].color : '',
                   url: area.areaitems[0].url ? area.areaitems[0].url : '',
                 };
+              } else if (area.areatype == 'floating_banner') {
+                basicForm.floating_banner = {
+                  startColor: area.areaitems[0].startColor ? area.areaitems[0].startColor : '',
+                  endColor: area.areaitems[0].endColor ? area.areaitems[0].endColor : '',
+                  iconalt: area.areaitems[0].iconalt ? area.areaitems[0].iconalt : '',
+                  text: area.areaitems[0].text ? area.areaitems[0].text : '',
+                  url: area.areaitems[0].url ? area.areaitems[0].url : '',
+                };
               }
             });
           });
           return basicForm;
-        }
+        };
 
         promotionInfoResponseForm = {
           idx: promotionInfo.idx,
@@ -272,36 +286,15 @@ export class ManagementService {
       const description = data.description;
       const receiverId = parseInt(data.receiverId);
       const promotionId = data.promotionId;
-      const imgUrl = process.env.LOAD_LOCATION || '';
-
       const action = JSON.parse(data.action);
       const benefit = JSON.parse(data.benefit);
-      let android = JSON.parse(data.android);
-      let ios = JSON.parse(data.ios);
-      let pc = JSON.parse(data.pc);
-      let mobile = JSON.parse(data.mobile);
 
       //test
       const uploadedFileNameList = await this.getUploadedFileNameList(data);
+      Object.assign(uploadFiles, ...uploadedFileNameList);
 
-      if (uploadFiles || uploadedFileNameList) {
-        Object.assign(uploadFiles, ...uploadedFileNameList);
-        for (const file of Object.keys(uploadFiles)) {
-          const filename = uploadFiles[file][0].filename;
-          const NameArr = file.split('_');
-          const device = NameArr[0];
-          const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
-          if (device == 'android') {
-            android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'ios') {
-            ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'mobile') {
-            mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'pc') {
-            pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          }
-        }
-      }
+      //create img url
+      const { android, ios, pc, mobile } = await this.createImageUrlEachDevice(data, uploadFiles);
 
       const actionsJson = [
         {
@@ -359,60 +352,17 @@ export class ManagementService {
     try {
       const title = data.name;
       const description = data.description;
-      const imgUrl = process.env.LOAD_LOCATION || '';
       const receiverId = parseInt(data.receiverId);
       const promotionId = data.id;
-
       const action = JSON.parse(data.action);
       const benefit = JSON.parse(data.benefit);
-      let android = JSON.parse(data.android);
-      let ios = JSON.parse(data.ios);
-      let pc = JSON.parse(data.pc);
-      let mobile = JSON.parse(data.mobile);
 
-      //test
+      //기존 image는 파일이 아닌 파일명(String)으로 받음.
       const uploadedFileNameList = await this.getUploadedFileNameList(data);
+      Object.assign(uploadFiles, ...uploadedFileNameList);
 
-      /* old
-      if (uploadFiles || uploadedFileNameList) {
-        Object.assign(uploadFiles, ...uploadedFileNameList);
-        for (const file of Object.keys(uploadFiles)) {
-          const filename = uploadFiles[file][0].filename;
-          const NameArr = file.replace('_image', '').split('_');
-          const device = NameArr[0];
-          const type = NameArr[2] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
-          if (device == 'android') {
-            android[type].image = `${imgUrl}${filename}`;
-          } else if (device == 'ios') {
-            ios[type].image = `${imgUrl}${filename}`;
-          } else if (device == 'mobile') {
-            mobile[type].image = `${imgUrl}${filename}`;
-          } else if (device == 'pc') {
-            pc[type].image = `${imgUrl}${filename}`;
-          }
-        }
-      }
-       */
-
-      //new
-      if (uploadFiles || uploadedFileNameList) {
-        Object.assign(uploadFiles, ...uploadedFileNameList);
-        for (const file of Object.keys(uploadFiles)) {
-          const filename = uploadFiles[file][0].filename;
-          const NameArr = file.split('_');
-          const device = NameArr[0];
-          const type = NameArr[3] ? `${NameArr[1]}_${NameArr[2]}` : NameArr[1];
-          if (device == 'android') {
-            android[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'ios') {
-            ios[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'mobile') {
-            mobile[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          } else if (device == 'pc') {
-            pc[type][NameArr[(NameArr.length - 1)]] = `${imgUrl}${filename}`;
-          }
-        }
-      }
+      //uploadedFileNameList를 포함한 uploadFiles이 매개변수로 와야함.
+      const { android, ios, pc, mobile } = await this.createImageUrlEachDevice(data, uploadFiles);
 
       const actionsJson = [
         {
@@ -431,8 +381,10 @@ export class ManagementService {
       const displayJson = await this.factorConvertor.makeJsonDisplay(displayCreateInfo);
       const promotionInfo = await this.promotionReceiverInfoRepository.getOne(receiverId);
       let infoAndConditionJson = JSON.parse(promotionInfo.conditionJson);
+
       infoAndConditionJson.info.name = title;
       infoAndConditionJson.info.description = description;
+
       const finalJson = await this.factorConvertor.finalJsonForm(promotionId, infoAndConditionJson, actionsJson, displayJson);
 
       return finalJson;

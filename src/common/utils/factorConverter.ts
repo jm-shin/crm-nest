@@ -145,7 +145,7 @@ export class FactorConverter {
     } = info;
 
     async function deleteNull(device) {
-      const col = ['text', 'color', 'url', 'image'];
+      const col = ['text', 'color', 'url', 'image', 'startColor', 'endColor', 'iconalt'];
       for (const key of Object.keys(device)) {
         // console.log(key, device[key]['image']);
         await col.forEach((i) => {
