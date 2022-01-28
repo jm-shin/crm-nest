@@ -58,6 +58,7 @@ export class StatsController {
     summary: '프로모션 잔존율 다운로드',
     description: '프로모션 잔존율 csv 다운로드',
   })
+  @UseGuards(JwtAuthGuard)
   @HttpCode(200)
   @Post('maintain/download')
   async maintainStatsDownload(@Body() body, @Res() res) {
@@ -67,5 +68,16 @@ export class StatsController {
     res.set('Content-Disposition', contentDisposition(fileName));
     res.write(csv);
     res.end();
+  }
+
+  @ApiOperation({
+    summary: '상품구매추이 통계 검색',
+    description: '상품별 누적, 신규, 순증 통계',
+  })
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @Post('product')
+  async getProductPurchaseStats (@Body() body) {
+      return this.statsService.getProductPurchaseStats(body);
   }
 }

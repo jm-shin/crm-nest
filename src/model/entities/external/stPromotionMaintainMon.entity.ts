@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class StPromotionMaintainMon {
+@Entity('st_promotion_maintain_mon')
+export class StPromotionMaintainMonEntity {
   @Column({ name: 'stat_time' })
   readonly statTime: string;
 

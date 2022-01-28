@@ -4,15 +4,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
 import { Repository } from 'typeorm';
 import { parse } from 'json2csv';
-import { StPromotionMaintainMon } from '../../../model/entities/external/stPromotionMaintainMon';
+import { StPromotionMaintainMonEntity } from '../../../model/entities/external/stPromotionMaintainMon.entity';
+import { StSubscPerProductDayEntity } from '../../../model/entities/external/stSubscPerProductDay.entity';
 
 @Injectable()
 export class StatsService {
   constructor(
     @InjectRepository(StPromotionBenefitDay, 'stats')
     private readonly stPromotionBenefitDayRepository: Repository<StPromotionBenefitDay>,
-    @InjectRepository(StPromotionMaintainMon, 'stats')
-    private readonly stPromotionMaintainMonRepository: Repository<StPromotionMaintainMon>,
+    @InjectRepository(StPromotionMaintainMonEntity, 'stats')
+    private readonly stPromotionMaintainMonRepository: Repository<StPromotionMaintainMonEntity>,
+    @InjectRepository(StSubscPerProductDayEntity, 'stats')
+    private readonly stStSubscPerProductDayRepository: Repository<StSubscPerProductDayEntity>,
   ) {
   }
 
@@ -110,7 +113,10 @@ export class StatsService {
         };
         findData.forEach((data) => {
           if (data.promotionId === cur) {
-            form.users.push({ [data.statTime]: [`${((data.currentCount / data.initCount) * 100).toFixed(2)}%`, data.currentCount] });
+            form.users.push({
+              [data.statTime]: [`${((data.currentCount / data.initCount) * 100).toFixed(2)}%`,
+                data.currentCount],
+            });
           }
         });
         acc.push(form);
@@ -139,4 +145,42 @@ export class StatsService {
     }
   }
 
+  async getProductPurchaseStats(info) {
+    this.logger.log('getProductPurchaseStats() start');
+    try {
+      const { startDate, endDate } = info;
+      const findData = await this.stStSubscPerProductDayRepository
+        .createQueryBuilder('purchase')
+        .leftJoin('purchase.ProductInfo', 'product')
+        .select([
+          'DATE_FORMAT(purchase.stat_time, "%Y-%m-%d") AS statTime', 'purchase.product_group_id AS groupId',
+          'purchase.total_count AS totalCount', 'purchase.new_count AS newCount', '' +
+          'purchase.leave_count AS leaveCount', 'product.product_name AS productName'
+        ])
+        .where('stat_time >= :startDate AND stat_time <= :endDate', { startDate, endDate })
+        .execute();
+
+      const allGroupId = findData.map(data => data.groupId);
+      const targetPromotionGroupId = [...new Set(allGroupId)];
+
+      let result = [];
+      targetPromotionGroupId.forEach((id) => {
+        const form = {
+          title: findData.find((data) => data.groupId === id).productName,
+          groupId: id,
+          users: [],
+        };
+        findData.forEach((data) => {
+          if (data.groupId === id) {
+            form.users.push({ [data.statTime]: [parseInt(data.totalCount), parseInt(data.newCount), parseInt(data.leaveCount)] });
+          }
+        });
+        result.push(form);
+      });
+      return result;
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
 }

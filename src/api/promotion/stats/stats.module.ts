@@ -3,13 +3,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { StatsController } from './stats.controller';
 import { StatsService } from './stats.service';
 import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
-import { StPromotionMaintainMon } from '../../../model/entities/external/stPromotionMaintainMon';
+import { StPromotionMaintainMonEntity } from '../../../model/entities/external/stPromotionMaintainMon.entity';
+import { StSubscPerProductDayEntity } from '../../../model/entities/external/stSubscPerProductDay.entity';
+import { ProductInfo } from '../../../model/entities/productInfo.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       StPromotionBenefitDay,
-      StPromotionMaintainMon
+      StPromotionMaintainMonEntity,
+      StSubscPerProductDayEntity,
+      ProductInfo
     ], 'stats'),
   ],
   exports: [TypeOrmModule],
