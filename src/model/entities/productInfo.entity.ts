@@ -1,8 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class ProductInfo {
-  @PrimaryGeneratedColumn({ name: 'product_group_id' })
+@Entity('product_info')
+export class ProductInfoEntity {
+  @PrimaryGeneratedColumn({ name: 'idx' })
+  idx: number;
+
+  @Column({ name: 'product_group_id' })
   productGroupId: number;
 
   @Column({ name: 'product_name' })

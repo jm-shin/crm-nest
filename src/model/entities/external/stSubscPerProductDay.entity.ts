@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ProductInfo } from '../productInfo.entity';
+import { ProductInfoEntity } from '../productInfo.entity';
 
 @Entity('st_subsc_per_product_day')
 export class StSubscPerProductDayEntity {
@@ -18,7 +18,7 @@ export class StSubscPerProductDayEntity {
   @Column({ name: 'leave_count' })
   leaveCount: number;
 
-  @ManyToOne(() => ProductInfo)
-  @JoinColumn({name: 'product_group_id', referencedColumnName: 'productGroupId'})
-  ProductInfo: ProductInfo;
+  // @ManyToOne(() => ProductInfoEntity)
+  // @JoinColumn({name: 'product_group_id', referencedColumnName: 'productGroupId'})
+  // ProductInfo: ProductInfoEntity;
 }

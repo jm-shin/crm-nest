@@ -1,8 +1,20 @@
-import { Body, Controller, HttpCode, InternalServerErrorException, Logger, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller, Delete,
+  HttpCode,
+  InternalServerErrorException,
+  Logger,
+  Post, Put,
+  Res,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { ApiOperation } from '@nestjs/swagger';
 import contentDisposition from 'content-disposition';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { CreateProductDto } from './dto/createProduct.dto';
+import { SuccessMessageInterceptor } from '../../../common/interceptor/success.message.interceptor';
 
 @Controller('api/promotion/stats')
 export class StatsController {
@@ -79,5 +91,40 @@ export class StatsController {
   @Post('product')
   async getProductPurchaseStats (@Body() body) {
       return this.statsService.getProductPurchaseStats(body);
+  }
+
+  //TODO: 상품관리 등록, 수정, 삭제
+  @ApiOperation({
+    summary: '상품관리 - 등록',
+    description: '상품명, 상품코드 등록'
+  })
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  @UseInterceptors(SuccessMessageInterceptor)
+  @Post('product/management')
+  registerProductInfo(@Body() info: CreateProductDto){
+    return this.statsService.saveProductInfo(info);
+  }
+
+  @ApiOperation({
+    summary: '상품관리 - 수정',
+    description: '상품명, 상품코드 수정'
+  })
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(SuccessMessageInterceptor)
+  @Put('product/management')
+  updateProductInfo(@Body() info){
+    return this.statsService.updateProductInfo(info);
+  }
+
+  @ApiOperation({
+    summary: '상품관리 - 삭제',
+    description: '상품삭제 - 개별삭제'
+  })
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(SuccessMessageInterceptor)
+  @Delete('product/management')
+  removeProductInfo(@Body('idx') idx){
+    return this.statsService.deleteProductInfo(idx);
   }
 }

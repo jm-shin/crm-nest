@@ -2,10 +2,11 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger }
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
-import { Repository } from 'typeorm';
+import { Connection, getManager, Repository } from 'typeorm';
 import { parse } from 'json2csv';
 import { StPromotionMaintainMonEntity } from '../../../model/entities/external/stPromotionMaintainMon.entity';
 import { StSubscPerProductDayEntity } from '../../../model/entities/external/stSubscPerProductDay.entity';
+import { ProductInfoEntity } from '../../../model/entities/productInfo.entity';
 
 @Injectable()
 export class StatsService {
@@ -16,6 +17,8 @@ export class StatsService {
     private readonly stPromotionMaintainMonRepository: Repository<StPromotionMaintainMonEntity>,
     @InjectRepository(StSubscPerProductDayEntity, 'stats')
     private readonly stStSubscPerProductDayRepository: Repository<StSubscPerProductDayEntity>,
+    @InjectRepository(ProductInfoEntity)
+    private readonly productInfoRepository: Repository<ProductInfoEntity>,
   ) {
   }
 
@@ -183,4 +186,45 @@ export class StatsService {
       throw new InternalServerErrorException();
     }
   }
+
+  async saveProductInfo(info) {
+    this.logger.log('registerProductInfo()');
+    try {
+      this.logger.log(`register product info: ${JSON.stringify(info)}`);
+      const productInfo = await this.productInfoRepository.save(info);
+      return productInfo;
+    } catch (error) {
+     this.logger.error(error);
+     throw new InternalServerErrorException();
+    }
+  }
+
+  async updateProductInfo(info) {
+    const {idx, ...updateData} = info;
+    try {
+      this.logger.log(`idx: ${idx}, update data: ${JSON.stringify(updateData)}`);
+      return await this.productInfoRepository.update(idx, updateData);
+    }catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async deleteProductInfo(idx) {
+    this.logger.log('delete product info()');
+    try {
+      this.logger.log(`idx: ${idx}`);
+      return await this.productInfoRepository.delete(idx);
+    }catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  // async queryRunnerTest() {
+  //   //raw query
+  //   const entityManger = await getManager('stats');
+  //   const rawData = await entityManger.query(``);
+  // }
+
 }

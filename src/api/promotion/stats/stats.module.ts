@@ -5,15 +5,17 @@ import { StatsService } from './stats.service';
 import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
 import { StPromotionMaintainMonEntity } from '../../../model/entities/external/stPromotionMaintainMon.entity';
 import { StSubscPerProductDayEntity } from '../../../model/entities/external/stSubscPerProductDay.entity';
-import { ProductInfo } from '../../../model/entities/productInfo.entity';
+import { ProductInfoEntity } from '../../../model/entities/productInfo.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      ProductInfoEntity
+    ]),
+    TypeOrmModule.forFeature([
       StPromotionBenefitDay,
       StPromotionMaintainMonEntity,
       StSubscPerProductDayEntity,
-      ProductInfo
     ], 'stats'),
   ],
   exports: [TypeOrmModule],
