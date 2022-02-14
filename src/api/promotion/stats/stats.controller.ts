@@ -1,10 +1,13 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,
+  Delete,
+  Get,
   HttpCode,
   InternalServerErrorException,
   Logger,
-  Post, Put,
+  Post,
+  Put,
   Res,
   UseGuards,
   UseInterceptors,
@@ -15,6 +18,7 @@ import contentDisposition from 'content-disposition';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { SuccessMessageInterceptor } from '../../../common/interceptor/success.message.interceptor';
+import { UpdateProductDto } from './dto/updateProduct.dto';
 
 @Controller('api/promotion/stats')
 export class StatsController {
@@ -93,7 +97,7 @@ export class StatsController {
       return this.statsService.getProductPurchaseStats(body);
   }
 
-  //TODO: 상품관리 등록, 수정, 삭제
+  //상품관리
   @ApiOperation({
     summary: '상품관리 - 등록',
     description: '상품명, 상품코드 등록'
@@ -107,13 +111,23 @@ export class StatsController {
   }
 
   @ApiOperation({
+    summary: '상품관리 - 리스트 조회',
+    description: '상품 리스트 조회'
+  })
+  @UseGuards(JwtAuthGuard)
+  @Get('product/management')
+  getProductInfoList() {
+    return this.statsService.getProductInfoList();
+  }
+
+  @ApiOperation({
     summary: '상품관리 - 수정',
     description: '상품명, 상품코드 수정'
   })
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(SuccessMessageInterceptor)
   @Put('product/management')
-  updateProductInfo(@Body() info){
+  updateProductInfo(@Body() info: UpdateProductDto){
     return this.statsService.updateProductInfo(info);
   }
 
@@ -124,7 +138,7 @@ export class StatsController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(SuccessMessageInterceptor)
   @Delete('product/management')
-  removeProductInfo(@Body('idx') idx){
+  removeProductInfo(@Body('idx') idx: number){
     return this.statsService.deleteProductInfo(idx);
   }
 }

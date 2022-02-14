@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger }
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
-import { Connection, getManager, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { parse } from 'json2csv';
 import { StPromotionMaintainMonEntity } from '../../../model/entities/external/stPromotionMaintainMon.entity';
 import { StSubscPerProductDayEntity } from '../../../model/entities/external/stSubscPerProductDay.entity';
@@ -194,8 +194,8 @@ export class StatsService {
       const productInfo = await this.productInfoRepository.save(info);
       return productInfo;
     } catch (error) {
-     this.logger.error(error);
-     throw new InternalServerErrorException();
+      this.logger.error(error);
+      throw new InternalServerErrorException();
     }
   }
 
@@ -216,6 +216,21 @@ export class StatsService {
       this.logger.log(`idx: ${idx}`);
       return await this.productInfoRepository.delete(idx);
     }catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async getProductInfoList(){
+    this.logger.log('getProductInfoList()');
+    try {
+      const productInfoList = await this.productInfoRepository
+        .createQueryBuilder()
+        .select(['idx', 'product_name AS productName', 'product_id AS productId'])
+        .execute();
+      this.logger.log(`${JSON.stringify(productInfoList)}`);
+      return productInfoList? productInfoList : [];
+    } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }

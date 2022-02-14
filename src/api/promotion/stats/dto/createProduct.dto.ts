@@ -1,9 +1,11 @@
-import { IsDefined, IsNumber } from 'class-validator';
+import { IsDefined, IsString } from 'class-validator';
 
 export class CreateProductDto {
   @IsDefined()
+  @IsString()
   productName: string;
 
   @IsDefined()
-  productId: [number];
+  @IsString()
+  productId: string;
 }
