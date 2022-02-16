@@ -141,4 +141,11 @@ export class StatsController {
   removeProductInfo(@Body('idx') idx: number){
     return this.statsService.deleteProductInfo(idx);
   }
+
+  //query test
+  @Get('test/query')
+  @UseGuards(JwtAuthGuard)
+  getQuery() {
+    return this.statsService.queryRunnerTest();
+  }
 }

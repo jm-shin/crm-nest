@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, Logger }
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { StPromotionBenefitDay } from '../../../model/entities/external/stPromotionBenefitDay.entity';
-import { Repository } from 'typeorm';
+import { getManager, Repository } from 'typeorm';
 import { parse } from 'json2csv';
 import { StPromotionMaintainMonEntity } from '../../../model/entities/external/stPromotionMaintainMon.entity';
 import { StSubscPerProductDayEntity } from '../../../model/entities/external/stSubscPerProductDay.entity';
@@ -72,7 +72,14 @@ export class StatsService {
   async getBenefitStatDownload() {
     this.logger.log('csv download start');
     try {
+      /*
       const fields = ['title', 'promotionId', 'lastCount', 'currentCount', 'benefitCount'];
+      const opts = { fields };
+      const myData = await this.stPromotionBenefitDayRepository.find();
+      const csv = parse(myData, opts);
+      return csv;
+       */
+      const fields = ['title', 'promotionId', 'currentCount', 'lastCount', 'benefitCount'];
       const opts = { fields };
       const myData = await this.stPromotionBenefitDayRepository.find();
       const csv = parse(myData, opts);
@@ -154,11 +161,11 @@ export class StatsService {
       const { startDate, endDate } = info;
       const findData = await this.stStSubscPerProductDayRepository
         .createQueryBuilder('purchase')
-        .leftJoin('purchase.ProductInfo', 'product')
+        // .leftJoin('purchase.ProductInfo', 'product')
         .select([
           'DATE_FORMAT(purchase.stat_time, "%Y-%m-%d") AS statTime', 'purchase.product_group_id AS groupId',
-          'purchase.total_count AS totalCount', 'purchase.new_count AS newCount', '' +
-          'purchase.leave_count AS leaveCount', 'product.product_name AS productName'
+          'purchase.total_count AS totalCount', 'purchase.new_count AS newCount',
+          'purchase.leave_count AS leaveCount',
         ])
         .where('stat_time >= :startDate AND stat_time <= :endDate', { startDate, endDate })
         .execute();
@@ -169,8 +176,9 @@ export class StatsService {
       let result = [];
       targetPromotionGroupId.forEach((id) => {
         const form = {
-          title: findData.find((data) => data.groupId === id).productName,
-          groupId: id,
+          // title: findData.find((data) => data.groupId === id).productName,
+          title: 'Basic',
+          // groupId: id,
           users: [],
         };
         findData.forEach((data) => {
@@ -191,8 +199,7 @@ export class StatsService {
     this.logger.log('registerProductInfo()');
     try {
       this.logger.log(`register product info: ${JSON.stringify(info)}`);
-      const productInfo = await this.productInfoRepository.save(info);
-      return productInfo;
+      return await this.productInfoRepository.save(info);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
@@ -200,11 +207,11 @@ export class StatsService {
   }
 
   async updateProductInfo(info) {
-    const {idx, ...updateData} = info;
+    const { idx, ...updateData } = info;
     try {
       this.logger.log(`idx: ${idx}, update data: ${JSON.stringify(updateData)}`);
       return await this.productInfoRepository.update(idx, updateData);
-    }catch (error) {
+    } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
@@ -215,13 +222,13 @@ export class StatsService {
     try {
       this.logger.log(`idx: ${idx}`);
       return await this.productInfoRepository.delete(idx);
-    }catch (error) {
+    } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
 
-  async getProductInfoList(){
+  async getProductInfoList() {
     this.logger.log('getProductInfoList()');
     try {
       const productInfoList = await this.productInfoRepository
@@ -229,17 +236,19 @@ export class StatsService {
         .select(['idx', 'product_name AS productName', 'product_id AS productId'])
         .execute();
       this.logger.log(`${JSON.stringify(productInfoList)}`);
-      return productInfoList? productInfoList : [];
+      return productInfoList ? productInfoList : [];
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();
     }
   }
 
-  // async queryRunnerTest() {
-  //   //raw query
-  //   const entityManger = await getManager('stats');
-  //   const rawData = await entityManger.query(``);
-  // }
-
+  //test
+  async queryRunnerTest() {
+    //raw query
+    const entityManger = await getManager('stats');
+    const rawData = await entityManger.query(`select * from product_info`);
+    console.log(rawData);
+    return rawData;
+  }
 }
