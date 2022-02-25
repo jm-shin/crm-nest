@@ -41,7 +41,7 @@ export class GroupController {
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(200)
   @UseInterceptors(SuccessMessageInterceptor)
-  async unoCsvFileUpload(
+  async createGroup(
     @UploadedFile() file: Express.Multer.File,
     @Body() createData: CreateGroupDto,
     @User() user,
@@ -72,7 +72,7 @@ export class GroupController {
   @UseGuards(JwtAuthGuard)
   @Delete('')
   @UseInterceptors(SuccessMessageInterceptor)
-  async remove(@Body('idx') groupId: number[]) {
+  async removeGroup(@Body('idx') groupId: number[]) {
     this.logger.log('uno group remove()');
     return await this.groupService.remove(groupId);
   }
@@ -80,9 +80,9 @@ export class GroupController {
   @ApiOperation({ summary: 'UNO 그룹관리 - CSV 다운로드', description: 'UNO 정보 리스트를 CSV 형식으로 다운로드한다.' })
   @UseGuards(JwtAuthGuard)
   @Get('uno/download')
-  async download(@Query('idx') groupId: number, @Res() res: Response) {
+  async downloadUnoGroup(@Query('idx') groupId: number, @Res() res: Response) {
     this.logger.log('uno group download()');
-    try {
+    try { 
       const currentDate = moment().format('YYMMDD');
       const groupTitle = await this.groupService.getOne(groupId).then((info) => info.title);
       const unoList = await this.groupService.getUnoList(groupId);

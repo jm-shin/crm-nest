@@ -140,10 +140,10 @@ export class ManagementController {
   @ApiOperation({ summary: 'JSON 파일 배포', description: '프로모션 실행을 위해 JSON 파일 배포 실행한다.' })
   @HttpCode(200)
   @Post('json/release')
-  async releaseJSON(@Body() body) {
+  async releaseJSON(@Body('idx') idx) {
     try {
       this.logger.log('promotion release start');
-      return { statusCode: 200, message: 'success' };
+      return this.managementService.distributePromotionJson(idx);
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException();

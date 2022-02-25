@@ -5,6 +5,7 @@ import { PromotionReceiverInfoRepository } from '../../../model/repository/promo
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../model/entities/user.entity';
 import { Repository } from 'typeorm';
+import axios from 'axios';
 
 @Injectable()
 export class ManagementService {
@@ -172,7 +173,9 @@ export class ManagementService {
             return '';
           }
         }
-``
+
+        ``;
+
         //아래 기본 Form 형태로 데이터가 있으면 채우고, 클라이언트쪽으로 응답.
         async function makeSendForm(device) {
           const typeArr = ['layerpopup', 'homeband', 'lnbtoptext', 'lnbtopbutton', 'voucher_index'];
@@ -446,5 +449,65 @@ export class ManagementService {
       }
     }
     return acc;
+  }
+
+  async distributePromotionJson(idx) {
+    interface promotionDto {
+      actions: [],
+      condition: [],
+      display: [],
+      id: string,
+      info: object
+    }
+
+    this.logger.log('distributePromotionJson() start');
+
+    try {
+      // idx > 프로모션 정보조회해서 data set
+      const promotionData = await this.promotionInfoRepository.getOne(idx);
+      const { id, info, actions, condition, display } = promotionData;
+      const promotion: promotionDto = {
+        actions,
+        condition,
+        display,
+        id,
+        info,
+      };
+
+      if (!promotionData) {
+        throw new NotFoundException('프로모션 정보가 없습니다.');
+      }
+
+      /**
+       * http request post api
+       * "/bill/promotion/regist/{promotionId}"
+       * @Param {string} promotionId - 등록할 프로모션아이디
+       */
+      const url = 'http://apis.local.wavve.com/bill/promotion/regist/';
+
+      const config = {
+        baseURL: url,
+        header: [
+          { 'Authorization': 'Bearer' + '' },
+        ],
+        param: {
+          promotionId: id,
+        },
+        data: {
+          promotion: promotion,
+        },
+        timeout: 1000,
+      };
+
+      const response = await axios.post(url, [config]);
+
+      if (!response) {
+        throw new HttpException('외부 API 요청 오류', 400);
+      }
+
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException();
+    }
   }
 }
