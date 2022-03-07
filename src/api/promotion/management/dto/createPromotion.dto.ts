@@ -103,4 +103,16 @@ export class CreatePromotionDto {
 
   @Allow()
   readonly mobile_voucher_index_image;
+
+  @Allow()
+  readonly android_floating_banner_icon;
+
+  @Allow()
+  readonly ios_floating_banner_icon;
+
+  @Allow()
+  readonly mobile_floating_banner_icon;
+
+  @Allow()
+  readonly pc_floating_banner_icon;
 }
