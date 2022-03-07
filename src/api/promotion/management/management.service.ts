@@ -174,7 +174,18 @@ export class ManagementService {
           }
         }
 
-        ``;
+        //아이콘 파일명 추출
+        async function findIconName(device, areaType) {
+          const data = device.areas;
+          const arr = data.filter((item) => item.areatype == areaType);
+          const imageURL = arr[0]?.areaitems[0]?.icon;
+          if (imageURL) {
+            const split = imageURL.split('/');
+            return split[split.length - 1];
+          } else {
+            return '';
+          }
+        }
 
         //아래 기본 Form 형태로 데이터가 있으면 채우고, 클라이언트쪽으로 응답.
         async function makeSendForm(device) {
@@ -273,6 +284,11 @@ export class ManagementService {
           mobile_lnbtopbutton_image: await findName(mobile, 'lnbtopbutton'),
           mobile_homeband_image: await findName(mobile, 'homeband'),
           mobile_voucher_index_image: await findName(mobile, 'voucher_index'),
+          //icon
+          android_floating_banner_icon: await findIconName(android, 'floating_banner'),
+          ios_floating_banner_icon: await findIconName(ios, 'floating_banner'),
+          mobile_floating_banner_icon: await findIconName(mobile, 'floating_banner'),
+          pc_floating_banner_icon: await findIconName(pc, 'floating_banner'),
         };
         this.logger.log(`getOne() response: ${JSON.stringify(promotionInfoResponseForm)}`);
       }

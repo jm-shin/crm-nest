@@ -136,7 +136,7 @@ export class ManagementController {
     }
   }
 
-  //TODO: json 읽기> stream > 외부 서버 > 배포
+  //TODO: json 읽기> stream > 외부 API 요청
   @ApiOperation({ summary: 'JSON 파일 배포', description: '프로모션 실행을 위해 JSON 파일 배포 실행한다.' })
   @HttpCode(200)
   @Post('json/release')
