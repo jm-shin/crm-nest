@@ -39,8 +39,8 @@ export class StatsController {
   }
 
   @ApiOperation({
-    summary: 'benefit 통계 다운로드',
-    description: '통계 csv 파일로 다운로드',
+    summary: '프로모션 혜택 회원 조회 - 다운로드',
+    description: '프로모션 혜택 회원 조회 통계 - csv 파일 다운로드',
   })
   @UseGuards(JwtAuthGuard)
   @HttpCode(200)

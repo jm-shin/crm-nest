@@ -35,6 +35,9 @@ export class StatsService {
     }
 
     try {
+      const entityManger = await getManager('stats');
+      const findData = await entityManger.query(`select * from product_info`);
+      /*
       const findData = await this.stPromotionBenefitDayRepository.createQueryBuilder()
         .select([
           'DATE_FORMAT(stat_time, "%Y-%m-%d") AS statTime', 'promotion_id AS promotionId',
@@ -44,7 +47,7 @@ export class StatsService {
         .where('stat_time >= :startDate AND stat_time <= :endDate', { startDate, endDate })
         .andWhere('promotion_id LIKE (:promotionId)', { promotionId })
         .execute();
-
+      */
       const promotionIdGroup = findData.map(data => data.promotionId);
       const targetPromotionId = [...new Set(promotionIdGroup)];
 
