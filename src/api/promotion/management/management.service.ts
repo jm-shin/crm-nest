@@ -6,7 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../model/entities/user.entity';
 import { Repository } from 'typeorm';
 import axios from 'axios';
-import { BlobServiceClient, AnonymousCredential } from "@azure/storage-blob";
+import path from 'path';
+import { AnonymousCredential, BlobServiceClient } from '@azure/storage-blob';
 
 @Injectable()
 export class ManagementService {
@@ -46,6 +47,7 @@ export class ManagementService {
   }
 
   async save(data, uploadFiles, userId) {
+    const mode = process.env.MODE || 'production';
     let azureFileName = [];
     this.logger.log('save() start');
 
@@ -110,31 +112,11 @@ export class ManagementService {
         }
       }
 
-      //TODO: uploadToAzureContainer()
-
-      // if (azureFileName.length > 0) {
-      //   const account = process.env.EXT_AZURE_ACCOUNT;
-      //   const sas = process.env.EXT_AZURE_SAS_KEY;
-      //   const blobServiceClient = new BlobServiceClient(`https://${account}.blob.core.windows.net${sas}`);
-      //
-      //   const containerName = 'campaign';
-      //
-      //   const containerClient = blobServiceClient.getContainerClient(containerName);
-      //   const blobName = req.file.originalname;
-      //   const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-      //
-      //   const uploadBlobResponse = await blockBlobClient.uploadFile(req.file.path);
-      //
-      //   //add image upload
-      //   await targetImgURL.forEach((url) => {
-      //     his.logger.log(`image upload to azure server. image path: ${url}`);
-      //     const response = blockBlobClient.uploadFile(url);
-      //     this.logger.log(response);
-      //   });
-      //
-      //   this.logger.log(`upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
-      //   this.logger.log(`uploadBlobResponse: ${JSON.stringify(uploadBlobResponse)}`);
-      // }
+      //image file upload to Azure container
+      if (mode === 'production' && azureFileName.length > 0) {
+        await this.uploadToAzureContainer(azureFileName);
+        this.logger.log('uploadToAzureContainer() done');
+      }
 
       await this.promotionInfoRepository.save(createData);
     } catch (error) {
@@ -564,33 +546,36 @@ export class ManagementService {
     }
   }
 
-  async uploadToAzureContainer() {
-    // Enter your storage account name and SAS
-    const account = process.env.ACCOUNT_NAME || "<account name>";
-    const accountSas = process.env.ACCOUNT_SAS || "<account SAS>";
+  async uploadToAzureContainer(blobName: string[]) {
+    const account = process.env.AZURE_ACCOUNT_NAME || '<account name>';
+    const accountSas = process.env.AZURE_ACCOUNT_SAS || '<account SAS>';
+    const containerName = 'campaign';
 
-    // List containers
-    const blobServiceClient = new BlobServiceClient(
-      // When using AnonymousCredential, following url should include a valid SAS or support public access
-      `https://${account}.blob.core.windows.net${accountSas}`,
-      new AnonymousCredential()
-    );
+    try {
+      const blobServiceClient = new BlobServiceClient(
+        `https://${account}.blob.core.windows.net${accountSas}`,
+        new AnonymousCredential(),
+      );
+      const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    console.log("Containers:");
-    for await (const container of blobServiceClient.listContainers()) {
-      console.log(`- ${container.name}`);
+      //case1: for..of..
+      // for (let name of blobName) {
+      //   const blockBlobClient = containerClient.getBlockBlobClient(name);
+      //   const uploadBlobResponse = await blockBlobClient.uploadFile(path.join(__dirname, '/../../../../', 'upload/image', `${name}`)); //set image path
+      //   this.logger.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId);
+      //   this.logger.log(uploadBlobResponse);
+      // }
+
+      //case2: promise.all
+      const promises = blobName.map((name) => {
+        const blockBlobClient = containerClient.getBlockBlobClient(name);
+        blockBlobClient.uploadFile(path.join(__dirname, '/../../../../', 'upload/image', `${name}`)); //target image path
+      });
+      Promise.all(promises).then(() => this.logger.log('upload done'));
+
+    } catch (error) {
+      this.logger.error(error);
+      throw new InternalServerErrorException('azure upload error!!');
     }
-
-    // Create a container
-    const containerName = `newcontainer${new Date().getTime()}`;
-    const containerClient = blobServiceClient.getContainerClient(containerName);
-
-    const createContainerResponse = await containerClient.create();
-    console.log(`Created container ${containerName} successfully`, createContainerResponse.requestId);
-
-    // Delete container
-    await containerClient.delete();
-
-    console.log("Deleted container:", containerClient.containerName);
   }
 }
