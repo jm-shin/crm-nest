@@ -522,9 +522,11 @@ export class ManagementService {
 
       const config = {
         baseURL: url,
+        /*
         header: [
           { 'Authorization': 'Bearer' + '' },
         ],
+         */
         param: {
           promotionId: id,
         },
