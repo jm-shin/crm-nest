@@ -27,7 +27,7 @@ const transports = {
       datePattern: 'MMDD',
       prettyPrint: true,
       maxSize: '10m',
-      maxFiles: '7d',
+      maxFiles: '365d',
       showLevel: true,
       createSymlink: true,
       symlinkName: 'PROM.log',

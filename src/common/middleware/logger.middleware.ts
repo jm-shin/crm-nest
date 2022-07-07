@@ -10,7 +10,7 @@ const transport = new (require('winston-daily-rotate-file'))({
   zippedArchive: false,
   prettyPrint: true,
   maxSize: '10m',
-  maxFiles: '7d',
+  maxFiles: '365d',
   showLevel: true,
   createSymlink: true,
   symlinkName: 'API.log',
